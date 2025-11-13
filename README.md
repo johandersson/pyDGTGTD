@@ -81,7 +81,12 @@ All tasks, contexts, folders, goals, and notebooks will be imported.
 
 ## License
 
-GPL v2+ - See COPYING file for details
+GPL v2+ - See COPYING file for full license text.
+
+**Copyright:**
+- Copyright (C) 2013-2015 Karol Będkowski (original wxGTD)
+- Copyright (C) 2025 Johan Andersson (Python 3 migration and Android sync)
+- DGT GTD Android app data format by dgtale
 
 ## Project Links
 
