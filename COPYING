@@ -8,6 +8,9 @@ with DGT GTD Android app through JSON import/export.
 GTD® and Getting Things Done® are registered trademarks of David Allen and
 the David Allen Company.
 
+This software is not affiliated with, endorsed by, or supported by David Allen
+or the David Allen Company.
+
 Copyright (C) 2013-2015 Karol Będkowski <karol.bedkowski@gmail.com>
 Copyright (C) 2025 Johan Andersson (Python 3 migration and Android sync)
 

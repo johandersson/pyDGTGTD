@@ -92,6 +92,8 @@ GPL v2+ - See COPYING file for full license text.
 
 GTD® and Getting Things Done® are registered trademarks of David Allen and the David Allen Company.
 
+This software is not affiliated with, endorsed by, or supported by David Allen or the David Allen Company. 
+
 ## Project Links
 
 - GitHub: https://github.com/johandersson/gtgGTDdesktop
