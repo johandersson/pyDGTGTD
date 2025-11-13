@@ -35,15 +35,15 @@ class TaskBarIcon(wx.adv.TaskBarIcon):
 	TBMENU_NEW_TASK = wx.NewIdRef()
 
 	def __init__(self, parent_frame):
-		wx.TaskBarIcon.__init__(self)
+		wx.adv.TaskBarIcon.__init__(self)
 		self._frame = parent_frame
 		# icon
-		img = wx.ImageFromBitmap(iconprovider.get_image('wxgtd'))
+		img = iconprovider.get_image('wxgtd').ConvertToImage()
 		if "wxMSW" in wx.PlatformInfo:
 			img = img.Scale(16, 16)
 		elif "wxGTK" in wx.PlatformInfo:
 			img = img.Scale(22, 22)
-		icon = wx.IconFromBitmap(img.ConvertToBitmap())
+		icon = wx.Icon(img.ConvertToBitmap())
 		self.SetIcon(icon, _("wxGTD"))
 
 		self._create_bindings()
@@ -60,7 +60,7 @@ class TaskBarIcon(wx.adv.TaskBarIcon):
 		return menu
 
 	def _create_bindings(self):
-		self.Bind(wx.EVT_TASKBAR_LEFT_UP, self._on_icon_activate)
+		self.Bind(wx.adv.EVT_TASKBAR_LEFT_UP, self._on_icon_activate)
 		self.Bind(wx.EVT_MENU, self._on_icon_activate, id=self.TBMENU_RESTORE)
 		self.Bind(wx.EVT_MENU, self._on_menu_app_close, id=self.TBMENU_CLOSE)
 		self.Bind(wx.EVT_MENU, self._on_menu_show_notebook,

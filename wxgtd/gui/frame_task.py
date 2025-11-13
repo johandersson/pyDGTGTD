@@ -82,7 +82,7 @@ class FrameTask(BaseTaskFrame):
 		BaseTaskFrame._setup_comboboxes(self)
 		cb_status = self['cb_status']
 		cb_status.Clear()
-		for key, status in sorted(enums.STATUSES.iteritems()):
+		for key, status in sorted(enums.STATUSES.items()):
 			cb_status.Append(status, key)
 		cb_context = self['cb_context']
 		cb_context.Clear()

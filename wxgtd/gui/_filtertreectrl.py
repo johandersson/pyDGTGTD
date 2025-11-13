@@ -86,7 +86,7 @@ class FilterTreeModel(object):
 		self._items.append(TreeItemCB(_("Statuses"), "STATUSES",
 				*tuple(TreeItemCB(status, status_id or 0)
 						for status_id, status
-						in enums.STATUSES.iteritems())))
+						in enums.STATUSES.items())))
 		self._items.append(TreeItemCB(_("Contexts"), "CONTEXTS",
 				TreeItemCB(_("No Context"), None),
 				*tuple(TreeItemCB(context.title, context.uuid)

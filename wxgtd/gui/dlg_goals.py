@@ -47,5 +47,5 @@ class DlgGoals(DictBaseDlg):
 	def _setup_combobox(self):
 		c_timeperiod = self["c_timeperiod"]
 		c_timeperiod.Clear()
-		for key, name in enums.GOAL_TIME_TERM.iteritems():
+		for key, name in enums.GOAL_TIME_TERM.items():
 			c_timeperiod.Append(name, key)

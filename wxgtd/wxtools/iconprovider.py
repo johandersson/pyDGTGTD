@@ -67,8 +67,8 @@ class _IconProviderCache(Singleton):
 			wxBitmap object.
 		"""
 		# load from wxArtProvider
-		bitmap = wx.ArtProvider_GetBitmap(name)
-		if bitmap and not bitmap.IsNull():
+		bitmap = wx.ArtProvider.GetBitmap(name)
+		if bitmap and bitmap.IsOk():
 			return bitmap
 		bitmap = None
 		# load from directory
@@ -122,7 +122,7 @@ class _IconProviderCache(Singleton):
 				_LOG.debug('_IconProviderCache._try_to_load_from_dir(%s): %s',
 						name, str(err))
 			else:
-				if bitmap and not bitmap.IsNull():
+				if bitmap and bitmap.IsOk():
 					return bitmap
 		return None
 

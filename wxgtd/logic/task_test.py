@@ -41,7 +41,7 @@ class _FTask(object):
 	def __eq__(self, obj):
 		if type(obj) != type(self):
 			return False
-		for attr, val in self.__dict__.iteritems():
+		for attr, val in self.__dict__.items():
 			if attr[0] == '_' or isinstance(val, _FTask):
 				continue
 			if getattr(obj, attr) != val:

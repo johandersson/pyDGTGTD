@@ -44,7 +44,7 @@ class BaseFrame(object):
 		self._setup_wnd(self.wnd)
 
 	def __getitem__(self, key):
-		if isinstance(key, (str, unicode)):
+		if isinstance(key, str):
 			ctrl = xrc.XRCCTRL(self.wnd, key)
 		else:
 			ctrl = self.wnd.FindWindowById(key)

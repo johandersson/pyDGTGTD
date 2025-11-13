@@ -123,7 +123,7 @@ class DlgPreferences(BaseDialog):
 	def _setup_comboboxes(self):
 		cb_status = self['cb_task_def_status']
 		cb_status.Clear()
-		for key, status in sorted(enums.STATUSES.iteritems()):
+		for key, status in sorted(enums.STATUSES.items()):
 			cb_status.Append(status, key)
 
 	def _on_ok(self, evt):

@@ -16,13 +16,14 @@ __all__ = ['show_about_box']
 
 
 import wx
+import wx.adv
 
 from wxgtd import version
 
 
 def show_about_box(_parent):
 	""" Create and show about dialog. """
-	info = wx.AboutDialogInfo()
+	info = wx.adv.AboutDialogInfo()
 	info.SetName(version.NAME)
 	info.SetVersion(version.VERSION)
 	info.SetCopyright(version.COPYRIGHT)

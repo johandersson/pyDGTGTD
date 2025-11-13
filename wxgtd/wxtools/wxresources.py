@@ -168,9 +168,8 @@ def load_xrc_resource(filename):
 	xrcfile_path = AppConfig().get_data_file(filename)
 	res = _XRC_CACHE.get(xrcfile_path)
 	if res is None:
-		with open(xrcfile_path) as xrc_file:
+		with open(xrcfile_path, encoding='UTF-8') as xrc_file:
 			data = xrc_file.read()
-		data = data.decode('UTF-8')
 		re_gettext = re.compile(r'(\<label\>)(.*?)(\<\/label\>)')
 		data = re_gettext.sub(_localize, data)
 		re_gettext = re.compile(r'(\<title\>)(.*?)(\<\/title\>)')

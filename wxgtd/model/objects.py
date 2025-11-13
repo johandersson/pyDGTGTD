@@ -52,7 +52,7 @@ class BaseModelMixin(object):
 
 	def load_from_dict(self, dict_):
 		""" Update object attributes from dictionary. """
-		for key, val in dict_.iteritems():
+		for key, val in dict_.items():
 			if hasattr(self, key):
 				setattr(self, key, val)
 

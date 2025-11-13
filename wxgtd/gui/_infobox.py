@@ -30,8 +30,8 @@ SETTINGS = {}
 def configure():
 	if SETTINGS:
 		return SETTINGS
-	SETTINGS['font_task'] = wx.Font(10, wx.NORMAL, wx.NORMAL, wx.BOLD, False)
-	SETTINGS['font_info'] = wx.Font(8, wx.NORMAL, wx.NORMAL, wx.NORMAL, False)
+	SETTINGS['font_task'] = wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False)
+	SETTINGS['font_info'] = wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False)
 
 	# info line height
 	dc = wx.MemoryDC()
@@ -248,7 +248,6 @@ class TaskInfoPanel(wx.Panel):
 		dc.Clear()
 		if self.task:
 			draw_info(dc, self.task, self.overdue, self._values_cache)
-		dc.EndDrawing()
 
 
 class TaskIconsPanel(wx.Panel):
@@ -275,4 +274,3 @@ class TaskIconsPanel(wx.Panel):
 		if self.task:
 			draw_icons(dc, self.task, self.overdue, self.active_only,
 					self._values_cache)
-		dc.EndDrawing()
