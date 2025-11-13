@@ -355,7 +355,7 @@ def delete_task(task, session=None, permanently=False):
 	tasks = task if isinstance(task, (list, tuple)) else [task]
 	deleted = 0
 	for task in tasks:
-		if isinstance(task, (str, unicode)):
+		if isinstance(task, str):
 			task = session.query(OBJ.Task).filter_by(uuid=task).first()
 			if not task:
 				_LOG.warning("delete_task: missing task %r", task)
@@ -385,7 +385,7 @@ def undelete_task(task, session=None):
 	tasks = task if isinstance(task, (list, tuple)) else [task]
 	tasks_to_save = []
 	for task in tasks:
-		if isinstance(task, (str, unicode)):
+		if isinstance(task, str):
 			task = session.query(OBJ.Task).filter_by(uuid=task).first()
 			if not task:
 				_LOG.warning("undelete_task: missing task %r", task)
@@ -650,10 +650,10 @@ def change_task_parent(task, parent, session=None):
 		True if parent was changed
 	"""
 	session = session or OBJ.Session()
-	if isinstance(task, (str, unicode)):
+	if isinstance(task, str):
 		task = OBJ.Task.get(session, uuid=task)
 	if parent is not None:
-		if isinstance(parent, (str, unicode)):
+		if isinstance(parent, str):
 			parent = OBJ.Task.get(session, uuid=parent)
 	task.parent = parent
 	return adjust_task_type(task, session)

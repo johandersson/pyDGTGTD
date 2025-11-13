@@ -99,7 +99,7 @@ class BaseDialog:
 		Returns:
 			widget.
 		"""
-		if isinstance(key, (str, unicode)):
+		if isinstance(key, str):
 			ctrl = xrc.XRCCTRL(self._wnd, key)
 		else:
 			ctrl = self._wnd.FindWindowById(key)

@@ -41,7 +41,7 @@ class TaskController:
 
 	def __init__(self, parent_wnd, session, task):
 		self._session = session or OBJ.Session()
-		if isinstance(task, (str, unicode)):
+		if isinstance(task, str):
 			task = OBJ.Task.get(self._session, uuid=task)
 		self._task = task
 		self._parent_wnd = parent_wnd

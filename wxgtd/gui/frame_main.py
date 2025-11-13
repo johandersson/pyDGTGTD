@@ -208,23 +208,23 @@ class FrameMain(BaseFrame):
 
 	def _create_toolbar(self):
 		toolbar = self.wnd.CreateToolBar()
-		tbi = toolbar.AddLabelTool(-1, _('New Task'),
+		tbi = toolbar.AddTool(-1, _('New Task'),
 				iconprovider.get_image("task_new"),
 				shortHelp=_('Add new task'))
 		self.wnd.Bind(wx.EVT_TOOL, self._on_btn_new_task, id=tbi.GetId())
 
-		tbi = toolbar.AddLabelTool(-1, _('Quick Task'),
+		tbi = toolbar.AddTool(-1, _('Quick Task'),
 				iconprovider.get_image("task_quick"),
 				shortHelp=_('Add quick new task'))
 		self.wnd.Bind(wx.EVT_TOOL, self._on_btn_quick_task, id=tbi.GetId())
 
-		tbi = toolbar.AddLabelTool(-1, _('Edit Task'),
+		tbi = toolbar.AddTool(-1, _('Edit Task'),
 				iconprovider.get_image('task_edit'),
 				shortHelp=_('Edit selected task'))
 		self.wnd.Bind(wx.EVT_TOOL, self._on_btn_edit_selected_task,
 				id=tbi.GetId())
 
-		tbi = toolbar.AddLabelTool(-1, _('Delete Task'),
+		tbi = toolbar.AddTool(-1, _('Delete Task'),
 				iconprovider.get_image('task_delete'),
 				shortHelp=_('Delete selected task'))
 		self.wnd.Bind(wx.EVT_TOOL, self._on_btn_delete_selected_task,
@@ -232,12 +232,12 @@ class FrameMain(BaseFrame):
 
 		toolbar.AddSeparator()
 
-		tbi = toolbar.AddLabelTool(-1, _('Toggle Task Completed'),
+		tbi = toolbar.AddTool(-1, _('Toggle Task Completed'),
 				iconprovider.get_image('task_done'),
 				shortHelp=_('Toggle selected task completed'))
 		self.wnd.Bind(wx.EVT_TOOL, self._on_btn_complete_task, id=tbi.GetId())
 
-		tbi = toolbar.AddLabelTool(-1, _('Toggle Task Starred'),
+		tbi = toolbar.AddTool(-1, _('Toggle Task Starred'),
 				iconprovider.get_image('task_starred'),
 				shortHelp=_('Toggle selected task starred'))
 		self.wnd.Bind(wx.EVT_TOOL, self._on_btn_starred_task, id=tbi.GetId())
@@ -277,7 +277,7 @@ class FrameMain(BaseFrame):
 
 		toolbar.AddSeparator()
 
-		tbi = toolbar.AddLabelTool(-1, _('Synchronize tasks'),
+		tbi = toolbar.AddTool(-1, _('Synchronize tasks'),
 				iconprovider.get_image('sync'))
 		self.wnd.Bind(wx.EVT_TOOL, self._on_menu_file_sync, id=tbi.GetId())
 
@@ -298,15 +298,15 @@ class FrameMain(BaseFrame):
 
 		toolbar.AddSeparator()
 
-		tbi = toolbar.AddLabelTool(-1, _('Reminders'),
+		tbi = toolbar.AddTool(-1, _('Reminders'),
 				iconprovider.get_image('reminders'))
 		self.wnd.Bind(wx.EVT_TOOL, self._on_btn_reminders, id=tbi.GetId())
 
-		tbi = toolbar.AddLabelTool(-1, _('Notebook'),
+		tbi = toolbar.AddTool(-1, _('Notebook'),
 				iconprovider.get_image('notebook'))
 		self.wnd.Bind(wx.EVT_TOOL, self._on_menu_notebook_open, id=tbi.GetId())
 
-		tbi = toolbar.AddLabelTool(-1, _('Search'),
+		tbi = toolbar.AddTool(-1, _('Search'),
 				iconprovider.get_image(wx.ART_FIND))
 		self.wnd.Bind(wx.EVT_TOOL, self._on_menu_search_task, id=tbi.GetId())
 

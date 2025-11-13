@@ -648,17 +648,19 @@ def _load_synclog(data, session, notify_cb):
 	notify_cb(76, _("Loading synclog"))
 	# delete all synclogs
 	session.query(objects.SyncLog).delete()
-	for sync_log in data.get("syncLog"):
-		if not sync_log.get('syncTime'):
-			_LOG.warn("_load_synclog: missing syncTime in %r", sync_log)
-			continue
-		_convert_timestamps(sync_log, "prevSyncTime", "syncTime")
-		slog_item = objects.SyncLog.get(session, device_id=sync_log["deviceId"])
-		slog_item = objects.SyncLog()
-		slog_item.device_id = sync_log["deviceId"]
-		slog_item.sync_time = sync_log["syncTime"]
-		slog_item.prev_sync_time = sync_log["prevSyncTime"]
-		session.add(slog_item)  # pylint: disable=E1101
+	sync_logs = data.get("syncLog")
+	if sync_logs:
+		for sync_log in sync_logs:
+			if not sync_log.get('syncTime'):
+				_LOG.warn("_load_synclog: missing syncTime in %r", sync_log)
+				continue
+			_convert_timestamps(sync_log, "prevSyncTime", "syncTime")
+			slog_item = objects.SyncLog.get(session, device_id=sync_log["deviceId"])
+			slog_item = objects.SyncLog()
+			slog_item.device_id = sync_log["deviceId"]
+			slog_item.sync_time = sync_log["syncTime"]
+			slog_item.prev_sync_time = sync_log["prevSyncTime"]
+			session.add(slog_item)  # pylint: disable=E1101
 	if "syncLog" in data:
 		del data["syncLog"]
 	notify_cb(79, _("Synclog loaded"))

@@ -42,7 +42,7 @@ class NotEmptyValidator(SimpleValidator):
 	def value_from_window(self, value):
 		if value is None:
 			raise ValidateError(self._error_message)
-		if isinstance(value, str) or isinstance(value, unicode):
+		if isinstance(value, str):
 			value = value.strip() if self._strip else value
 			if len(value) == 0:
 				raise ValidateError(self._error_message)

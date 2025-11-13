@@ -85,18 +85,18 @@ class FrameNotebook(BaseFrame):
 
 	def _create_toolbar(self):
 		toolbar = self.wnd.CreateToolBar()
-		tbi = toolbar.AddLabelTool(-1, _('New Note'),
+		tbi = toolbar.AddTool(-1, _('New Note'),
 				iconprovider.get_image("task_new"),
 				shortHelp=_('Add new notebook page'))
 		self.wnd.Bind(wx.EVT_TOOL, self._on_btn_new_page, id=tbi.GetId())
 
-		tbi = toolbar.AddLabelTool(-1, _('Edit Note'),
+		tbi = toolbar.AddTool(-1, _('Edit Note'),
 				iconprovider.get_image('task_edit'),
 				shortHelp=_('Edit selected notebook page'))
 		self.wnd.Bind(wx.EVT_TOOL, self._on_btn_edit_page,
 				id=tbi.GetId())
 
-		tbi = toolbar.AddLabelTool(-1, _('Delete Note'),
+		tbi = toolbar.AddTool(-1, _('Delete Note'),
 				iconprovider.get_image('task_delete'),
 				shortHelp=_('Delete selected notebook page'))
 		self.wnd.Bind(wx.EVT_TOOL, self._on_btn_delete_page,
@@ -104,7 +104,7 @@ class FrameNotebook(BaseFrame):
 
 		toolbar.AddSeparator()
 
-		tbi = toolbar.AddLabelTool(-1, _('Exit'),
+		tbi = toolbar.AddTool(-1, _('Exit'),
 			iconprovider.get_image("exit"),
 			shortHelp=_('Close window'))
 		self.wnd.Bind(wx.EVT_TOOL, self._on_btn_close, id=tbi.GetId())

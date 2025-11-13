@@ -173,7 +173,8 @@ class AppConfig(Singleton):
 		if (self._config.has_section(section)
 				and self._config.has_option(section, key)):
 			try:
-				return eval(self._config.get(section, key))
+				import wx
+				return eval(self._config.get(section, key), {"wx": wx, "__builtins__": {}})
 			except:  # catch all errors; pylint: disable=W0702
 				_LOG.exception('AppConfig.get(%s, %s, %r)', section, key, default)
 		return default

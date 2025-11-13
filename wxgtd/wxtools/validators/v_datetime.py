@@ -131,7 +131,7 @@ class DateValidator(SimpleValidator):
 		try:
 			if isinstance(value, (int, long)):
 				value = wx.DateTime(value)
-			elif isinstance(value, (str, unicode)):
+			elif isinstance(value, str):
 				value = wx.DateTime()
 				value.ParseDate(value)
 		except:  # pylint: disable=W0702

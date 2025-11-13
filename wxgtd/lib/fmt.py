@@ -25,12 +25,12 @@ def format_timestamp(timestamp, show_time=True, datetime_in_utc=True):
 	""" Format date time object.
 
 	Args:
-		timestamp: date/time as str/unicode, datetime or number.
+		timestamp: date/time as str, datetime or number.
 		show_time: if true also show time.
 	"""
 	if not timestamp:
 		return ""
-	if isinstance(timestamp, (str, unicode)):
+	if isinstance(timestamp, str):
 		return timestamp
 	if isinstance(timestamp, datetime.datetime):
 		if datetime_in_utc:
