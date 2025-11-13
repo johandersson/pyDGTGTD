@@ -26,6 +26,10 @@
                     </object>
                 </object>
                 <object class="separator"/>
+                <object class="wxMenuItem" name="menu_file_archive_db">
+                    <label>_Archive Database and Start Fresh...</label>
+                </object>
+                <object class="separator"/>
                 <object class="wxMenuItem" name="menu_file_exit">
                     <label>_Exit\tCtrl+Q</label>
                 </object>

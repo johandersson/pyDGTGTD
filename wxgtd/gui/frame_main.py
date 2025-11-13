@@ -14,6 +14,7 @@ __version__ = "2013-04-28"
 import os
 import gettext
 import logging
+from datetime import datetime
 
 import wx
 import wx.lib.agw.customtreectrl as CT
@@ -28,6 +29,7 @@ from wxgtd.model import sync
 from wxgtd.model import enums
 from wxgtd.model import queries
 from wxgtd.model import dbsync
+from wxgtd.model import db
 from wxgtd.logic import task as task_logic
 from wxgtd.lib import fmt
 from wxgtd.gui import dlg_about
@@ -117,6 +119,7 @@ class FrameMain(BaseFrame):
 		self._create_menu_bind('menu_file_sync', self._on_menu_file_sync)
 		self._create_menu_bind('menu_file_export_tasks',
 				self._on_menu_file_export_tasks)
+		self._create_menu_bind('menu_file_archive_db', self._on_menu_file_archive_db)
 		self._create_menu_bind('menu_help_about', self._on_menu_help_about)
 		self._create_menu_bind('menu_task_new', self._on_menu_task_new)
 		self._create_menu_bind('menu_task_quick', self._on_menu_task_quick)
@@ -403,6 +406,79 @@ class FrameMain(BaseFrame):
 		tasks = OBJ.Task.select_by_filters(params, session=self._session)
 		if tasks:
 			DlgExportTasks(self.wnd, tasks).run(modal=True)
+
+	def _on_menu_file_archive_db(self, _evt):
+		"""Archive current database and create a new empty one."""
+		# Warning dialog
+		msg = _(
+			"This will archive your current database and create a new empty one.\n\n"
+			"The current database will be backed up to:\n"
+			"{backup_dir}\n\n"
+			"Are you sure you want to continue?"
+		).format(backup_dir=os.path.join(
+			os.path.dirname(db.find_db_file(self._appconfig)),
+			"backups"
+		))
+		
+		dlg = wx.MessageDialog(
+			self.wnd,
+			msg,
+			_("Archive Database?"),
+			wx.YES_NO | wx.NO_DEFAULT | wx.ICON_WARNING
+		)
+		
+		if dlg.ShowModal() != wx.ID_YES:
+			dlg.Destroy()
+			return
+		dlg.Destroy()
+		
+		try:
+			# Get current database path
+			db_file = db.find_db_file(self._appconfig)
+			backup_dir = os.path.join(os.path.dirname(db_file), "backups")
+			
+			# Create backup directory if it doesn't exist
+			if not os.path.exists(backup_dir):
+				os.makedirs(backup_dir)
+			
+			# Generate backup filename with timestamp
+			timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+			backup_file = os.path.join(backup_dir, f"wxgtd_{timestamp}.db")
+			
+			# Close current session
+			self._session.close()
+			
+			# Copy database to backup
+			import shutil
+			shutil.copy2(db_file, backup_file)
+			
+			# Delete current database
+			os.remove(db_file)
+			
+			# Reinitialize database
+			db.connect(db_file)
+			self._session = OBJ.Session()
+			
+			# Refresh UI
+			self._refresh_list()
+			publisher.sendMessage('dict.update')
+			
+			# Success message
+			wx.MessageBox(
+				_("Database archived successfully!\n\nBackup saved to:\n{0}").format(backup_file),
+				_("Success"),
+				wx.OK | wx.ICON_INFORMATION,
+				self.wnd
+			)
+			
+		except Exception as err:
+			_LOG.exception("FrameMain._on_menu_file_archive_db error")
+			wx.MessageBox(
+				_("Error archiving database:\n{0}").format(str(err)),
+				_("Error"),
+				wx.OK | wx.ICON_ERROR,
+				self.wnd
+			)
 
 	def _on_menu_file_exit(self, _evt):
 		self.wnd.Close()
