@@ -17,6 +17,7 @@ __copyright__ = 'Copyright (C) Karol Będkowski 2013'
 __version__ = "2013-07-11"
 
 import logging
+import sys
 
 _LOG = logging.getLogger(__name__)
 
@@ -24,9 +25,14 @@ publisher = None
 
 # Migrate to pypubsub instead of deprecated wx.lib.pubsub
 try:
+	# Must set up arg1 protocol BEFORE importing from pubsub
+	# This ensures backward compatibility with existing code
+	if 'pubsub.core' not in sys.modules:
+		from pubsub import setuparg1
+	
 	from pubsub import pub
 	publisher = pub
-	_LOG.debug("Using pypubsub (standalone package)")
+	_LOG.debug("Using pypubsub (standalone package) with arg1 protocol")
 except ImportError:
 	# Fallback to deprecated wx.lib.pubsub if pypubsub not installed
 	try:

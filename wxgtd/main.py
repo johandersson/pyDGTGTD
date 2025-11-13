@@ -76,19 +76,7 @@ def run():
 	config.load()
 	config.debug = options.debug
 
-	# import wx
-	try:
-		import wxversion
-		try:
-			wxversion.ensureMinimal("2.8")
-		except wxversion.AlreadyImportedError:
-			_LOG.warning('Wx Already Imported')
-		except wxversion.VersionError:
-			_LOG.error("WX version > 2.8 not found; available: %s",
-				wxversion.checkInstalled())
-	except ImportError as err:
-		_LOG.error('No wxversion.... (%s)' % str(err))
-
+	# import wx (wxversion not needed in wxPython 4.x)
 	import wx
 	_LOG.info("WX version: %s", wx.version())
 
