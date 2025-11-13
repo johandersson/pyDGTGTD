@@ -150,6 +150,11 @@ class FrameReminders(BaseFrame):
 
 	def _on_tasks_update(self, args):
 		_LOG.debug('FrameReminders._on_tasks_update(%r)', args)
+		# Check if this is a specific task update or a general refresh
+		if not args.data or 'task_uuid' not in args.data:
+			# General refresh - reload all reminders
+			self._refresh()
+			return
 		uuid = args.data['task_uuid']
 		if args.topic == ('task', 'delete'):
 			self._remove_task(uuid)

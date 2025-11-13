@@ -628,7 +628,7 @@ def _load_alarms(data, session, tasks_cache, notify_cb):
 	for alarm in alarms:
 		task_uuid = _replace_ids(alarm, tasks_cache, "task_id")
 		if not task_uuid:
-			_LOG.error("load alarm error %r", alarm)
+			# Skip alarms for tasks not in cache (already processed in _load_tasks)
 			continue
 		_convert_timestamps(alarm, "alarm")
 		task = session.query(  # pylint: disable=E1101
@@ -651,8 +651,7 @@ def _load_task_folders(data, session, tasks_cache, folders_cache, notify_cb):
 		task_uuid = _replace_ids(task_folder, tasks_cache, "task_id")
 		folder_uuid = _replace_ids(task_folder, folders_cache, "folder_id")
 		if not task_uuid or not folder_uuid:
-			_LOG.error("load task folder error %r; %r; %r", task_folder,
-					task_uuid, folder_uuid)
+			# Skip - relationship already processed in _load_tasks
 			continue
 		_convert_timestamps(task_folder)
 		task = session.query(  # pylint: disable=E1101
@@ -675,8 +674,7 @@ def _load_task_contexts(data, session, tasks_cache, contexts_cache,
 		task_uuid = _replace_ids(task_context, tasks_cache, "task_id")
 		context_uuid = _replace_ids(task_context, contexts_cache, "context_id")
 		if not task_uuid or not context_uuid:
-			_LOG.error("load task contexts error %r; %r; %r", task_context,
-					task_uuid, context_uuid)
+			# Skip - relationship already processed in _load_tasks
 			continue
 		_convert_timestamps(task_context)
 		task = session.query(  # pylint: disable=E1101
@@ -698,8 +696,7 @@ def _load_task_goals(data, session, tasks_cache, goals_cache, notify_cb):
 		task_uuid = _replace_ids(task_goal, tasks_cache, "task_id")
 		goal_uuid = _replace_ids(task_goal, goals_cache, "goal_id")
 		if not task_uuid or not goal_uuid:
-			_LOG.error("load task goal error %r; %r; %r", task_goal,
-					task_uuid, goal_uuid)
+			# Skip - relationship already processed in _load_tasks
 			continue
 		_convert_timestamps(task_goal)
 		task = session.query(  # pylint: disable=E1101
