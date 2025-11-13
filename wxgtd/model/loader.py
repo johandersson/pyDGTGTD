@@ -62,7 +62,7 @@ def load_from_file(filename, notify_cb=_fake_update_func, force=False):
 			fname = zfile.namelist()[0]
 			return load_json(zfile.read(fname), notify_cb, force)
 	else:
-		with open(filename, "r") as ifile:
+		with open(filename, "rb") as ifile:
 			return load_json(ifile.read(), notify_cb, force)
 	return False
 
@@ -156,8 +156,6 @@ def _convert_timestamps(dictobj, *fields):
 		dictobj: loaded object as dict
 		fields: list of additional fields to convert
 	"""
-	_LOG.error("fields=%r", fields)
-
 	def convert(fld):
 		value = dictobj.get(fld)
 		if value is None:
@@ -307,6 +305,75 @@ def sort_objects_by_parent(objs):
 	return result
 
 
+def _normalize_field_names(obj):
+	""" Normalize field names from Android format to Python format.
+	
+	Android app uses uppercase (ID, PARENT, UUID) while Python expects
+	lowercase snake_case (_id, parent_id, uuid).
+	"""
+	# Fields to skip - these are computed or relationship fields
+	skip_fields = {'CHILDREN'}
+	
+	field_map = {
+		'ID': '_id',
+		'PARENT': 'parent_id',
+		'UUID': 'uuid',
+		'CREATED': 'created',
+		'MODIFIED': 'modified',
+		'DELETED': 'deleted',
+		'TITLE': 'title',
+		'NOTE': 'note',
+		'ORDINAL': 'ordinal',
+		'COLOR': 'bg_color',
+		'BG_COLOR': 'bg_color',
+		'VISIBLE': 'visible',
+		'LEVEL': 'level',
+		'ARCHIVED': 'archived',
+		'START_DATE': 'start_date',
+		'START_TIME_SET': 'start_time_set',
+		'DUE_DATE': 'due_date',
+		'DUE_DATE_PROJECT': 'due_date_project',
+		'DUE_TIME_SET': 'due_time_set',
+		'DUE_DATE_MODIFIER': 'due_date_modifier',
+		'REMINDER': 'reminder',
+		'ALARM': 'alarm',
+		'REPEAT_NEW': 'repeat',
+		'REPEAT_FROM': 'repeat_from',
+		'DURATION': 'duration',
+		'STATUS': 'status',
+		'CONTEXT': 'context_id',
+		'GOAL': 'goal_id',
+		'FOLDER': 'folder_id',
+		'TAG': 'tags',
+		'STARRED': 'star',
+		'PRIORITY': 'priority',
+		'COMPLETED': 'completed',
+		'TYPE': 'type',
+		'TRASH_BIN': 'trash_bin',
+		'IMPORTANCE': 'importance',
+		'METAINF': 'meta_inf',
+		'FLOATING': 'floating_task',
+		'HIDE': 'hide',
+		'HIDE_UNTIL': 'hide_until',
+		'PRIVATE': 'private',
+		'FOLDER_ID': 'folder_id',
+	}
+	
+	normalized = {}
+	for key, value in obj.items():
+		if key in skip_fields:
+			continue
+		new_key = field_map.get(key, key.lower())
+		# Convert empty strings to None for optional fields
+		if value == "":
+			value = None
+		# Convert empty lists for tags
+		if new_key == 'tags' and value == []:
+			continue  # Skip empty tag arrays
+		normalized[new_key] = value
+	return normalized
+
+
 def load_json(strdata, notify_cb, force=False):
 	""" Load data from json string.
 
@@ -319,6 +386,15 @@ def load_json(strdata, notify_cb, force=False):
 	"""
 	notify_cb(10, _("Decoding.."))
 	data = _JSON_DECODER(strdata.decode("UTF-8"))
+	
+	# Normalize keys to lowercase (Android app uses uppercase, Python expects lowercase)
+	data = {k.lower(): v for k, v in data.items()}
+	
+	# Normalize field names in all object arrays
+	for key in ['folder', 'context', 'goal', 'task', 'tasknote', 'notebook', 'tag']:
+		if key in data and isinstance(data[key], list):
+			data[key] = [_normalize_field_names(obj) for obj in data[key]]
+	
 	session = objects.Session()
 
 	notify_cb(15, _("Checking..."))
