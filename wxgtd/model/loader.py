@@ -79,19 +79,27 @@ def _create_or_update(session, cls, datadict):
 		Updated or created object.
 	"""
 	_LOG.debug("_create_or_update(%r, %r)", cls, datadict.get("_id", datadict))
-	uuid = datadict.pop("uuid")
-	obj = session.query(cls).filter_by(uuid=uuid).first()
-	if obj:
-		modified = datadict.get("modified")
-		if not modified or modified > obj.modified:
-			# load only modified objs
-			_LOG.debug('_create_or_update(%r, %r): update', cls, uuid)
-			obj.load_from_dict(datadict)
-	else:
-		_LOG.debug('_create_or_update(%r, %r): create', cls, uuid)
-		obj = cls(uuid=uuid)
+	uuid = datadict.pop("uuid", None)
+	
+	# If UUID is None or empty, let the object generate a new one
+	if not uuid:
+		_LOG.debug('_create_or_update(%r): creating with new UUID', cls)
+		obj = cls()
 		obj.load_from_dict(datadict)
 		session.add(obj)
+	else:
+		obj = session.query(cls).filter_by(uuid=uuid).first()
+		if obj:
+			modified = datadict.get("modified")
+			if not modified or modified > obj.modified:
+				# load only modified objs
+				_LOG.debug('_create_or_update(%r, %r): update', cls, uuid)
+				obj.load_from_dict(datadict)
+		else:
+			_LOG.debug('_create_or_update(%r, %r): create', cls, uuid)
+			obj = cls(uuid=uuid)
+			obj.load_from_dict(datadict)
+			session.add(obj)
 	return obj
 
 
@@ -379,6 +387,8 @@ def _normalize_field_names(obj):
 			value = None
 		# Convert empty strings to None for other optional fields
 		elif value == "":
+			# Keep empty strings for title, note, and meta_inf; convert others to None
+			# Special handling for UUID: empty UUID should be None so it gets auto-generated
 			value = None if new_key not in ('title', 'note', 'meta_inf') else ""
 		# Convert empty lists for tags
 		if new_key == 'tags' and value == []:
@@ -487,9 +497,13 @@ def _load_folders(data, session, notify_cb):
 	folders_cache = _build_id_uuid_map(folders)
 	for folder in sort_objects_by_parent(folders):  # musi być sortowane,
 		# bo nie znajdzie parenta
+		folder_id = folder.get("_id")
 		_replace_ids(folder, folders_cache, "parent_id")
 		_convert_timestamps(folder)
-		_create_or_update(session, objects.Folder, folder)
+		folder_obj = _create_or_update(session, objects.Folder, folder)
+		# If UUID was auto-generated, update the cache
+		if folder_id and folder_obj.uuid not in folders_cache.values():
+			folders_cache[folder_id] = folder_obj.uuid
 	if folders:
 		del data["folder"]
 	notify_cb(10, _("Loaded %d folders") % len(folders_cache))
@@ -502,9 +516,13 @@ def _load_contexts(data, session, notify_cb):
 	contexts = data.get("context")
 	contexts_cache = _build_id_uuid_map(contexts)
 	for context in sort_objects_by_parent(contexts):
+		context_id = context.get("_id")
 		_replace_ids(context, contexts_cache, "parent_id")
 		_convert_timestamps(context)
-		_create_or_update(session, objects.Context, context)
+		context_obj = _create_or_update(session, objects.Context, context)
+		# If UUID was auto-generated, update the cache
+		if context_id and context_obj.uuid not in contexts_cache.values():
+			contexts_cache[context_id] = context_obj.uuid
 	if contexts:
 		del data["context"]
 	notify_cb(15, _("Loaded %d contexts") % len(contexts_cache))
@@ -517,9 +535,13 @@ def _load_goals(data, session, notify_cb):
 	goals = data.get("goal")
 	goals_cache = _build_id_uuid_map(goals)
 	for goal in sort_objects_by_parent(goals):
+		goal_id = goal.get("_id")
 		_replace_ids(goal, goals_cache, "parent_id")
 		_convert_timestamps(goal)
-		_create_or_update(session, objects.Goal, goal)
+		goal_obj = _create_or_update(session, objects.Goal, goal)
+		# If UUID was auto-generated, update the cache
+		if goal_id and goal_obj.uuid not in goals_cache.values():
+			goals_cache[goal_id] = goal_obj.uuid
 	if goals:
 		del data["goal"]
 	notify_cb(20, _("Loaded %d goals") % len(goals_cache))
@@ -532,6 +554,7 @@ def _load_tasks(data, session, notify_cb):
 	tasks = data.get("task")
 	tasks_cache = _build_id_uuid_map(tasks)
 	for task in sort_objects_by_parent(tasks):
+		task_id = task.get("_id")
 		_replace_ids(task, tasks_cache, "parent_id")
 		_convert_timestamps(task, "completed", "start_date", "due_date",
 				"due_date_project", "hide_until", "alarm", "trash_bin")
@@ -539,6 +562,9 @@ def _load_tasks(data, session, notify_cb):
 		task["folder_uuid"] = None
 		task["goal_uuid"] = None
 		task_obj = _create_or_update(session, objects.Task, task)
+		# If UUID was auto-generated, update the cache
+		if task_id and task_obj.uuid not in tasks_cache.values():
+			tasks_cache[task_id] = task_obj.uuid
 		task_logic.update_task_hide(task_obj)
 		task_logic.update_task_alarm(task_obj)
 	if tasks:
@@ -553,9 +579,13 @@ def _load_tasknotes(data, session, tasks_cache, notify_cb):
 	tasknotes = data.get("tasknote")
 	tasknotes_cache = _build_id_uuid_map(tasknotes)
 	for tasknote in tasknotes or []:
+		tasknote_id = tasknote.get("_id")
 		_replace_ids(tasknote, tasks_cache, "task_id")
 		_convert_timestamps(tasknote)
-		_create_or_update(session, objects.Tasknote, tasknote)
+		tasknote_obj = _create_or_update(session, objects.Tasknote, tasknote)
+		# If UUID was auto-generated, update the cache
+		if tasknote_id and tasknote_obj.uuid not in tasknotes_cache.values():
+			tasknotes_cache[tasknote_id] = tasknote_obj.uuid
 	if tasknotes:
 		del data["tasknote"]
 	notify_cb(34, _("Loaded %d task notes") % len(tasknotes_cache))
@@ -660,9 +690,13 @@ def _load_tags(data, session, notify_cb):
 	tags = data.get("tag")
 	tags_cache = _build_id_uuid_map(tags)
 	for tag in sort_objects_by_parent(tags):
+		tag_id = tag.get("_id")
 		_replace_ids(tag, tags_cache, "parent_id")
 		_convert_timestamps(tag)
-		_create_or_update(session, objects.Tag, tag)
+		tag_obj = _create_or_update(session, objects.Tag, tag)
+		# If UUID was auto-generated, update the cache
+		if tag_id and tag_obj.uuid not in tags_cache.values():
+			tags_cache[tag_id] = tag_obj.uuid
 	if tags:
 		del data["tag"]
 	notify_cb(59, _("Loaded %d tags") % len(tags_cache))
@@ -699,9 +733,13 @@ def _load_notebooks(data, session, notify_cb):
 	notebooks = data.get("notebook") or []
 	notebooks_cache = _build_id_uuid_map(notebooks)
 	for notebook in notebooks:
+		notebook_id = notebook.get("_id")
 		_convert_timestamps(notebook)
 		notebook['folder_uuid'] = None
-		_create_or_update(session, objects.NotebookPage, notebook)
+		notebook_obj = _create_or_update(session, objects.NotebookPage, notebook)
+		# If UUID was auto-generated, update the cache
+		if notebook_id and notebook_obj.uuid not in notebooks_cache.values():
+			notebooks_cache[notebook_id] = notebook_obj.uuid
 	if notebooks:
 		del data["notebook"]
 	notify_cb(69, _("Loaded %d notebook pages") % len(notebooks_cache))
