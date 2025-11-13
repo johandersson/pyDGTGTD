@@ -122,7 +122,7 @@ class Validator(wx.Validator):
 					control.SetFocus()
 					control.Refresh()
 					return False
-		control.SetBackgroundColour(wx.SystemSettings_GetColour(
+		control.SetBackgroundColour(wx.SystemSettings.GetColour(
 				wx.SYS_COLOUR_WINDOW))
 		control.Refresh()
 		return True

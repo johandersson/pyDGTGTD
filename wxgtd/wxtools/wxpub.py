@@ -22,19 +22,25 @@ _LOG = logging.getLogger(__name__)
 
 publisher = None
 
-from wx.lib.pubsub import setuparg1
-assert setuparg1
-
+# Migrate to pypubsub instead of deprecated wx.lib.pubsub
 try:
-	from wx.lib.pubsub.pub import Publisher
-	publisher = Publisher()
-	_LOG.debug("Using wx.lib.pubsub.pub.Publisher")
+	from pubsub import pub
+	publisher = pub
+	_LOG.debug("Using pypubsub (standalone package)")
 except ImportError:
+	# Fallback to deprecated wx.lib.pubsub if pypubsub not installed
 	try:
-		from wx.lib.pubsub import Publisher  # pylint: disable=E0611
+		from wx.lib.pubsub import setuparg1
+		assert setuparg1
+		from wx.lib.pubsub.pub import Publisher
 		publisher = Publisher()
-		_LOG.debug("Using wx.lib.pubsub.Publisher")
+		_LOG.debug("Using wx.lib.pubsub.pub.Publisher (DEPRECATED)")
 	except ImportError:
-		from wx.lib.pubsub import pub
-		publisher = pub
-		_LOG.debug("Using wx.lib.pubsub.pub")
+		try:
+			from wx.lib.pubsub import Publisher  # pylint: disable=E0611
+			publisher = Publisher()
+			_LOG.debug("Using wx.lib.pubsub.Publisher (DEPRECATED)")
+		except ImportError:
+			from wx.lib.pubsub import pub
+			publisher = pub
+			_LOG.debug("Using wx.lib.pubsub.pub (DEPRECATED)")

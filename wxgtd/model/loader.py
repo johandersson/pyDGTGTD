@@ -87,6 +87,8 @@ def _create_or_update(session, cls, datadict):
 		obj = cls()
 		obj.load_from_dict(datadict)
 		session.add(obj)
+		# Flush to generate the UUID immediately so it's available for relationships
+		session.flush()
 	else:
 		obj = session.query(cls).filter_by(uuid=uuid).first()
 		if obj:
@@ -431,7 +433,8 @@ def load_json(strdata, notify_cb, force=False):
 	folders_cache = _load_folders(data, session, notify_cb)
 	contexts_cache = _load_contexts(data, session, notify_cb)
 	goals_cache = _load_goals(data, session, notify_cb)
-	tasks_cache = _load_tasks(data, session, notify_cb)
+	tasks_cache = _load_tasks(data, session, notify_cb, contexts_cache, 
+			folders_cache, goals_cache)
 	tasknotes_cache = _load_tasknotes(data, session, tasks_cache, notify_cb)
 	_load_alarms(data, session, tasks_cache, notify_cb)
 	_load_task_folders(data, session, tasks_cache, folders_cache, notify_cb)
@@ -502,8 +505,9 @@ def _load_folders(data, session, notify_cb):
 		_convert_timestamps(folder)
 		folder_obj = _create_or_update(session, objects.Folder, folder)
 		# If UUID was auto-generated, update the cache
-		if folder_id and folder_obj.uuid not in folders_cache.values():
-			folders_cache[folder_id] = folder_obj.uuid
+		if folder_id:
+			if folder_id not in folders_cache or folders_cache[folder_id] is None:
+				folders_cache[folder_id] = folder_obj.uuid
 	if folders:
 		del data["folder"]
 	notify_cb(10, _("Loaded %d folders") % len(folders_cache))
@@ -521,8 +525,10 @@ def _load_contexts(data, session, notify_cb):
 		_convert_timestamps(context)
 		context_obj = _create_or_update(session, objects.Context, context)
 		# If UUID was auto-generated, update the cache
-		if context_id and context_obj.uuid not in contexts_cache.values():
-			contexts_cache[context_id] = context_obj.uuid
+		# We need to add the mapping if this context_id doesn't have a proper UUID yet
+		if context_id:
+			if context_id not in contexts_cache or contexts_cache[context_id] is None:
+				contexts_cache[context_id] = context_obj.uuid
 	if contexts:
 		del data["context"]
 	notify_cb(15, _("Loaded %d contexts") % len(contexts_cache))
@@ -540,15 +546,17 @@ def _load_goals(data, session, notify_cb):
 		_convert_timestamps(goal)
 		goal_obj = _create_or_update(session, objects.Goal, goal)
 		# If UUID was auto-generated, update the cache
-		if goal_id and goal_obj.uuid not in goals_cache.values():
-			goals_cache[goal_id] = goal_obj.uuid
+		if goal_id:
+			if goal_id not in goals_cache or goals_cache[goal_id] is None:
+				goals_cache[goal_id] = goal_obj.uuid
 	if goals:
 		del data["goal"]
 	notify_cb(20, _("Loaded %d goals") % len(goals_cache))
 	return goals_cache
 
 
-def _load_tasks(data, session, notify_cb):
+def _load_tasks(data, session, notify_cb, contexts_cache=None, 
+		folders_cache=None, goals_cache=None):
 	_LOG.info("_load_tasks")
 	notify_cb(21, _("Loading tasks"))
 	tasks = data.get("task")
@@ -558,13 +566,33 @@ def _load_tasks(data, session, notify_cb):
 		_replace_ids(task, tasks_cache, "parent_id")
 		_convert_timestamps(task, "completed", "start_date", "due_date",
 				"due_date_project", "hide_until", "alarm", "trash_bin")
-		task["context_uuid"] = None
-		task["folder_uuid"] = None
-		task["goal_uuid"] = None
+		
+		# Convert context/folder/goal IDs to UUIDs if they exist in the task
+		# This handles Android app format where context is embedded in task
+		context_id = task.pop("context_id", None)
+		folder_id = task.pop("folder_id", None)
+		goal_id = task.pop("goal_id", None)
+		
+		if contexts_cache and context_id and context_id > 0:
+			task["context_uuid"] = contexts_cache.get(context_id)
+		else:
+			task["context_uuid"] = None
+			
+		if folders_cache and folder_id and folder_id > 0:
+			task["folder_uuid"] = folders_cache.get(folder_id)
+		else:
+			task["folder_uuid"] = None
+			
+		if goals_cache and goal_id and goal_id > 0:
+			task["goal_uuid"] = goals_cache.get(goal_id)
+		else:
+			task["goal_uuid"] = None
+		
 		task_obj = _create_or_update(session, objects.Task, task)
 		# If UUID was auto-generated, update the cache
-		if task_id and task_obj.uuid not in tasks_cache.values():
-			tasks_cache[task_id] = task_obj.uuid
+		if task_id:
+			if task_id not in tasks_cache or tasks_cache[task_id] is None:
+				tasks_cache[task_id] = task_obj.uuid
 		task_logic.update_task_hide(task_obj)
 		task_logic.update_task_alarm(task_obj)
 	if tasks:
@@ -584,8 +612,9 @@ def _load_tasknotes(data, session, tasks_cache, notify_cb):
 		_convert_timestamps(tasknote)
 		tasknote_obj = _create_or_update(session, objects.Tasknote, tasknote)
 		# If UUID was auto-generated, update the cache
-		if tasknote_id and tasknote_obj.uuid not in tasknotes_cache.values():
-			tasknotes_cache[tasknote_id] = tasknote_obj.uuid
+		if tasknote_id:
+			if tasknote_id not in tasknotes_cache or tasknotes_cache[tasknote_id] is None:
+				tasknotes_cache[tasknote_id] = tasknote_obj.uuid
 	if tasknotes:
 		del data["tasknote"]
 	notify_cb(34, _("Loaded %d task notes") % len(tasknotes_cache))
