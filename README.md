@@ -1,10 +1,10 @@
 # wxGTD - Python 3 Desktop GTD Application
 
-A GTD (Getting Things Done) task management application for desktop with data sync support for DGT GTD Android app.
+A GTD® (Getting Things Done®) task management application for desktop with data sync support for DGT GTD Android app.
 
 ## About
 
-wxGTD is a desktop application for managing tasks following the GTD methodology. This Python 3 version includes:
+wxGTD is a desktop application for managing tasks following the GTD® methodology. This Python 3 version includes:
 - Full wxPython 4.x compatibility
 - JSON import/export for syncing with DGT GTD Android app
 - SQLite database with SQLAlchemy ORM
@@ -87,6 +87,10 @@ GPL v2+ - See COPYING file for full license text.
 - Copyright (C) 2013-2015 Karol Będkowski (original wxGTD)
 - Copyright (C) 2025 Johan Andersson (Python 3 migration and Android sync)
 - DGT GTD Android app data format by dgtale
+
+## Trademarks
+
+GTD® and Getting Things Done® are registered trademarks of David Allen and the David Allen Company.
 
 ## Project Links
 
