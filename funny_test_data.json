@@ -1,5 +1,37 @@
 {
 	"version": 3,
+	"FOLDER": [
+		{
+			"ID": 1,
+			"UUID": "",
+			"PARENT": 0,
+			"CREATED": "2025-01-05 08:00:00.000",
+			"MODIFIED": "2025-01-05 08:00:00.000",
+			"TITLE": "Intergalactic Adventures",
+			"COLOR": -16776961,
+			"VISIBLE": 1
+		},
+		{
+			"ID": 2,
+			"UUID": "",
+			"PARENT": 0,
+			"CREATED": "2025-01-05 08:30:00.000",
+			"MODIFIED": "2025-01-05 08:30:00.000",
+			"TITLE": "Time Travel Projects",
+			"COLOR": -65536,
+			"VISIBLE": 1
+		},
+		{
+			"ID": 3,
+			"UUID": "",
+			"PARENT": 0,
+			"CREATED": "2025-01-05 09:00:00.000",
+			"MODIFIED": "2025-01-05 09:00:00.000",
+			"TITLE": "Magical Experiments",
+			"COLOR": -16711936,
+			"VISIBLE": 1
+		}
+	],
 	"CONTEXT": [
 		{
 			"ID": 1,
@@ -55,6 +87,39 @@
 			"TITLE": "@time_machine",
 			"COLOR": -12156423,
 			"VISIBLE": 1
+		},
+		{
+			"ID": 6,
+			"UUID": "",
+			"PARENT": 0,
+			"CHILDREN": 0,
+			"CREATED": "2025-01-15 10:05:00.000",
+			"MODIFIED": "2025-01-15 10:05:00.000",
+			"TITLE": "@wizard_tower",
+			"COLOR": -256,
+			"VISIBLE": 1
+		},
+		{
+			"ID": 7,
+			"UUID": "",
+			"PARENT": 0,
+			"CHILDREN": 0,
+			"CREATED": "2025-01-15 10:06:00.000",
+			"MODIFIED": "2025-01-15 10:06:00.000",
+			"TITLE": "@office",
+			"COLOR": -8355712,
+			"VISIBLE": 1
+		},
+		{
+			"ID": 8,
+			"UUID": "",
+			"PARENT": 0,
+			"CHILDREN": 0,
+			"CREATED": "2025-01-15 10:07:00.000",
+			"MODIFIED": "2025-01-15 10:07:00.000",
+			"TITLE": "@home",
+			"COLOR": -65281,
+			"VISIBLE": 1
 		}
 	],
 	"GOAL": [
@@ -74,14 +139,53 @@
 		{
 			"ID": 2,
 			"UUID": "",
-			"PARENT": 0,
+			"PARENT": 1,
 			"CREATED": "2025-01-11 09:15:00.000",
 			"MODIFIED": "2025-01-11 09:15:00.000",
+			"TITLE": "Master Fire-Breathing Techniques",
+			"NOTE": "Safety first! Keep fire extinguisher nearby",
+			"LEVEL": 3,
+			"ARCHIVED": 0,
+			"COLOR": -65536,
+			"VISIBLE": 1
+		},
+		{
+			"ID": 3,
+			"UUID": "",
+			"PARENT": 0,
+			"CREATED": "2025-01-12 14:20:00.000",
+			"MODIFIED": "2025-01-12 14:20:00.000",
 			"TITLE": "Build a Gingerbread Smart Home",
 			"NOTE": "Edible and fully automated",
 			"LEVEL": 1,
 			"ARCHIVED": 0,
 			"COLOR": -7886984,
+			"VISIBLE": 1
+		},
+		{
+			"ID": 4,
+			"UUID": "",
+			"PARENT": 0,
+			"CREATED": "2025-01-13 11:00:00.000",
+			"MODIFIED": "2025-01-13 11:00:00.000",
+			"TITLE": "Establish First Colony on Mars",
+			"NOTE": "Population goal: 10,000 penguins",
+			"LEVEL": 2,
+			"ARCHIVED": 0,
+			"COLOR": -16776961,
+			"VISIBLE": 1
+		},
+		{
+			"ID": 5,
+			"UUID": "",
+			"PARENT": 0,
+			"CREATED": "2025-01-14 16:45:00.000",
+			"MODIFIED": "2025-01-14 16:45:00.000",
+			"TITLE": "Learn All Languages Ever Spoken",
+			"NOTE": "Including dolphin and cat",
+			"LEVEL": 1,
+			"ARCHIVED": 0,
+			"COLOR": -16711936,
 			"VISIBLE": 1
 		}
 	],
