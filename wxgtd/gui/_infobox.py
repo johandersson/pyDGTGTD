@@ -210,7 +210,7 @@ def draw_icons(mdc, task, overdue, active_only, cache):
 		if info is None:
 			info = ''
 			overdue = cache.get('overdue')
-			if overdue > 0:
+			if overdue is not None and overdue > 0:
 				info += "%d / " % overdue
 			info += "%d" % child_count
 			cache['info'] = info
