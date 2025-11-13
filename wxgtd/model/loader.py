@@ -314,6 +314,12 @@ def _normalize_field_names(obj):
 	# Fields to skip - these are computed or relationship fields
 	skip_fields = {'CHILDREN'}
 	
+	# DateTime fields that should be None if empty string
+	datetime_fields = {
+		'CREATED', 'MODIFIED', 'DELETED', 'COMPLETED', 'START_DATE', 
+		'DUE_DATE', 'DUE_DATE_PROJECT', 'HIDE_UNTIL', 'ALARM', 'TRASH_BIN'
+	}
+	
 	field_map = {
 		'ID': '_id',
 		'PARENT': 'parent_id',
@@ -364,12 +370,17 @@ def _normalize_field_names(obj):
 		if key in skip_fields:
 			continue
 		new_key = field_map.get(key, key.lower())
-		# Convert empty strings to None for optional fields
-		if value == "":
+		
+		# Convert empty strings to None for datetime/optional fields
+		if key in datetime_fields and value == "":
 			value = None
+		# Convert empty strings to None for other optional fields
+		elif value == "":
+			value = None if new_key not in ('title', 'note', 'meta_inf') else ""
 		# Convert empty lists for tags
 		if new_key == 'tags' and value == []:
 			continue  # Skip empty tag arrays
+			
 		normalized[new_key] = value
 	return normalized
 
@@ -520,7 +531,7 @@ def _load_tasks(data, session, notify_cb):
 	for task in sort_objects_by_parent(tasks):
 		_replace_ids(task, tasks_cache, "parent_id")
 		_convert_timestamps(task, "completed", "start_date", "due_date",
-				"due_date_project", "hide_until")
+				"due_date_project", "hide_until", "alarm", "trash_bin")
 		task["context_uuid"] = None
 		task["folder_uuid"] = None
 		task["goal_uuid"] = None
