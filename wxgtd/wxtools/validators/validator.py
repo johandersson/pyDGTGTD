@@ -33,7 +33,7 @@ _ = gettext.gettext
 ##############################################################################
 
 
-class Validator(wx.PyValidator):
+class Validator(wx.Validator):
 	""" Validator for simple widgets.
 
 	On TransferToWindow copy value from given object/key to widgets with
@@ -71,10 +71,10 @@ class Validator(wx.PyValidator):
 	"""
 	def __init__(self, data_obj=None, data_key=None, validators=None,
 				field=None, default=None, readonly=False):
-		wx.PyValidator.__init__(self)
+		wx.Validator.__init__(self)
 		self._object = data_obj
 		self._key = data_key
-		if isinstance(validators, (types.ListType, types.TupleType)) or \
+		if isinstance(validators, (list, tuple)) or \
 				validators is None:
 			self._validators = validators
 		else:

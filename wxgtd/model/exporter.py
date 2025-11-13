@@ -80,6 +80,110 @@ def fmt_date(date):
 	return date.strftime("%Y-%m-%dT%H:%M:%S.") + date.strftime("%f")[:3] + 'Z'
 
 
+def _convert_to_android_format(data):
+	""" Convert exported data to Android app format (uppercase keys).
+	
+	The Android app expects uppercase field names (ID, PARENT, UUID, etc.)
+	while the Python code uses lowercase snake_case (_id, parent_id, uuid, etc.).
+	This function converts the data structure to Android format for compatibility.
+	
+	Args:
+		data: Dictionary with Python format keys
+		
+	Returns:
+		Dictionary with Android format keys
+	"""
+	# Field mapping from Python format to Android format
+	field_map = {
+		'_id': 'ID',
+		'parent_id': 'PARENT',
+		'uuid': 'UUID',
+		'created': 'CREATED',
+		'modified': 'MODIFIED',
+		'deleted': 'DELETED',
+		'title': 'TITLE',
+		'note': 'NOTE',
+		'ordinal': 'ORDINAL',
+		'bg_color': 'COLOR',
+		'visible': 'VISIBLE',
+		'level': 'LEVEL',
+		'archived': 'ARCHIVED',
+		'start_date': 'START_DATE',
+		'start_time_set': 'START_TIME_SET',
+		'due_date': 'DUE_DATE',
+		'due_date_project': 'DUE_DATE_PROJECT',
+		'due_time_set': 'DUE_TIME_SET',
+		'due_date_mod': 'DUE_DATE_MODIFIER',
+		'starred': 'STARRED',
+		'status': 'STATUS',
+		'priority': 'PRIORITY',
+		'completed': 'COMPLETED',
+		'type': 'TYPE',
+		'trash_bin': 'TRASH_BIN',
+		'importance': 'IMPORTANCE',
+		'metainf': 'METAINF',
+		'floating_event': 'FLOATING',
+		'duration': 'DURATION',
+		'energy_required': 'ENERGY_REQUIRED',
+		'repeat_from': 'REPEAT_FROM',
+		'repeat_pattern': 'REPEAT_NEW',
+		'repeat_end': 'REPEAT_END',
+		'hide_pattern': 'HIDE_PATTERN',
+		'hide_until': 'HIDE_UNTIL',
+		'prevent_auto_purge': 'PREVENT_AUTO_PURGE',
+		'alarm': 'ALARM',
+		'reminder': 'REMINDER',
+		'active': 'ACTIVE',
+		'private': 'PRIVATE',
+		'task_id': 'TASK_ID',
+		'folder_id': 'FOLDER_ID',
+		'context_id': 'CONTEXT_ID',
+		'goal_id': 'GOAL_ID',
+		'tag_id': 'TAG_ID',
+	}
+	
+	# Top-level keys mapping
+	top_level_map = {
+		'folder': 'FOLDER',
+		'context': 'CONTEXT',
+		'goal': 'GOAL',
+		'task': 'TASK',
+		'tasknote': 'TASKNOTE',
+		'notebook': 'NOTEBOOK',
+		'tag': 'TAG',
+		'alarm': 'ALARM',
+		'task_folder': 'TASK_FOLDER',
+		'task_context': 'TASK_CONTEXT',
+		'task_goal': 'TASK_GOAL',
+		'task_tag': 'TASK_TAG',
+		'notebook_folder': 'NOTEBOOK_FOLDER',
+		'syncLog': 'syncLog',  # Keep syncLog as-is
+		'version': 'version',  # Keep version as-is
+	}
+	
+	def convert_object(obj):
+		"""Convert a single object's keys."""
+		if not isinstance(obj, dict):
+			return obj
+		converted = {}
+		for key, value in obj.items():
+			new_key = field_map.get(key, key.upper())
+			converted[new_key] = value
+		return converted
+	
+	# Convert top-level structure
+	result = {}
+	for key, value in data.items():
+		new_key = top_level_map.get(key, key)
+		if isinstance(value, list):
+			# Convert each object in the list
+			result[new_key] = [convert_object(obj) for obj in value]
+		else:
+			result[new_key] = value
+	
+	return result
+
+
 def _build_uuid_map(session, objclass):
 	""" Create cache "object uuid" -> "object id" from object in database.
 
@@ -139,6 +243,9 @@ def dump_database_to_json(notify_cb):
 
 	session.commit()  # pylint: disable=E1101
 	notify_cb(80, _("Encoding..."))
+	
+	# Convert to Android format for compatibility with Android app
+	res = _convert_to_android_format(res)
 
 	return _JSON_ENCODER(res)
 
