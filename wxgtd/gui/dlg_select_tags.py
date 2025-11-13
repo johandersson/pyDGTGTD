@@ -92,9 +92,9 @@ class DlgSelectTags(BaseDialog):
 	def _get_selected_tags(self):
 		cbl = self._clb_tags
 		if wx.Platform == '__WXMSW__':
-			checked = [self._tagslist[num] for num in xrange(cbl.GetCount())
+			checked = [self._tagslist[num] for num in range(cbl.GetCount())
 					if cbl.IsChecked(num)]
 		else:
-			checked = [cbl.GetClientData(num) for num in xrange(cbl.GetCount())
+			checked = [cbl.GetClientData(num) for num in range(cbl.GetCount())
 					if cbl.IsChecked(num)]
 		return checked

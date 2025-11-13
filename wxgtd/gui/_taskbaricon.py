@@ -16,6 +16,7 @@ import gettext
 import logging
 
 import wx
+import wx.adv  # TaskBarIcon moved to wx.adv in wxPython 4.x
 
 from wxgtd.wxtools import iconprovider
 from wxgtd.gui.frame_notebooks import FrameNotebook
@@ -26,12 +27,12 @@ _ = gettext.gettext
 _LOG = logging.getLogger(__name__)
 
 
-class TaskBarIcon(wx.TaskBarIcon):
-	TBMENU_RESTORE = wx.NewId()
-	TBMENU_CLOSE = wx.NewId()
-	TBMENU_SHOW_NOTEBOOK = wx.NewId()
-	TBMENU_QUICK_TASK = wx.NewId()
-	TBMENU_NEW_TASK = wx.NewId()
+class TaskBarIcon(wx.adv.TaskBarIcon):
+	TBMENU_RESTORE = wx.NewIdRef()
+	TBMENU_CLOSE = wx.NewIdRef()
+	TBMENU_SHOW_NOTEBOOK = wx.NewIdRef()
+	TBMENU_QUICK_TASK = wx.NewIdRef()
+	TBMENU_NEW_TASK = wx.NewIdRef()
 
 	def __init__(self, parent_frame):
 		wx.TaskBarIcon.__init__(self)

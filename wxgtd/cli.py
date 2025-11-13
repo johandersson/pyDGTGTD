@@ -13,15 +13,9 @@ __version__ = "2013-06-01"
 
 
 import gettext
-import optparse
+import argparse
 import logging
-
 import sys
-reload(sys)
-try:
-	sys.setappdefaultencoding("utf-8")  # pylint: disable=E1101
-except AttributeError:
-	sys.setdefaultencoding("utf-8")  # pylint: disable=E1101
 
 _ = gettext.gettext
 _LOG = logging.getLogger(__name__)
@@ -189,7 +183,7 @@ def _print_csv_tasks_list(tasks, verbose):
 
 
 def _log_sync_cb(progress, msg):
-	print >> sys.stderr, msg
+	print(msg, file=sys.stderr)
 
 
 def _sync(config, load_only):

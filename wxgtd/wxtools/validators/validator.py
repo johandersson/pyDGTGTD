@@ -21,7 +21,7 @@ import time
 import logging
 
 import wx
-import wx.calendar
+import wx.adv  # calendar moved to wx.adv in wxPython 4.x
 import wx.lib.masked
 
 from .errors import ValidateError
@@ -205,7 +205,7 @@ class Validator(wx.PyValidator):
 			Value.
 		"""
 		control = self.GetWindow()
-		if isinstance(control, wx.calendar.CalendarCtrl):
+		if isinstance(control, wx.adv.CalendarCtrl):
 			value = control.GetDate()
 		else:
 			value = control.GetValue()
@@ -225,7 +225,7 @@ class Validator(wx.PyValidator):
 			control.SetValue(value or 0)
 		elif isinstance(control, (wx.CheckBox, wx.RadioButton)):
 			control.SetValue(bool(value))
-		elif isinstance(control, wx.calendar.CalendarCtrl):
+		elif isinstance(control, wx.adv.CalendarCtrl):
 			control.SetDate(value or '')
 		else:
 			control.SetValue(str(value or ''))
@@ -241,12 +241,12 @@ class ValidatorDv(Validator):
 
 	def _set_value_to_control(self, value):
 		ctrl = self.GetWindow()
-		for i in xrange(ctrl.GetCount()):
+		for i in range(ctrl.GetCount()):
 			if ctrl.GetClientData(i) == value:
 				ctrl.Select(i)
 				return
 		if hasattr(ctrl, 'GetClientObject'):
-			for i in xrange(ctrl.GetCount()):
+			for i in range(ctrl.GetCount()):
 				if ctrl.GetClientObject(i) == value:
 					ctrl.Select(i)
 					return
@@ -328,19 +328,19 @@ class ValidatorDate(Validator):
 
 	def _set_value_to_control(self, value):
 		ctrl = self.GetWindow()
-		assert isinstance(ctrl, (wx.calendar.CalendarCtrl, wx.DatePickerCtrl)), \
+		assert isinstance(ctrl, (wx.adv.CalendarCtrl, wx.DatePickerCtrl)), \
 				'Invalid control %r' % ctrl
 		if value:
 			date = wx.DateTime()
 			date.SetTimeT(value)
-			if isinstance(ctrl, wx.calendar.CalendarCtrl):
+			if isinstance(ctrl, wx.adv.CalendarCtrl):
 				ctrl.SetDate(date)
 			else:
 				ctrl.SetValue(date)
 
 	def _get_value_from_control(self):
 		ctrl = self.GetWindow()
-		if isinstance(ctrl, wx.calendar.CalendarCtrl):
+		if isinstance(ctrl, wx.adv.CalendarCtrl):
 			datetime = ctrl.GetDate()
 		else:
 			datetime = ctrl.GetValue()

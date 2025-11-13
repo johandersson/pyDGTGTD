@@ -118,7 +118,7 @@ class _IconProviderCache(Singleton):
 			bitmap = None
 			try:
 				bitmap = wx.Bitmap(filename, img_type)
-			except IOError, err:
+			except IOError as err:
 				_LOG.debug('_IconProviderCache._try_to_load_from_dir(%s): %s',
 						name, str(err))
 			else:

@@ -15,7 +15,7 @@ __version__ = "2013-03-10"
 import gettext
 
 import wx
-import wx.lib.customtreectrl as CT
+import wx.lib.agw.customtreectrl as CT
 import wx.gizmos
 from wx.lib.mixins import treemixin
 

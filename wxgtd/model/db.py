@@ -136,5 +136,5 @@ def find_db_file(config):
 	#  create dir for database if not exist
 	db_dirname = os.path.dirname(db_filename)
 	if not os.path.isdir(db_dirname):
-		os.mkdir(db_dirname)
+		os.makedirs(db_dirname, exist_ok=True)
 	return db_filename

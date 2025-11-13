@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """ Startup application in debug mode.
 
@@ -19,7 +19,7 @@ if '--profile' not in sys.argv:
 def _profile():
 	""" profile app """
 	import cProfile
-	print 'Profiling....'
+	print('Profiling....')
 	cProfile.run('from wxgtd.main import run; run()', 'profile.tmp')
 	import pstats
 	import time
@@ -42,7 +42,7 @@ def _memprofile():
 	import gc
 	gc.collect()
 	while gc.collect() > 0:
-		print 'collect'
+		print('collect')
 
 	import objgraph
 	objgraph.show_most_common_types(20)
@@ -60,7 +60,7 @@ if __name__ == "__main__":
 		_memprofile()
 	elif '--version' in sys.argv:
 		from wxgtd import version
-		print version.INFO
+		print(version.INFO)
 	else:
 		from wxgtd.main import run
 		run()

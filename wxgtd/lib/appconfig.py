@@ -19,7 +19,7 @@ import sys
 import os
 import imp
 import logging
-import ConfigParser
+import configparser
 import base64
 import binascii
 
@@ -50,7 +50,7 @@ class AppConfig(Singleton):
 		self.config_path = self._get_config_path(app_name)
 		self.data_dir = self._get_data_dir()
 		self._filename = os.path.join(self.config_path, filename)
-		self._config = ConfigParser.SafeConfigParser()
+		self._config = configparser.ConfigParser()
 		self.clear()
 		_LOG.debug('AppConfig.__init__: frozen=%(main_is_frozen)r, '
 				'main_dir=%(main_dir)s, config=%(_filename)s, '
@@ -120,7 +120,7 @@ class AppConfig(Singleton):
 		try:
 			with open(filename, 'r') as cfile:
 				self._config.readfp(cfile)
-		except StandardError:
+		except Exception:
 			_LOG.exception('AppConfig.load_configuration_file error')
 			return False
 		_LOG.debug('AppConfig.load_configuration_file finished')
@@ -133,7 +133,7 @@ class AppConfig(Singleton):
 		try:
 			with open(self._filename, 'w') as cfile:
 				self._config.write(cfile)
-		except StandardError:
+		except Exception:
 			_LOG.exception('AppConfig.save error')
 		_LOG.debug('AppConfig.save finished')
 
@@ -341,12 +341,12 @@ def is_frozen():
 if __name__ == '__main__':
 	acfg = AppConfig('test.cfg')
 	acfg.last_open_files = ['1', '2', 'q', 'w']
-	print id(acfg), acfg.last_open_files
+	print(id(acfg), acfg.last_open_files)
 	acfg.save()
 
 	acfg.clear()
-	print id(acfg), acfg.last_open_files
+	print(id(acfg), acfg.last_open_files)
 
 	acfg = AppConfig('test.cfg')
 	acfg.load()
-	print id(acfg), acfg.last_open_files
+	print(id(acfg), acfg.last_open_files)

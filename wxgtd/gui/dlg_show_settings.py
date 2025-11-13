@@ -74,7 +74,7 @@ class DlgShowSettings(BaseDialog):
 		self['rb_always'].SetValue(True)
 		if pattern and pattern != "given date":
 			c_pattern = self['c_pattern']
-			for idx in xrange(c_pattern.GetCount()):
+			for idx in range(c_pattern.GetCount()):
 				if c_pattern.GetClientData(idx) == pattern:
 					c_pattern.Select(idx)
 					self['rb_before'].SetValue(True)

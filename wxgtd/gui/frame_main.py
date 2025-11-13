@@ -16,7 +16,7 @@ import gettext
 import logging
 
 import wx
-import wx.lib.customtreectrl as CT
+import wx.lib.agw.customtreectrl as CT
 import wx.lib.dialogs
 
 from wxgtd.wxtools import iconprovider
@@ -599,12 +599,12 @@ class FrameMain(BaseFrame):
 			return
 		items = []
 		if s_index < e_index:
-			for idx in xrange(s_index, e_index):
+			for idx in range(s_index, e_index):
 				items.append(OBJ.Task.get(self._session,
 						uuid=self._items_list_ctrl.get_item_uuid(idx)))
 			items.append(items.pop(0))
 		else:
-			for idx in xrange(e_index, s_index + 1):
+			for idx in range(e_index, s_index + 1):
 				items.append(OBJ.Task.get(self._session,
 						uuid=self._items_list_ctrl.get_item_uuid(idx)))
 			items.insert(0, items.pop(-1))

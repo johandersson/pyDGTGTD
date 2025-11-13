@@ -15,7 +15,7 @@ __copyright__ = "Copyright (c) Karol Będkowski, 2006-2013"
 __version__ = '2013-04-21'
 
 
-class ValidateError(StandardError):
+class ValidateError(Exception):
 	""" Generic validate error.
 	"""
 	pass

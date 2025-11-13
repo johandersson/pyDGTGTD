@@ -13,16 +13,9 @@ __version__ = "2013-04-27"
 
 
 import os
-import optparse
+import argparse
 import logging
-
 import sys
-reload(sys)
-try:
-	sys.setappdefaultencoding("utf-8")  # pylint: disable=E1101
-except AttributeError:
-	sys.setdefaultencoding("utf-8")  # pylint: disable=E1101
-
 
 _LOG = logging.getLogger(__name__)
 
@@ -32,24 +25,30 @@ from wxgtd import version
 
 def _parse_opt():
 	""" Parse cli options. """
-	optp = optparse.OptionParser(version=version.NAME + " (GUI) " +
-			version.VERSION)
-	group = optparse.OptionGroup(optp, "Creating tasks")
-	group.add_option('--quick-task-dialog', action="store_true", default=False,
-			help='enable debug messages', dest="quick_task_dialog")
-	optp.add_option_group(group)
-	group = optparse.OptionGroup(optp, "Debug options")
-	group.add_option('--debug', '-d', action="store_true", default=False,
+	parser = argparse.ArgumentParser(
+		prog=version.NAME + " (GUI)",
+		description=version.DESCRIPTION
+	)
+	
+	task_group = parser.add_argument_group("Creating tasks")
+	task_group.add_argument('--quick-task-dialog', action="store_true", default=False,
+			help='show quick task dialog', dest="quick_task_dialog")
+	
+	debug_group = parser.add_argument_group("Debug options")
+	debug_group.add_argument('--debug', '-d', action="store_true", default=False,
 			help='enable debug messages')
-	group.add_option('--debug-sql', action="store_true", default=False,
+	debug_group.add_argument('--debug-sql', action="store_true", default=False,
 			help='enable sql debug messages')
-	group.add_option('--wx-inspection', action="store_true", default=False)
-	optp.add_option_group(group)
-	group = optparse.OptionGroup(optp, "Other options")
-	group.add_option('--force-start', action="store_true", default=False,
-			help='Force start application even other instance is running.')
-	optp.add_option_group(group)
-	return optp.parse_args()[0]
+	debug_group.add_argument('--wx-inspection', action="store_true", default=False,
+			help='enable wx inspection tool')
+	
+	other_group = parser.add_argument_group("Other options")
+	other_group.add_argument('--force-start', action="store_true", default=False,
+			help='Force start application even if another instance is running.')
+	other_group.add_argument('--version', action='version', 
+			version=f'{version.NAME} {version.VERSION}')
+	
+	return parser.parse_args()
 
 
 def _run_ipcs(config):
@@ -77,17 +76,17 @@ def run():
 	config.load()
 	config.debug = options.debug
 
-	# importowanie wx
+	# import wx
 	try:
 		import wxversion
 		try:
 			wxversion.ensureMinimal("2.8")
 		except wxversion.AlreadyImportedError:
-			_LOG.warn('Wx Already Imported')
+			_LOG.warning('Wx Already Imported')
 		except wxversion.VersionError:
-			_LOG.error("WX version > 2.8 not found; avalable: %s",
+			_LOG.error("WX version > 2.8 not found; available: %s",
 				wxversion.checkInstalled())
-	except ImportError, err:
+	except ImportError as err:
 		_LOG.error('No wxversion.... (%s)' % str(err))
 
 	import wx

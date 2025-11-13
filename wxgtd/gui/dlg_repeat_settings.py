@@ -198,11 +198,11 @@ class DlgRepeatSettings(BaseDialog):
 
 
 def _choice_select_by_data(control, value):
-	for idx in xrange(control.GetCount()):
+	for idx in range(control.GetCount()):
 		if control.GetClientData(idx) == value:
 			control.Select(idx)
 			return True
-	_LOG.warn('_choice_select_by_data value=%r not found', value)
+	_LOG.warning('_choice_select_by_data value=%r not found', value)
 	return False
 
 

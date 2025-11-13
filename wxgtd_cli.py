@@ -1,4 +1,4 @@
-#!/usr/bin/python -OO
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """ Startup application in CLI mode.
 

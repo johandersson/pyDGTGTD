@@ -13,21 +13,22 @@ __version__ = "2013-04-28"
 
 
 import wx
+import wx.adv
 
 from wxgtd import version
 from wxgtd.lib.appconfig import AppConfig
 
 
-class Splash(wx.SplashScreen):
+class Splash(wx.adv.SplashScreen):
 	""" Splash Screen class. """
 
 	def __init__(self):
 		config = AppConfig()
 		splash_img = wx.Image(config.get_data_file('splash.png'))
-		wx.SplashScreen.__init__(self, splash_img.ConvertToBitmap(),
-			wx.SPLASH_CENTRE_ON_SCREEN | wx.SPLASH_TIMEOUT,
+		wx.adv.SplashScreen.__init__(self, splash_img.ConvertToBitmap(),
+			wx.adv.SPLASH_CENTRE_ON_SCREEN | wx.adv.SPLASH_TIMEOUT,
 			2000, None, -1)
 
-		wnd = self.GetSplashWindow()
-		ver = wx.StaticText(wnd, -1, version.VERSION, pos=(330, 170))
+		# In wxPython Phoenix (4.x), use self instead of GetSplashWindow()
+		ver = wx.StaticText(self, -1, version.VERSION, pos=(330, 170))
 		ver.SetBackgroundColour(wx.WHITE)

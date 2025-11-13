@@ -21,7 +21,7 @@ import os
 import logging
 import threading
 import socket
-import SocketServer
+import socketserver
 try:
 	import cjson
 	_JSON_DECODER = cjson.decode
@@ -37,7 +37,7 @@ from wxgtd.wxtools.wxpub import publisher
 _LOG = logging.getLogger(__name__)
 
 
-class _ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
+class _ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
 
 	def handle(self):
 		data = self.request.recv(1024).strip()
@@ -51,10 +51,10 @@ class _ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
 			publisher.sendMessage(message, data=data_j.get("data"))
 			self.request.sendall("ok")
 		except Exception as err:  # pylint: disable=W0703
-			print err
+			print(err)
 
 
-class _ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
+class _ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 	pass
 
 

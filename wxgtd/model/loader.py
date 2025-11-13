@@ -679,7 +679,7 @@ def test():
 
 	from wxgtd.model import db
 	db.connect("wxgtd.db")
-	print load_json(open("/home/k/GTD_SYNC.json").read(), _fake_update_func)
+	print(load_json(open("/home/k/GTD_SYNC.json").read(), _fake_update_func))
 
 if __name__ == "__main__":
 	test()

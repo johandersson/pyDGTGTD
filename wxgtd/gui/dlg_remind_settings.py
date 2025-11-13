@@ -74,8 +74,8 @@ class DlgRemindSettings(BaseDialog):
 			self['sb_time'].Enable(False)
 
 		if alarm_pattern:
-			for idx in xrange(c_before.GetCount()):
-				print alarm_pattern, c_before.GetClientData(idx)
+			for idx in range(c_before.GetCount()):
+				print(alarm_pattern, c_before.GetClientData(idx))
 				if c_before.GetClientData(idx) == alarm_pattern:
 					c_before.Select(idx)
 					self['rb_before'].SetValue(True)

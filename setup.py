@@ -1,27 +1,18 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import os
 import os.path
 import time
 import sys
-import wx
 
 from setuptools import setup, find_packages
 from distutils.cmd import Command
 import distutils.command.clean
 
-if sys.platform == 'win32':
-	try:
-		import py2exe
-		print py2exe.version
-	except:
-		pass
-
 from wxgtd import version, configuration
 
 build = time.asctime()
-use_py2exe = 'py2exe' in sys.argv
 
 
 def find_files(directory, base, filter_func=None):
@@ -40,20 +31,10 @@ def get_data_files():
 		locales_dir = configuration.LINUX_LOCALES_DIR
 		data_dir = configuration.LINUX_DATA_DIR
 	yield (doc_dir, ['AUTHORS', 'README', "TODO", "COPYING", 'ChangeLog'])
-#	if use_py2exe:
-#		yield (doc_dir, ["LICENCE_python.txt", "LICENCE_wxPython.txt",
-#				"LICENCE_httplib2.txt"])
-	filter_func = None
-	if use_py2exe:
-		filter_func = lambda x: not (x.endswith('.svg') or x.endswith('.wxg'))
-	for x in find_files('data', data_dir, filter_func):
+	for x in find_files('data', data_dir):
 		yield x
 	for x in find_files('locale', locales_dir):
 		yield x
-	if use_py2exe:
-		yield (os.path.join(locales_dir, 'locale', 'pl', 'LC_MESSAGES'),
-				[os.path.join(os.path.dirname(wx.__file__), 'locale', 'pl',
-				'LC_MESSAGES', 'wxstd.mo')])
 
 
 def _delete_dir(path):
@@ -61,11 +42,11 @@ def _delete_dir(path):
 		for root, dirs, files in os.walk(path, topdown=False):
 			for name in files:
 				filename = os.path.join(root, name)
-				print 'Delete ', filename
+				print('Delete', filename)
 				os.remove(filename)
 			for name in dirs:
 				filename = os.path.join(root, name)
-				print 'Delete dir ', filename
+				print('Delete dir', filename)
 				os.rmdir(filename)
 		os.removedirs(path)
 
@@ -84,7 +65,7 @@ class CleanupCmd(distutils.command.clean.clean):
 					if name in ('defaults.cfg', 'setup.cfg'):
 						continue
 					filename = os.path.join(root, name)
-					print 'Delete ', filename
+					print('Delete', filename)
 					os.remove(filename)
 		_delete_dir('build')
 		_delete_dir('debian/wxgtd')
@@ -148,7 +129,7 @@ class MakeMoCommand(Command):
 		po_langs = (filename[:-3] for filename in os.listdir('po')
 				if filename.endswith('.po'))
 		for lang in po_langs:
-			print 'creating mo for', lang
+			print('creating mo for', lang)
 			path = os.path.join('locale', lang, 'LC_MESSAGES')
 			if not os.path.exists(path):
 				os.makedirs(path)
@@ -172,10 +153,10 @@ class MakeManCommand(Command):
 		rst_files = (filename[:-4] for filename in os.listdir('man')
 				if filename.endswith('.rst'))
 		for rst in rst_files:
-			print 'creating manpage', rst
+			print('creating manpage', rst)
 			os.spawnlp(os.P_WAIT, 'rst2man', 'rst2man', 'man/%s.rst' % rst,
 					'man/%s.1' % rst)
-			print 'creating html page', rst
+			print('creating html page', rst)
 			os.spawnlp(os.P_WAIT, 'rst2html', 'rst2html', 'man/%s.rst' % rst,
 					'man/%s.html' % rst)
 
@@ -196,9 +177,9 @@ class MakeXrcCommand(Command):
 		wxg_files = (filename[:-4] for filename in os.listdir('data')
 				if filename.endswith('.wxg'))
 		base_dir = os.path.realpath('data')
-		print base_dir
+		print(base_dir)
 		for wxg in wxg_files:
-			print 'creating ', wxg
+			print('creating', wxg)
 			os.spawnlp(os.P_WAIT, 'wxglade', 'wgxglage', '-g', 'XRC', '-o',
 					os.path.join(base_dir, '%s.xrc' % wxg),
 					os.path.join(base_dir, '%s.wxg' % wxg))
@@ -211,24 +192,12 @@ if __name__ == '__main__':
 			'create_xrc': MakeXrcCommand,
 			'clean': CleanupCmd}
 
-	target = {'script': "wxgtd_dbg.py",
-			'name': "wxgtd_dbg",
-			'version': version.VERSION,
-			'description': "%s - %s (%s, build: %s)"
-					% (version.NAME, version.DESCRIPTION, version.RELEASE, build),
-			'company_name': "Karol Będkowski",
-			'copyright': version.COPYRIGHT,
-			'icon_resources': [(0, "data/wxgtd.ico")],
-			'other_resources': [("VERSIONTAG", 1, build)]}
-
-	target_win = target.copy()
-	target_win.update({'script': "wxgtd.pyw", 'name': "wxgtd"})
-
 	setup(name='wxgtd',
 			version=version.VERSION,
-			author=target['company_name'],
+			author="Karol Będkowski",
 			author_email='karol.bedkowski@gmail.com',
-			description=target['description'],
+			description="%s - %s (%s, build: %s)"
+					% (version.NAME, version.DESCRIPTION, version.RELEASE, build),
 			long_description='-',
 			license='GPL v2',
 			url='-',
@@ -238,17 +207,16 @@ if __name__ == '__main__':
 				'Environment :: X11 Applications',
 				'License :: OSI Approved :: GNU General Public License (GPL)',
 				'Operating System :: OS Independent',
-				'Programming Language :: Python',
-				'Topic :: Database :: Desktop'],
+				'Programming Language :: Python :: 3',
+				'Programming Language :: Python :: 3.8',
+				'Programming Language :: Python :: 3.9',
+				'Programming Language :: Python :: 3.10',
+				'Programming Language :: Python :: 3.11',
+				'Topic :: Office/Business'],
 			packages=find_packages(),
 			data_files=list(get_data_files()),
 			include_package_data=True,
-			#scripts=['bin/wxgtd'],
-			install_requires=['wxPython>=2.8.0', 'sqlalchemy>=0.7'],
-			setup_requires=['nose>=1.0'],
-			zipfile=r"modules.dat",
-			windows=[target_win],
-			console=[target],
+			install_requires=['wxPython>=4.0.0', 'sqlalchemy>=1.4.0,<2.0.0'],
+			python_requires='>=3.8',
 			cmdclass=cmdclass,
-			#namespace_packages=['wxgtd'],
-			test_suite='nose.collector')
+			test_suite='pytest')

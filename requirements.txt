@@ -1,0 +1,7 @@
+# Core dependencies
+wxPython>=4.0.0
+sqlalchemy>=1.4.0,<2.0.0
+python-dateutil>=2.8.0
+
+# Optional dependencies for development
+# Install with: pip install -r requirements-dev.txt

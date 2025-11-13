@@ -19,7 +19,7 @@ import wx
 from wx import xrc
 from wx.lib import masked
 from wx.lib import colourselect as csel
-import wx.calendar
+import wx.adv  # calendar moved to wx.adv in wxPython 4.x
 
 from wxgtd.lib.appconfig import AppConfig
 
@@ -141,7 +141,7 @@ class CalendarCtrlXmlHandler(xrc.XmlResourceHandler):
 		return self.IsOfClass(node, "CalendarCtrl")
 
 	def DoCreateResource(self):
-		ctrl = wx.calendar.CalendarCtrl(
+		ctrl = wx.adv.CalendarCtrl(
 				self.GetParentAsWindow(),
 				self.GetID())
 		if self.HasParam("description"):
