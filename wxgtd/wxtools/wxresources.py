@@ -182,12 +182,12 @@ def load_xrc_resource(filename):
 		data = data.replace('<family>default</family>', '')
 		data = data.replace('|wxTHICK_FRAME', '')
 		data = data.encode('UTF-8')
-		res = xrc.EmptyXmlResource()
+		res = xrc.XmlResource()
 		res.InsertHandler(NumCtrlXmlHandler())
 		res.InsertHandler(TimeCtrlXmlHandler())
 		res.InsertHandler(ColourSelectHandler())
 		res.InsertHandler(SearchCtrlXmlHandler())
 		res.InsertHandler(CalendarCtrlXmlHandler())
-		res.LoadFromString(data)
+		res.LoadFromBuffer(data)
 		_XRC_CACHE[xrcfile_path] = res
 	return res

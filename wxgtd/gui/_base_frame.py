@@ -109,8 +109,8 @@ class BaseFrame(object):
 
 	def _on_close(self, _event):
 		appconfig = self._appconfig
-		appconfig.set(self._window_name, 'size', self.wnd.GetSizeTuple())
-		appconfig.set(self._window_name, 'position', self.wnd.GetPositionTuple())
+		appconfig.set(self._window_name, 'size', self.wnd.GetSize())
+		appconfig.set(self._window_name, 'position', self.wnd.GetPosition())
 		self.wnd.Destroy()
 
 
