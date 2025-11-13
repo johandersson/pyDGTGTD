@@ -8,8 +8,8 @@ Licence: GPLv2+
 """
 
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2013-2015"
-__version__ = "2015-02-07"
+__copyright__ = "Copyright (c) Karol Będkowski, 2013-2015; Johan Andersson, 2025"
+__version__ = "2025-11-13"
 
 import gettext
 
@@ -17,13 +17,13 @@ _ = gettext.gettext
 
 SHORTNAME = 'wxgtd'
 NAME = _("wxGTD")
-VERSION = '0.12.9'
-VERSION_INFO = (0, 12, 9, 'beta', 1)
-RELEASE = '2015-02-10'
-DESCRIPTION = _('''wxGTD''')
-DEVELOPERS = u'''Karol Będkowski'''
+VERSION = '1.0.0'
+VERSION_INFO = (1, 0, 0, 'stable', 1)
+RELEASE = '2025-11-13'
+DESCRIPTION = _('''wxGTD - Python 3 Edition''')
+DEVELOPERS = u'''Karol Będkowski\nJohan Andersson (Python 3 migration)'''
 TRANSLATORS = u'''Karol Będkowski'''
-COPYRIGHT = u"Copyright (c) Karol Będkowski, 2013-2015"
+COPYRIGHT = u"Copyright (c) Karol Będkowski, 2013-2015\nCopyright (c) Johan Andersson, 2025"
 LICENSE = _('''\
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
