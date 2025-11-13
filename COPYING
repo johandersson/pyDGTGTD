@@ -1,5 +1,10 @@
 wxGTD - Desktop GTD Application
 
+A desktop task management application following the Getting Things Done (GTD)
+methodology. Features include context-based task organization, projects/folders,
+goals, reminders, recurring tasks, and notebooks. Supports data synchronization
+with DGT GTD Android app through JSON import/export.
+
 Copyright (C) 2013-2015 Karol Będkowski <karol.bedkowski@gmail.com>
 Copyright (C) 2025 Johan Andersson (Python 3 migration and Android sync)
 
