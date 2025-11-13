@@ -358,7 +358,9 @@ class FrameMain(BaseFrame):
 			dlgp.mark_finished(2)
 			appconfig.set('files', 'last_dir', os.path.dirname(filename))
 			appconfig.set('files', 'last_file', os.path.basename(filename))
+			# Refresh both tasks and dictionaries (contexts/folders/goals)
 			publisher.sendMessage('task.update')
+			publisher.sendMessage('dict.update')
 		dlg.Destroy()
 
 	def _on_menu_file_save(self, _evt):
