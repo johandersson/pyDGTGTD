@@ -30,8 +30,8 @@ SETTINGS = {}
 def configure():
 	if SETTINGS:
 		return SETTINGS
-	SETTINGS['font_task'] = wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False)
-	SETTINGS['font_info'] = wx.Font(9, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False)
+	SETTINGS['font_task'] = wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, 'Segoe UI')
+	SETTINGS['font_info'] = wx.Font(9, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Segoe UI')
 
 	# info line height
 	dc = wx.MemoryDC()

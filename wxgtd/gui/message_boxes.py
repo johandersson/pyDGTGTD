@@ -53,9 +53,7 @@ class MyMessageDialog(wx.Dialog):
 		sizer_text = wx.BoxSizer(wx.VERTICAL)
 
 		if primary_text and secondary_text:
-			fstyle = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
-			fstyle.SetWeight(wx.FONTWEIGHT_BOLD)
-			fstyle.SetPointSize(fstyle.GetPointSize() + 2)
+			fstyle = wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, 'Segoe UI')
 			ptext = wx.StaticText(self, -1, primary_text)
 			ptext.SetFont(fstyle)
 			sizer_text.Add(ptext, 0, wx.EXPAND)

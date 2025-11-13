@@ -139,6 +139,11 @@ class BaseDialog:
 				wnd.SetIcon(parent.GetIcon())
 		else:
 			wnd.SetIcon(iconprovider.get_icon(icon))
+
+		# Set modern Segoe UI font
+		font = wx.Font(9, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Segoe UI')
+		wnd.SetFont(font)
+
 		_fix_panels(wnd)
 		if wx.Platform == '__WXMSW__':
 			wnd.SetBackgroundColour(wx.SystemSettings.GetColour(
@@ -215,12 +220,19 @@ class BaseDialog:
 
 def _fix_panels(wnd):
 	""" Rekursywne ustawienie własności na widgetach """
+	font = wx.Font(9, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Segoe UI')
 	for child in wnd.GetChildren():
 		if isinstance(child, wx.Panel):
 			# Modern white background
 			child.SetBackgroundColour(wx.WHITE)
+			child.SetFont(font)
 			_fix_panels(child)
 		elif isinstance(child, wx.Notebook):
 			# bez tego walidatory nie działają
 			child.SetExtraStyle(wx.WS_EX_VALIDATE_RECURSIVELY)
+			child.SetFont(font)
 			_fix_panels(child)
+		else:
+			# Set font for all other controls
+			if not child.GetFont().IsOk() or child.GetFont().GetPointSize() <= 10:
+				child.SetFont(font)

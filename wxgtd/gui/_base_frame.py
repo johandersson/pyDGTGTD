@@ -72,6 +72,11 @@ class BaseFrame(object):
 		wnd.SetBackgroundColour(wx.WHITE)
 		_update_color(wnd, wx.WHITE)
 
+		# Set modern Segoe UI font
+		font = wx.Font(9, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Segoe UI')
+		wnd.SetFont(font)
+		_update_font(wnd, font)
+
 		wnd.SetExtraStyle(wx.WS_EX_VALIDATE_RECURSIVELY)
 		self._set_size_pos()
 
@@ -117,3 +122,10 @@ def _update_color(wnd, bgcolor):
 		if isinstance(child, wx.Panel):
 			child.SetBackgroundColour(bgcolor)
 		_update_color(child, bgcolor)
+
+
+def _update_font(wnd, font):
+	for child in wnd.GetChildren():
+		if not child.GetFont().IsOk() or child.GetFont().GetPointSize() <= 10:
+			child.SetFont(font)
+		_update_font(child, font)
