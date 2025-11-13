@@ -31,4 +31,4 @@ def show_about_box(_parent):
 	info.SetTranslators(version.TRANSLATORS.splitlines())
 	info.SetLicense(version.LICENSE)
 	info.SetDescription(version.DESCRIPTION + "\n" + version.RELEASE)
-	wx.AboutBox(info)
+	wx.adv.AboutBox(info)
