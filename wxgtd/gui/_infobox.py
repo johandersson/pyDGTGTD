@@ -30,8 +30,8 @@ SETTINGS = {}
 def configure():
 	if SETTINGS:
 		return SETTINGS
-	SETTINGS['font_task'] = wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False)
-	SETTINGS['font_info'] = wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False)
+	SETTINGS['font_task'] = wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False)
+	SETTINGS['font_info'] = wx.Font(9, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False)
 
 	# info line height
 	dc = wx.MemoryDC()
@@ -41,7 +41,7 @@ def configure():
 	dc.SetFont(SETTINGS['font_info'])
 	dummy, ytext2 = dc.GetTextExtent("Agw")
 	dc.SelectObject(wx.NullBitmap)
-	SETTINGS['line_height'] = ytext1 + ytext2 + 10
+	SETTINGS['line_height'] = ytext1 + ytext2 + 12
 
 
 _TYPE_ICON_NAMES = {enums.TYPE_PROJECT: 'project_big',

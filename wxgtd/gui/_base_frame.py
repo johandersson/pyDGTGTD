@@ -68,11 +68,9 @@ class BaseFrame(object):
 		if self._window_icon:
 			wnd.SetIcon(iconprovider.get_icon(self._window_icon))
 
-		if wx.Platform == '__WXMSW__':
-			# fix controls background
-			bgcolor = wx.SystemSettings.GetColour(wx.SYS_COLOUR_ACTIVEBORDER)
-			wnd.SetBackgroundColour(bgcolor)
-			#_update_color(wnd, bgcolor)
+		# Modern white background for all platforms
+		wnd.SetBackgroundColour(wx.WHITE)
+		_update_color(wnd, wx.WHITE)
 
 		wnd.SetExtraStyle(wx.WS_EX_VALIDATE_RECURSIVELY)
 		self._set_size_pos()

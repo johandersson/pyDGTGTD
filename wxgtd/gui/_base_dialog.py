@@ -217,9 +217,8 @@ def _fix_panels(wnd):
 	""" Rekursywne ustawienie własności na widgetach """
 	for child in wnd.GetChildren():
 		if isinstance(child, wx.Panel):
-			if wx.Platform == '__WXMSW__':
-				child.SetBackgroundColour(wx.SystemSettings.GetColour(
-						wx.SYS_COLOUR_ACTIVEBORDER))
+			# Modern white background
+			child.SetBackgroundColour(wx.WHITE)
 			_fix_panels(child)
 		elif isinstance(child, wx.Notebook):
 			# bez tego walidatory nie działają
