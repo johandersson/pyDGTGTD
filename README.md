@@ -2,6 +2,8 @@
 
 A GTD® (Getting Things Done®) task management application for desktop with data sync support for DGT GTD Android app.
 
+**This is a fork of [wxGTD by Karol Będkowski](https://github.com/KarolBedkowski/wxgtd), updated for Python 3 and wxPython 4.x compatibility.**
+
 ## About
 
 wxGTD is a desktop application for managing tasks following the GTD® methodology. This Python 3 version includes:
@@ -96,6 +98,6 @@ This software is not affiliated with, endorsed by, or supported by David Allen o
 
 ## Project Links
 
-- GitHub: https://github.com/johandersson/gtgGTDdesktop
-- Original wxGTD: By Karol Będkowski
-- DGT GTD Android: By dgtale
+- **This Repository:** https://github.com/johandersson/gtgGTDdesktop
+- **Original wxGTD (forked from):** https://github.com/KarolBedkowski/wxgtd by Karol Będkowski
+- **DGT GTD Android:** By dgtale
