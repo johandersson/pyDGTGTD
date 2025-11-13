@@ -1,31 +1,74 @@
-.*
-*-stamp
-*.bak
-*.cfg
-*.cover
-*.db
-*.gpx*
-*.log
-*.old
-*.orig
-*.pot
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
 *.pyc
 *.pyo
+*.pyd
+.Python
 *.so
-*.swo
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# IDE
+.idea/
+.vscode/
 *.swp
-*.zip
+*.swo
 *~
-build
+.DS_Store
+
+# Build & Distribution
+build/
+dist/
+*.egg-info/
+wxgtd.egg-info/
+*.egg
+*.wheel
+
+# Logs & Databases
+*.log
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+*.bak
+*.tmp
+*.old
+*.orig
+*-stamp
+*.cover
+
+# Project specific
+*.gpx*
+*.zip
+*.pot
+tags
+info/
+docs/
+doc.dev
+locale/
+
+# Debian packaging
 debian/files
 debian/python-module-stampdir/
 debian/wxgtd
 debian/wxgtd.*
-dist
-doc.dev
-locale
-wxgtd.egg-info
-tags
-info/
-docs/
+
+# Man pages (generated)
 man/*.1
+
+# OS specific
+Thumbs.db
+.DS_Store
+
+# Configuration files (user-specific)
+*.cfg
+
+# Compiled translations
+*.mo

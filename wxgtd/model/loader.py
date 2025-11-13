@@ -226,7 +226,7 @@ def _cleanup_unused(objcls, loaded_cache, last_sync, session):
 		number of deleted objects.
 	"""
 	_LOG.info("_cleanup_unused(%r)", objcls)
-	loaded = set(loaded_cache.itervalues())
+	loaded = set(loaded_cache.values())
 	idx = 0
 	for obj in objcls.select_old_usunsed(last_sync,
 			session=session):
@@ -354,7 +354,7 @@ def load_json(strdata, notify_cb, force=False):
 		last_prev_sync_time = last_sync_obj.sync_time
 		notify_cb(80, _("Cleanup"))
 		# pokasowanie staroci
-		deleted_cnt = _cleanup_tasks(set(tasks_cache.itervalues()),
+		deleted_cnt = _cleanup_tasks(set(tasks_cache.values()),
 				last_prev_sync_time, session)
 		notify_cb(81, _("Removed tasks: %d") % deleted_cnt)
 		deleted_cnt = _cleanup_unused(objects.Folder, folders_cache,
@@ -369,7 +369,7 @@ def load_json(strdata, notify_cb, force=False):
 		deleted_cnt = _cleanup_unused(objects.Goal, goals_cache,
 				last_prev_sync_time, session)
 		notify_cb(85, _("Removed goals %d") % deleted_cnt)
-		deleted_cnt = _cleanup_notebooks(set(notebooks_cache.itervalues()),
+		deleted_cnt = _cleanup_notebooks(set(notebooks_cache.values()),
 				last_prev_sync_time, session)
 		notify_cb(86, _("Removed notebook pages: %d") % deleted_cnt)
 

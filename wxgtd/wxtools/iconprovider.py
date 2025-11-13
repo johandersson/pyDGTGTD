@@ -213,7 +213,7 @@ def get_icon(name):
 	elif image is not None:
 		if isinstance(image, wx.Image):
 			image = image.ConvertToBitmap()
-		icon = wx.EmptyIcon()
+		icon = wx.Icon()
 		icon.CopyFromBitmap(image)
 	return icon
 

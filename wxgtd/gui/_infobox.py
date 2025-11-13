@@ -35,7 +35,7 @@ def configure():
 
 	# info line height
 	dc = wx.MemoryDC()
-	dc.SelectObject(wx.EmptyBitmap(1, 1))
+	dc.SelectObject(wx.Bitmap(1, 1))
 	dc.SetFont(SETTINGS['font_task'])
 	dummy, ytext1 = dc.GetTextExtent("Agw")
 	dc.SetFont(SETTINGS['font_info'])

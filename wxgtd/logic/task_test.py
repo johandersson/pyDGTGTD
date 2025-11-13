@@ -45,7 +45,7 @@ class _FTask(object):
 			if attr[0] == '_' or isinstance(val, _FTask):
 				continue
 			if getattr(obj, attr) != val:
-				print attr, repr(getattr(obj, attr)), repr(val)
+				print(attr, repr(getattr(obj, attr)), repr(val))
 				return False
 		return True
 

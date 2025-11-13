@@ -85,17 +85,17 @@ class TimeToIntConv(SimpleValidator):
 		return value
 
 	def value_to_window(self, value):
-		if isinstance(value, (str, unicode)):
+		if isinstance(value, str):
 			return value
-		value = long(value or 0)
+		value = int(value or 0)
 		if self._show_sec:
 			sec = value % 60
-			minutes = value / 60 % 60
-			hours = value / 3600
+			minutes = value // 60 % 60
+			hours = value // 3600
 			value = "%0d:%02d:%02d" % (hours, minutes, sec)
 		else:
 			minutes = value % 60
-			hours = value / 60
+			hours = value // 60
 			value = "%02d:%02d" % (hours, minutes)
 		return value
 

@@ -58,7 +58,7 @@ class _ListItemRenderer(object):
 		self._values_cache = {}
 
 	def DrawSubItem(self, dc, rect, _line, _highlighted, _enabled):
-		canvas = wx.EmptyBitmap(rect.width, rect.height)
+		canvas = wx.Bitmap(rect.width, rect.height)
 		mdc = wx.MemoryDC()
 		mdc.SelectObject(canvas)
 		mdc.Clear()
@@ -94,7 +94,7 @@ class _ListItemRendererIcons(object):
 		self._values_cache = {}
 
 	def DrawSubItem(self, dc, rect, _line, _highlighted, _enabled):
-		canvas = wx.EmptyBitmap(rect.width, rect.height)
+		canvas = wx.Bitmap(rect.width, rect.height)
 		mdc = wx.MemoryDC()
 		mdc.SelectObject(canvas)
 		mdc.Clear()

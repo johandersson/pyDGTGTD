@@ -498,7 +498,7 @@ def dump_tasks_to_csv(tasks, verbose, output=sys.stdout):
 	if verbose > 1:
 		fields.append(_('Task UUID'))
 	writer = csv.writer(output, delimiter=';')
-	writer.writerow([col.encode('utf-8') for col in fields])
+	writer.writerow(fields)
 	types = {enums.TYPE_PROJECT: _('project'),
 			enums.TYPE_CHECKLIST: _('checklist'),
 			enums.TYPE_CHECKLIST_ITEM: _('checklist item'),
@@ -520,7 +520,7 @@ def dump_tasks_to_csv(tasks, verbose, output=sys.stdout):
 			row.append(task.note or '')
 		if verbose > 1:
 			row.append(task.uuid)
-		writer.writerow([col.encode('utf-8') for col in row])
+		writer.writerow(row)
 
 
 def dump_tasks_to_text(tasks, verbose, output=sys.stdout, title_width=80):
