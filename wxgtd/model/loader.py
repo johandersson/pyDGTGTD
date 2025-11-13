@@ -126,7 +126,7 @@ def _replace_ids(objdict, cache, key_id, key_uuid=None):
 
 
 def str2datetime_utc(string):
-	""" Convert string like "2013-03-22T21:27:46.461Z" into timestamp.
+	""" Convert string like "2013-03-22T21:27:46.461Z" or "2025-10-10 00:00" into timestamp.
 
 	Args:
 		string: string to convert
@@ -134,16 +134,19 @@ def str2datetime_utc(string):
 	Returns:
 		Timestamp as long or None if error.
 	"""
-	if string and len(string) > 18:
+	if string and len(string) >= 10:  # Accept shorter formats like "2025-10-10 00:00"
 		try:
 			value = parser.parse(string)
-			# convert to UTC
-			value = value.astimezone(tz.tzutc())
-			# remove timezone
-			return value.replace(tzinfo=None)
-		except ValueError:
-			_LOG.exception("str2datetime_utc %r", string)
-	_LOG.error("Wrong string %r", string)
+			# convert to UTC if timezone-aware
+			if value.tzinfo is not None:
+				value = value.astimezone(tz.tzutc())
+				# remove timezone
+				value = value.replace(tzinfo=None)
+			return value
+		except (ValueError, TypeError) as err:
+			_LOG.debug("str2datetime_utc parse error for %r: %s", string, err)
+			return None
+	_LOG.debug("str2datetime_utc: string too short %r", string)
 	return None
 
 

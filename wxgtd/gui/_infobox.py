@@ -61,7 +61,7 @@ def draw_info(mdc, task, overdue, cache):
 		task: task to render
 		overdue: is task overdue
 	"""
-	main_icon_y_offset = (SETTINGS['line_height'] - 32) / 2
+	main_icon_y_offset = int((SETTINGS['line_height'] - 32) / 2)
 	icon_name = _TYPE_ICON_NAMES.get(task.type)
 	if icon_name:
 		mdc.DrawBitmap(iconprovider.get_image(icon_name), 0, main_icon_y_offset,

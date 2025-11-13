@@ -221,7 +221,7 @@ class TaskListControl(ULC.UltimateListCtrl, listmix.ColumnSorterMixin):
 				continue
 			task_is_overdue = task.overdue or (child_count > 0 and task.child_overdue)
 			icon = icon_completed if task.completed else prio_icon[task.priority]
-			index = self.InsertImageStringItem(sys.maxint, "", icon)
+			index = self.InsertImageStringItem(sys.maxsize, "", icon)
 			self.SetStringItem(index, 1, "")
 			self.SetItemCustomRenderer(index, 1, _ListItemRenderer(self,
 				task, task_is_overdue))
