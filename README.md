@@ -18,13 +18,13 @@ wxGTD is a desktop application for managing tasks following the GTD® methodolog
 ## Credits & Attribution
 
 **Original Author:**
-- Karol Będkowski <karol.bedkowski@gmail.com> - Original wxGTD desktop application
+- (C) Karol Będkowski <karol.bedkowski@gmail.com> - Original wxGTD desktop application, GPL2 License
 
 **DGT GTD Android App:**
-- [dgtale - Creator of DGT GTD Android app](https://www.dgtale.ch/)
+- (C) [dgtale - Creator of DGT GTD Android app](https://www.dgtale.ch/), Unkown license, this project does not use any code from that app, just the JSON file format that it uses to backup and export the tasks and projects.
 
 **Python 3 Migration and added features and improved GUI:**
-- Johan Andersson - Python 3 migration, wxPython 4.x compatibility, Android sync fixes (2025)
+- (C) Johan Andersson - Python 3 migration, wxPython 4.x compatibility, Android sync fixes (2025), GPL2 License
 
 ## Requirements
 
