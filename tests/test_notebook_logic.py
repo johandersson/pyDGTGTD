@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """ Tests for wxgtd.logic.notebook module.
 
-Copyright (c) Karol Będkowski, 2013-2014
+Copyright (c) Karol Będkowski, 2013-2025
 Copyright (c) Johan Andersson, 2025
 License: GPLv2+
 """
