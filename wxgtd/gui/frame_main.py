@@ -653,7 +653,7 @@ class FrameMain(BaseFrame):
 
 	def _on_items_list_activated(self, evt):
 		task_uuid, task_type = self._items_list_ctrl.items[self._items_list_ctrl.GetItemData(evt.GetIndex())]
-		if task_type in (enums.TYPE_PROJECT, enums.TYPE_CHECKLIST):
+		if task_type == enums.TYPE_CHECKLIST:
 			task = OBJ.Task.get(self._session, uuid=task_uuid)
 			self._items_path.append(task)
 			self._refresh_list()
