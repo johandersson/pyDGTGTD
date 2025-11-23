@@ -249,14 +249,6 @@ class FrameMain(BaseFrame):
 
 		appconfig = self._appconfig
 
-		# show subtask
-		self._btn_show_subtasks = wx.ToggleButton(toolbar,  # pylint: disable=W0201
-				-1, _(" Show subtasks "))
-		toolbar.AddControl(self._btn_show_subtasks)
-		self.wnd.Bind(wx.EVT_TOGGLEBUTTON, self._on_btn_show_subtasks,
-				self._btn_show_subtasks)
-		self._btn_show_subtasks.SetValue(appconfig.get('main', 'show_subtask', True))
-
 		toolbar.AddControl(wx.StaticText(toolbar, -1, " "))
 
 		# show completed
@@ -326,7 +318,7 @@ class FrameMain(BaseFrame):
 		if appconfig.get('sync', 'sync_on_exit'):
 			self._autosync(False)
 		appconfig.set('main', 'show_finished', self._btn_show_finished.GetValue())
-		appconfig.set('main', 'show_subtask', self._btn_show_subtasks.GetValue())
+		appconfig.set('main', 'show_subtask', True)
 		appconfig.set('main', 'show_hide_until', self._btn_hide_until.GetValue())
 		sel_group = self['rb_show_selection'].GetSelection()
 		if sel_group == queries.QUERY_TRASH:
@@ -660,7 +652,7 @@ class FrameMain(BaseFrame):
 		evt.Skip()
 
 	def _on_items_list_activated(self, evt):
-		task_uuid, task_type = self._items_list_ctrl.items[evt.GetData()]
+		task_uuid, task_type = self._items_list_ctrl.items[self._items_list_ctrl.GetItemData(evt.GetIndex())]
 		if task_type in (enums.TYPE_PROJECT, enums.TYPE_CHECKLIST):
 			task = OBJ.Task.get(self._session, uuid=task_uuid)
 			self._items_path.append(task)
@@ -723,9 +715,6 @@ class FrameMain(BaseFrame):
 				self.wnd.Raise()
 
 	def _on_btn_hide_due(self, _evt):
-		self._refresh_list()
-
-	def _on_btn_show_subtasks(self, _evt):
 		self._refresh_list()
 
 	def _on_btn_show_finished(self, _evt):
@@ -888,7 +877,7 @@ class FrameMain(BaseFrame):
 		options = 0
 		if self._btn_show_finished.GetValue():
 			options |= queries.OPT_SHOW_FINISHED
-		if self._btn_show_subtasks.GetValue():
+		if group_id == queries.QUERY_PROJECTS:
 			options |= queries.OPT_SHOW_SUBTASKS
 		if self._btn_hide_until.GetValue():
 			options |= queries.OPT_HIDE_UNTIL
