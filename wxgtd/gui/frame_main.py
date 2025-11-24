@@ -770,7 +770,8 @@ class FrameMain(BaseFrame):
 		self._session.expire_all()  # pylint: disable=E1101
 		tasks = OBJ.Task.select_by_filters(params, session=self._session)
 		active_only = params['finished'] is not None and not params['finished']
-		self._items_list_ctrl.fill(tasks, active_only=active_only)
+		expand_projects = (params['_query_group'] == queries.QUERY_PROJECTS)
+		self._items_list_ctrl.fill(tasks, active_only=active_only, session=self._session, expand_projects=expand_projects)
 		showed = self._items_list_ctrl.GetItemCount()
 		self.wnd.SetStatusText(ngettext("%d item", "%d items", showed) % showed, 1)
 		self._show_parent_info(active_only)

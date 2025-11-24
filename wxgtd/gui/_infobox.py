@@ -53,7 +53,7 @@ _TYPE_ICON_NAMES = {enums.TYPE_PROJECT: 'project_big',
 		enums.TYPE_RETURN_CALL: 'returncall_big'}
 
 
-def draw_info(mdc, task, overdue, cache):
+def draw_info(mdc, task, overdue, cache, indent=0):
 	""" Draw information about task on given DC.
 
 	Args:
@@ -61,6 +61,9 @@ def draw_info(mdc, task, overdue, cache):
 		task: task to render
 		overdue: is task overdue
 	"""
+	prefix = ""
+	if indent > 0:
+		prefix = "  " * indent + " └─ "
 	main_icon_y_offset = int((SETTINGS['line_height'] - 32) / 2)
 	icon_name = _TYPE_ICON_NAMES.get(task.type)
 	if icon_name:
@@ -73,7 +76,7 @@ def draw_info(mdc, task, overdue, cache):
 	else:
 		mdc.SetTextForeground(wx.BLACK)
 	mdc.SetFont(SETTINGS['font_task'])
-	mdc.DrawText(task.title, 35, 5)
+	mdc.DrawText(prefix + task.title, 35, 5)
 	mdc.SetFont(SETTINGS['font_info'])
 	y_off = mdc.GetTextExtent("Agw")[1] + 10
 	x_off = 35

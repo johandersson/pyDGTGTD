@@ -52,9 +52,10 @@ class _ListItemRenderer(object):
 	+-----------+-----------------------+------+---------------+
 	"""
 
-	def __init__(self, _parent, task, overdue=False):
+	def __init__(self, _parent, task, overdue=False, indent=0):
 		self._task = task
 		self._overdue = overdue
+		self._indent = indent
 		self._values_cache = {}
 
 	def DrawSubItem(self, dc, rect, _line, _highlighted, _enabled):
@@ -63,7 +64,7 @@ class _ListItemRenderer(object):
 		mdc.SelectObject(canvas)
 		mdc.Clear()
 		infobox.draw_info(mdc, self._task, self._overdue,
-				cache=self._values_cache)
+				cache=self._values_cache, indent=self._indent)
 		dc.Blit(rect.x + 3, rect.y, rect.width - 6, rect.height, mdc, 0, 0)
 
 	def GetLineHeight(self):  # pylint: disable=R0201
@@ -195,7 +196,7 @@ class TaskListControl(ULC.UltimateListCtrl, listmix.ColumnSorterMixin):
 				break
 			yield self._items[self.GetItemData(idx)][0]
 
-	def fill(self, tasks, active_only=False):
+	def fill(self, tasks, active_only=False, session=None, expand_projects=False):
 		""" Fill the list with tasks.
 
 		Args:
@@ -220,54 +221,103 @@ class TaskListControl(ULC.UltimateListCtrl, listmix.ColumnSorterMixin):
 				3: self._icons.get_image_index('prio3')}
 		index = -1
 		for task in tasks:
-			child_count = task.active_child_count if active_only else \
-					task.child_count
-			if active_only and child_count == 0 and task.completed:
-				continue
-			task_is_overdue = task.overdue or (child_count > 0 and task.child_overdue)
-			icon = icon_completed if task.completed else prio_icon[task.priority]
-			index = self.InsertImageStringItem(sys.maxsize, "", icon)
-			self.SetStringItem(index, 1, "")
-			self.SetItemCustomRenderer(index, 1, _ListItemRenderer(self,
-				task, task_is_overdue))
-			if task.type == enums.TYPE_CHECKLIST_ITEM:
-				self.SetStringItem(index, 2, str(task.importance + 1))
-			elif task.type == enums.TYPE_PROJECT:
-				self.SetStringItem(index, 2, fmt.format_timestamp(task.due_date_project,
-						False).replace(' ', '\n'))
-			else:
-				self.SetStringItem(index, 2, fmt.format_timestamp(task.due_date,
-						task.due_time_set).replace(' ', '\n'))
-			self.SetItemCustomRenderer(index, 3, _ListItemRendererIcons(self,
-				task, task_is_overdue, active_only))
-			self.SetItemData(index, index)
-			col = 4
-			if self._buttons & BUTTON_DISMISS:
-				item = self.GetItem(index, col)
-				btn = wx.Button(self, -1, _("Dismiss"))
-				btn.task = task.uuid
-				item.SetWindow(btn)
-				self.SetItem(item)
-				col += 1
-				self.Bind(wx.EVT_BUTTON, self._on_list_btn_dismiss_click,
-						btn)
-			if self._buttons & BUTTON_SNOOZE:
-				item = self.GetItem(index, col)
-				btn = wx.Button(self, -1, _("Snooze"))
-				btn.task = task.uuid
-				item.SetWindow(btn)
-				self.SetItem(item)
-				self.Bind(wx.EVT_BUTTON, self._on_list_btn_snooze_click,
-						btn)
-			self._items[index] = (task.uuid, task.type)
-			self.itemDataMap[index] = tuple(_get_sort_info_for_task(task))
-			if task_is_overdue:
-				self.SetItemTextColour(index, wx.RED)
+			self._add_task(task, 0, active_only, session, expand_projects, icon_completed, prio_icon)
 		self._mainWin.ResetCurrent()
-		if index > 0:
+		if not expand_projects and index > 0:
 			self.SortListItems(*current_sort_state)  # pylint: disable=W0142
 		self.Thaw()
 		self.Update()
+
+	def _add_task(self, task, indent, active_only, session, expand_projects, icon_completed, prio_icon):
+		child_count = task.active_child_count if active_only else \
+				task.child_count
+		if active_only and child_count == 0 and task.completed:
+			return
+		task_is_overdue = task.overdue or (child_count > 0 and task.child_overdue)
+		icon = icon_completed if task.completed else prio_icon[task.priority]
+		index = self.InsertImageStringItem(sys.maxsize, "", icon)
+		self.SetStringItem(index, 1, "")
+		self.SetItemCustomRenderer(index, 1, _ListItemRenderer(self,
+			task, task_is_overdue, indent))
+		if task.type == enums.TYPE_CHECKLIST_ITEM:
+			self.SetStringItem(index, 2, str(task.importance + 1))
+		elif task.type == enums.TYPE_PROJECT:
+			self.SetStringItem(index, 2, fmt.format_timestamp(task.due_date_project,
+					False).replace(' ', '\n'))
+		else:
+			self.SetStringItem(index, 2, fmt.format_timestamp(task.due_date,
+					task.due_time_set).replace(' ', '\n'))
+		self.SetItemCustomRenderer(index, 3, _ListItemRendererIcons(self,
+			task, task_is_overdue, active_only))
+		self.SetItemData(index, index)
+		col = 4
+		if self._buttons & BUTTON_DISMISS:
+			item = self.GetItem(index, col)
+			btn = wx.Button(self, -1, _("Dismiss"))
+			btn.task = task.uuid
+			item.SetWindow(btn)
+			self.SetItem(item)
+			col += 1
+			self.Bind(wx.EVT_BUTTON, self._on_list_btn_dismiss_click,
+					btn)
+		if self._buttons & BUTTON_SNOOZE:
+			item = self.GetItem(index, col)
+			btn = wx.Button(self, -1, _("Snooze"))
+			btn.task = task.uuid
+			item.SetWindow(btn)
+			self.SetItem(item)
+			self.Bind(wx.EVT_BUTTON, self._on_list_btn_snooze_click,
+					btn)
+		self._items[index] = (task.uuid, task.type)
+		self.itemDataMap[index] = tuple(_get_sort_info_for_task(task))
+		if task_is_overdue:
+			self.SetItemTextColour(index, wx.RED)
+		if expand_projects and task.type == enums.TYPE_PROJECT and task.child_count > 0:
+			subs = session.query(OBJ.Task).filter(OBJ.Task.parent_uuid == task.uuid, OBJ.Task.deleted.is_(None)).order_by(OBJ.Task.title)
+			for sub in subs:
+				self._add_task(sub, indent + 1, active_only, session, expand_projects, icon_completed, prio_icon)
+
+	def _add_task(self, task, indent, active_only, session, expand_projects, icon_completed, prio_icon):
+		child_count = task.active_child_count if active_only else task.child_count
+		if active_only and child_count == 0 and task.completed:
+			return
+		task_is_overdue = task.overdue or (child_count > 0 and task.child_overdue)
+		icon = icon_completed if task.completed else prio_icon[task.priority]
+		index = self.InsertImageStringItem(sys.maxsize, "", icon)
+		self.SetStringItem(index, 1, "")
+		self.SetItemCustomRenderer(index, 1, _ListItemRenderer(self, task, task_is_overdue, indent))
+		if task.type == enums.TYPE_CHECKLIST_ITEM:
+			self.SetStringItem(index, 2, str(task.importance + 1))
+		elif task.type == enums.TYPE_PROJECT:
+			self.SetStringItem(index, 2, fmt.format_timestamp(task.due_date_project, False).replace(' ', '\n'))
+		else:
+			self.SetStringItem(index, 2, fmt.format_timestamp(task.due_date, task.due_time_set).replace(' ', '\n'))
+		self.SetItemCustomRenderer(index, 3, _ListItemRendererIcons(self, task, task_is_overdue, active_only))
+		self.SetItemData(index, index)
+		col = 4
+		if self._buttons & BUTTON_DISMISS:
+			item = self.GetItem(index, col)
+			btn = wx.Button(self, -1, _("Dismiss"))
+			btn.task = task.uuid
+			item.SetWindow(btn)
+			self.SetItem(item)
+			col += 1
+			self.Bind(wx.EVT_BUTTON, self._on_list_btn_dismiss_click, btn)
+		if self._buttons & BUTTON_SNOOZE:
+			item = self.GetItem(index, col)
+			btn = wx.Button(self, -1, _("Snooze"))
+			btn.task = task.uuid
+			item.SetWindow(btn)
+			self.SetItem(item)
+			self.Bind(wx.EVT_BUTTON, self._on_list_btn_snooze_click, btn)
+		self._items[index] = (task.uuid, task.type)
+		self.itemDataMap[index] = tuple(_get_sort_info_for_task(task))
+		if task_is_overdue:
+			self.SetItemTextColour(index, wx.RED)
+		if expand_projects and task.type == enums.TYPE_PROJECT and task.child_count > 0:
+			subs = session.query(OBJ.Task).filter(OBJ.Task.parent_uuid == task.uuid, OBJ.Task.deleted.is_(None)).order_by(OBJ.Task.title)
+			for sub in subs:
+				self._add_task(sub, indent + 1, active_only, session, expand_projects, icon_completed, prio_icon)
 
 	def _setup_columns(self):
 		info = ULC.UltimateListItem()
