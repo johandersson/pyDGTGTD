@@ -57,7 +57,7 @@ def is_available():
 
 
 def _notify_progress(progress, msg):
-	publisher.sendMessage('sync.progress', data=(progress, msg))
+	publisher.sendMessage('sync.progress', progress=progress, msg=msg)
 
 
 def _create_session():

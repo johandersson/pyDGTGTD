@@ -40,8 +40,7 @@ class OtherSyncError(RuntimeError):
 
 
 def _notify_progress(progress, msg):
-	publisher.sendMessage('sync.progress',
-			data=(progress, msg))
+	publisher.sendMessage('sync.progress', progress=progress, msg=msg)
 
 
 def sync(filename, load_only=False, notify_cb=_notify_progress):

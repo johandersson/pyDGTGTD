@@ -28,7 +28,7 @@ except ImportError:
 	_JSON_ENCODER = json.dumps
 
 from dateutil import parser, tz
-from sqlalchemy import func
+from sqlalchemy import func, and_
 
 from wxgtd.model import objects
 from wxgtd.model import enums
@@ -825,8 +825,48 @@ def _update_all_tasks(session):
 
 	1. update due dates in projects
 	"""
-	for task in session.query(objects.Task).filter_by(type=enums.TYPE_PROJECT):
-		task_logic.update_project_due_date(task)
+	# Optimized version to avoid N+1 queries when updating project due dates
+	from sqlalchemy import func, and_
+	
+	_LOG.info("_update_all_tasks: updating project due dates")
+	
+	# Get all projects and their earliest subtask due dates in one query
+	project_updates = session.query(
+		objects.Task.parent_uuid.label('project_uuid'),
+		func.min(objects.Task.due_date).label('earliest_subtask_due'),
+		func.min(objects.Task.due_time_set).label('earliest_subtask_time_set')
+	).filter(
+		and_(
+			objects.Task.parent_uuid.isnot(None),
+			objects.Task.due_date.isnot(None),
+			objects.Task.deleted.is_(None)
+		)
+	).group_by(objects.Task.parent_uuid).all()
+	
+	# Create a lookup dict for quick access
+	project_min_dates = {row.project_uuid: (row.earliest_subtask_due, row.earliest_subtask_time_set or 0) 
+						for row in project_updates}
+	
+	# Update all projects efficiently
+	projects = session.query(objects.Task).filter(
+		and_(
+			objects.Task.type == enums.TYPE_PROJECT,
+			objects.Task.deleted.is_(None)
+		)
+	).all()
+	
+	for project in projects:
+		# Start with project due date
+		project.due_date = project.due_date_project
+		project.due_time_set = 0
+		
+		# Check if we have subtask date info
+		if project.uuid in project_min_dates:
+			subtask_due, subtask_time_set = project_min_dates[project.uuid]
+			# If subtask has earlier due date, use that
+			if subtask_due and (not project.due_date or subtask_due < project.due_date):
+				project.due_date = subtask_due
+				project.due_time_set = subtask_time_set
 
 
 def test():
