@@ -30,6 +30,6 @@ def quick_task(parent_wnd=None):
 	dlg = wx.TextEntryDialog(parent_wnd, _("Enter task title"),
 			_("wxGTD Quick Task"), "")
 	if dlg.ShowModal() == wx.ID_OK and dlg.GetValue().strip():
-		task = quicktask.create_quicktask(dlg.GetValue().strip())
-		publisher.sendMessage('task.update', data={'task_uuid': task.uuid})
+		task_uuid = quicktask.create_quicktask(dlg.GetValue().strip())
+		publisher.sendMessage('task.update', task_uuid=task_uuid)
 	dlg.Destroy()

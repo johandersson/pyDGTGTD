@@ -27,5 +27,6 @@ def create_quicktask(title):
 	task = OBJ.Task(title=title, priority=-1)
 	session.add(task)
 	session.commit()
+	uuid = task.uuid
 	_LOG.info("create_quicktask: ok")
-	return task
+	return uuid

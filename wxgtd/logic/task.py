@@ -354,6 +354,7 @@ def delete_task(task, session=None, permanently=False):
 	session = session or OBJ.Session()
 	tasks = task if isinstance(task, (list, tuple)) else [task]
 	deleted = 0
+	deleted_uuids = []
 	for task in tasks:
 		if isinstance(task, str):
 			task = session.query(OBJ.Task).filter_by(uuid=task).first()
@@ -364,10 +365,12 @@ def delete_task(task, session=None, permanently=False):
 			session.delete(task)
 		else:
 			task.deleted = datetime.datetime.now()
+		deleted_uuids.append(task.uuid)
 		deleted += 1
 	if deleted:
 		session.commit()
-		publisher.sendMessage('task.delete')
+		for uuid in deleted_uuids:
+			publisher.sendMessage('task.delete', task_uuid=uuid)
 	return bool(deleted)
 
 
@@ -547,7 +550,7 @@ def clone_task(task_uuid, session=None):
 		return None
 	new_task = task.clone()
 	save_modified_task(new_task, session)
-	publisher.sendMessage('task.update', data={'task_uuid': new_task.uuid})
+	publisher.sendMessage('task.update', task_uuid=new_task.uuid)
 	return new_task.uuid
 
 
@@ -573,7 +576,7 @@ def save_modified_task(task, session=None):
 	task.update_modify_time()
 	session.add(task)
 	session.commit()  # pylint: disable=E1101
-	publisher.sendMessage('task.update', data={'task_uuid': task.uuid})
+	publisher.sendMessage('task.update', task_uuid=task.uuid)
 	return True
 
 

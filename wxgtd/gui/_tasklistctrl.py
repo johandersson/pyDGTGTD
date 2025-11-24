@@ -25,6 +25,7 @@ from wxgtd.model import enums
 from wxgtd.lib import fmt
 from wxgtd.gui import _infobox as infobox
 from wxgtd.wxtools import iconprovider
+from wxgtd.model import objects as OBJ
 
 _ = gettext.gettext
 _LOG = logging.getLogger(__name__)

@@ -25,19 +25,13 @@ publisher = None
 
 # Migrate to pypubsub instead of deprecated wx.lib.pubsub
 try:
-	# Must set up arg1 protocol BEFORE importing from pubsub
-	# This ensures backward compatibility with existing code
-	if 'pubsub.core' not in sys.modules:
-		from pubsub import setuparg1
-	
+	# Use kwargs protocol (modern)
 	from pubsub import pub
 	publisher = pub
-	_LOG.debug("Using pypubsub (standalone package) with arg1 protocol")
+	_LOG.debug("Using pypubsub (standalone package) with kwargs protocol")
 except ImportError:
-	# Fallback to deprecated wx.lib.pubsub if pypubsub not installed
+	# Fallback to deprecated wx.lib.pubsub
 	try:
-		from wx.lib.pubsub import setuparg1
-		assert setuparg1
 		from wx.lib.pubsub.pub import Publisher
 		publisher = Publisher()
 		_LOG.debug("Using wx.lib.pubsub.pub.Publisher (DEPRECATED)")

@@ -346,7 +346,7 @@ class TestDeleteTask:
         
         assert result is True
         assert task.deleted is not None
-        mock_publisher.sendMessage.assert_called_with('task.delete')
+        mock_publisher.sendMessage.assert_called_with('task.delete', task_uuid=task.uuid)
     
     @patch('wxgtd.logic.task.publisher')
     def test_delete_task_permanently(self, mock_publisher):
@@ -368,7 +368,7 @@ class TestDeleteTask:
         assert result is True
         # Task should be deleted from database
         assert session.query(OBJ.Task).filter_by(uuid=task_uuid).first() is None
-        mock_publisher.sendMessage.assert_called_with('task.delete')
+        mock_publisher.sendMessage.assert_called_with('task.delete', task_uuid=task_uuid)
 
 
 class TestCompleteTask:

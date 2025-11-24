@@ -705,7 +705,7 @@ class FrameMain(BaseFrame):
 			self._items_path.pop(-1)
 			self._refresh_list()
 
-	def _on_tasks_update(self, _args):
+	def _on_tasks_update(self, task_uuid=None):
 		self._refresh_list()
 
 	def _on_frame_messsage(self, args):

@@ -93,7 +93,7 @@ class FrameReminders(BaseFrame):
 		wnd.Bind(wx.EVT_BUTTON, self._on_btn_close, id=wx.ID_CLOSE)
 
 		publisher.subscribe(self._on_tasks_update, ('task', 'update'))
-		publisher.subscribe(self._on_tasks_update, ('task', 'delete'))
+		publisher.subscribe(self._on_tasks_delete, ('task', 'delete'))
 
 	def _setup(self, session):
 		self._reminders = []
@@ -115,7 +115,7 @@ class FrameReminders(BaseFrame):
 		task.alarm = None
 		task.update_modify_time()
 		self._session.commit()
-		publisher.sendMessage('task.update', data={'task_uuid': task.uuid})
+		publisher.sendMessage('task.update', task_uuid=task.uuid)
 
 	def _on_task_btn_snooze(self, evt):
 		task_uuid = evt.task
@@ -129,7 +129,7 @@ class FrameReminders(BaseFrame):
 			task.alarm = datetime.utcnow() + task_logic.alarm_pattern_to_time(pattern)
 			task.update_modify_time()
 			self._session.commit()
-			publisher.sendMessage('task.update', data={'task_uuid': task.uuid})
+			publisher.sendMessage('task.update', task_uuid=task.uuid)
 		dlg.Destroy()
 
 	def _remove_task(self, task_uuid):
@@ -148,18 +148,19 @@ class FrameReminders(BaseFrame):
 		if task_uuid:
 			TaskController.open_task(self.wnd, task_uuid)
 
-	def _on_tasks_update(self, args):
-		_LOG.debug('FrameReminders._on_tasks_update(%r)', args)
+	def _on_tasks_update(self, task_uuid=None):
+		_LOG.debug('FrameReminders._on_tasks_update(%r)', task_uuid)
 		# Check if this is a specific task update or a general refresh
-		if not args.data or 'task_uuid' not in args.data:
+		if task_uuid is None:
 			# General refresh - reload all reminders
 			self._refresh()
 			return
-		uuid = args.data['task_uuid']
-		if args.topic == ('task', 'delete'):
-			self._remove_task(uuid)
-		elif args.topic == ('task', 'update'):
-			task = OBJ.Task.get(self._session, uuid=uuid)
-			if task.completed or not task.alarm or task.alarm > datetime.utcnow():
-				self._remove_task(uuid)
+		task = OBJ.Task.get(self._session, uuid=task_uuid)
+		if task.completed or not task.alarm or task.alarm > datetime.utcnow():
+			self._remove_task(task_uuid)
+		self._refresh()
+
+	def _on_tasks_delete(self, task_uuid):
+		_LOG.debug('FrameReminders._on_tasks_delete(%r)', task_uuid)
+		self._remove_task(task_uuid)
 		self._refresh()
