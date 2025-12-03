@@ -17,12 +17,12 @@ import gettext
 
 _ = gettext.gettext
 
-SHORTNAME = 'wxgtd'
-NAME = _("wxGTD")
+SHORTNAME = 'pyweeklyreview'
+NAME = _("pyWeeklyReview")
 VERSION = '1.0.0'
 VERSION_INFO = (1, 0, 0, 'stable', 1)
 RELEASE = '2025-12-03'
-DESCRIPTION = _('''wxGTD - Python 3 Edition''')
+DESCRIPTION = _('''pyWeeklyReview - Python 3 Edition''')
 DEVELOPERS = u'''Karol Będkowski\nJohan Andersson (Python 3 migration)'''
 TRANSLATORS = u'''Karol Będkowski'''
 COPYRIGHT = u"""Copyright (c) Karol Będkowski, 2013-2015

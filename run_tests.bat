@@ -1,9 +1,13 @@
 @echo off
 REM Run tests for wxGTD
-REM This batch file activates the virtual environment and runs tests
+REM This batch file runs tests, checking for virtual environment
 
-echo Activating virtual environment...
-call venv\Scripts\activate.bat
+if exist venv\Scripts\activate.bat (
+    echo Activating virtual environment...
+    call venv\Scripts\activate.bat
+) else (
+    echo Virtual environment not found, running with system Python...
+)
 
 echo.
 echo Running tests...
