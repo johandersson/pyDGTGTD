@@ -3731,36 +3731,32 @@
     <object class="wxDialog" name="dlg_dropbox_auth">
         <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
         <title>Dropbox API v2 Configuration</title>
-        <size>600,480</size>
-        <bg>#FFFFFF</bg>
+        <size>620,520</size>
         <object class="wxBoxSizer">
             <orient>wxVERTICAL</orient>
             <!-- Header Section -->
             <object class="sizeritem">
                 <flag>wxALL|wxEXPAND</flag>
-                <border>20</border>
-                <object class="wxPanel">
-                    <bg>#4A90E2</bg>
+                <border>0</border>
+                <object class="wxPanel" name="header_panel">
                     <object class="wxBoxSizer">
                         <orient>wxVERTICAL</orient>
                         <object class="sizeritem">
                             <flag>wxALL</flag>
-                            <border>16</border>
+                            <border>20</border>
                             <object class="wxStaticText" name="header_title">
                                 <label>Connect to Dropbox</label>
                                 <font>
                                     <size>14</size>
                                     <weight>bold</weight>
                                 </font>
-                                <fg>#FFFFFF</fg>
                             </object>
                         </object>
                         <object class="sizeritem">
                             <flag>wxLEFT|wxRIGHT|wxBOTTOM</flag>
-                            <border>16</border>
+                            <border>20</border>
                             <object class="wxStaticText" name="header_subtitle">
                                 <label>Set up your Dropbox API access token to enable synchronization</label>
-                                <fg>#E8F4FF</fg>
                             </object>
                         </object>
                     </object>
@@ -3777,7 +3773,6 @@
                         <size>10</size>
                         <weight>bold</weight>
                     </font>
-                    <fg>#2C3E50</fg>
                 </object>
             </object>
             
@@ -3795,7 +3790,6 @@
                                 <flag>wxALIGN_CENTER_VERTICAL</flag>
                                 <object class="wxStaticText" name="step1_label">
                                     <label>1. Open Dropbox App Console:</label>
-                                    <fg>#34495E</fg>
                                 </object>
                             </object>
                             <object class="spacer">
@@ -3804,8 +3798,6 @@
                             <object class="sizeritem">
                                 <object class="wxButton" name="btn_app_console">
                                     <label>Open App Console</label>
-                                    <bg>#3498DB</bg>
-                                    <fg>#FFFFFF</fg>
                                 </object>
                             </object>
                         </object>
@@ -3816,7 +3808,6 @@
                         <border>8</border>
                         <object class="wxStaticText" name="step2_label">
                             <label>2. Click "Create app", choose "Scoped access", select "Full Dropbox" access</label>
-                            <fg>#34495E</fg>
                         </object>
                     </object>
                     
@@ -3825,7 +3816,6 @@
                         <border>8</border>
                         <object class="wxStaticText" name="step3_label">
                             <label>3. Name your app (e.g., "pyWeeklyReview") and click "Create app"</label>
-                            <fg>#34495E</fg>
                         </object>
                     </object>
                     
@@ -3834,7 +3824,6 @@
                         <border>12</border>
                         <object class="wxStaticText" name="step4_label">
                             <label>4. In the "Settings" tab, scroll to "Generated access token" and click "Generate"</label>
-                            <fg>#34495E</fg>
                         </object>
                     </object>
                 </object>
@@ -3844,8 +3833,7 @@
             <object class="sizeritem">
                 <flag>wxLEFT|wxRIGHT|wxTOP|wxEXPAND</flag>
                 <border>20</border>
-                <object class="wxPanel">
-                    <bg>#F8F9FA</bg>
+                <object class="wxPanel" name="token_panel">
                     <object class="wxBoxSizer">
                         <orient>wxVERTICAL</orient>
                         <object class="sizeritem">
@@ -3864,14 +3852,12 @@
                                         <font>
                                             <weight>bold</weight>
                                         </font>
-                                        <fg>#2C3E50</fg>
                                     </object>
                                 </object>
                                 <object class="sizeritem">
                                     <flag>wxEXPAND</flag>
                                     <object class="wxTextCtrl" name="tc_access_token">
-                                        <size>-1,28</size>
-                                        <bg>#FFFFFF</bg>
+                                        <size>-1,26</size>
                                     </object>
                                 </object>
                             </object>
@@ -3957,8 +3943,6 @@
                     <object class="sizeritem">
                         <object class="wxButton" name="btn_auth">
                             <label>Save &amp;&amp; Connect</label>
-                            <bg>#27AE60</bg>
-                            <fg>#FFFFFF</fg>
                             <size>140,-1</size>
                             <default>1</default>
                         </object>
