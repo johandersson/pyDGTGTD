@@ -14,7 +14,7 @@ Foundation, version 2.
 """
 
 __author__ = 'Karol Będkowski'
-__copyright__ = """""""Copyright (C) Karol Będkowski, 2013
+__copyright__ = """Copyright (C) Karol Będkowski, 2013
 Copyright (C) Johan Andersson, 2025"""
 __version__ = "2025-12-03"
 
