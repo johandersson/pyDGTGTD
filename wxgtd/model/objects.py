@@ -22,7 +22,7 @@ import uuid
 import datetime
 
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Index
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy import orm, or_, and_
 from sqlalchemy import select, func
@@ -387,7 +387,7 @@ class Task(BaseModelMixin, Base):
 	def find_max_importance(cls, parent_uuid, session=None):
 		""" Find maximal importance in childs of given task."""
 		return (session or Session()).scalar(
-				select([func.max(Task.importance)]).where(and_(
+				select(func.max(Task.importance)).where(and_(
 						Task.parent_uuid == parent_uuid,
 						Task.deleted.is_(None)))) or 0
 

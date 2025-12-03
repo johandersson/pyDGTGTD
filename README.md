@@ -15,6 +15,10 @@ pyWeeklyReview is a desktop application for managing tasks following the GTD® m
 - Reminders and recurring tasks
 - Notebooks for reference material
 
+## Known Issues
+
+⚠️ **Dropbox Sync is Currently Broken** - The original Dropbox API v1 used for synchronization has been deprecated by Dropbox and no longer works. This feature will hang if attempted. Use JSON import/export as an alternative for syncing data.
+
 ## Credits & Attribution
 
 **Original Author:**
