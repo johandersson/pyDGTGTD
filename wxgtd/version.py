@@ -9,7 +9,7 @@ Licence: GPLv2+
 """
 
 __author__ = "Karol Będkowski"
-__copyright__ = """""""Copyright (c) Karol Będkowski, 2013-2015
+__copyright__ = """Copyright (c) Karol Będkowski, 2013-2015
 Copyright (c) Johan Andersson, 2025"""
 __version__ = "2025-12-03"
 
