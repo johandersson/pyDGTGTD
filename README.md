@@ -1,12 +1,12 @@
-# wxGTD - Python 3 Desktop GTD Application
+# pyWeeklyReview - Python 3 Desktop GTD Application
 
 A GTD® (Getting Things Done®) task management application for desktop with data sync support for DGT GTD Android app.
 
-**This is a fork of [wxGTD by Karol Będkowski](https://github.com/KarolBedkowski/wxgtd), updated for Python 3 and wxPython 4.x compatibility.**
+**This is a fork of [wxGTD by Karol Będkowski](https://github.com/KarolBedkowski/wxgtd), updated for Python 3 and wxPython 4.x compatibility. The original program was called wxGTD, but this fork has been renamed to pyWeeklyReview.**
 
 ## About
 
-wxGTD is a desktop application for managing tasks following the GTD® methodology. This Python 3 version includes:
+pyWeeklyReview is a desktop application for managing tasks following the GTD® methodology. This Python 3 version includes:
 - Full wxPython 4.x compatibility
 - JSON import/export for syncing with DGT GTD Android app
 - SQLite database with SQLAlchemy ORM
@@ -63,10 +63,10 @@ python wxgtd_cli.py
 
 ## Android App Sync
 
-wxGTD can import/export JSON data from the DGT GTD Android app:
+pyWeeklyReview can import/export JSON data from the DGT GTD Android app:
 
 1. Export from Android app to JSON file
-2. In wxGTD: File → Import/Export → Import from JSON
+2. In pyWeeklyReview: File → Import/Export → Import from JSON
 3. Select your exported JSON file
 
 All tasks, contexts, folders, goals, and notebooks will be imported.
@@ -87,7 +87,7 @@ GPL v2+ - See COPYING file for full license text.
 
 **Copyright:**
 - Copyright (C) 2013-2015 Karol Będkowski (original wxGTD)
-- Copyright (C) 2025 Johan Andersson (Python 3 migration and Android sync)
+- Copyright (C) 2025 Johan Andersson (Python 3 migration and Android sync, renamed to pyWeeklyReview)
 - DGT GTD Android app data format by dgtale
 
 ## Trademarks

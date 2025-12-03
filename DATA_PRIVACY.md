@@ -5,9 +5,9 @@
 All personal task data is stored in **SQLite database files** located **outside the git repository**:
 
 ```
-Windows: C:\Users\<username>\.local\share\wxgtd\wxgtd.db
-Linux:   ~/.local/share/wxgtd/wxgtd.db
-macOS:   ~/Library/Application Support/wxgtd/wxgtd.db
+Windows: C:\Users\<username>\.local\share\pyweeklyreview\wxgtd.db
+Linux:   ~/.local/share/pyweeklyreview/wxgtd.db
+macOS:   ~/Library/Application Support/pyweeklyreview/wxgtd.db
 ```
 
 ## What is Stored in SQLite
