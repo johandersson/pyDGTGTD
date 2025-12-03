@@ -2,14 +2,16 @@
 """ Edit task dialog.
 
 Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 Licence: GPLv2+
 """
 
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2010-2013"
-__version__ = "2010-11-25"
+__copyright__ = """Copyright (c) Karol Będkowski, 2010-2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 import logging
 import gettext
@@ -663,3 +665,4 @@ class TaskController:
 			setattr(task, attr_time_set, dlg.is_time_set)
 			return True
 		return False
+

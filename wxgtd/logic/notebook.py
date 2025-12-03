@@ -4,13 +4,15 @@
 
 This file is part of wxGTD.
 Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025
 License: GPLv2+
 
 
 """
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2013"
-__version__ = "2013-05-28"
+__copyright__ = """Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 import logging
 import gettext
@@ -62,3 +64,4 @@ def save_modified_page(page, session=None):
 	session.commit()
 	publisher.sendMessage('notebook.update', data={'notebook_uuid': page.uuid})
 	return True
+

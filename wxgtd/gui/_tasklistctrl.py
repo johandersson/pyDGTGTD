@@ -3,14 +3,16 @@
 """Task list control.
 
 Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 Licence: GPLv2+
 """
 
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2013"
-__version__ = "2011-03-29"
+__copyright__ = """Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 import sys
 import gettext
@@ -404,3 +406,4 @@ def _get_sort_info_for_task(task):
 	yield (task.importance or 0, due, 3 - task.starred, 10 - task.priority)
 	# starred
 	yield (task.starred, task.priority, task.importance, due)
+

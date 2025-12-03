@@ -2,6 +2,7 @@
 """ wxGTD main module.
 
 Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 Licence: GPLv2+
@@ -13,3 +14,4 @@ try:
 	from pubsub import setuparg1
 except ImportError:
 	pass  # pypubsub not installed, will fall back to wx.lib.pubsub
+

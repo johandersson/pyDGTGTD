@@ -3,14 +3,16 @@
 """ Database  objects definition.
 
 Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 Licence: GPLv2+
 """
 
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2013"
-__version__ = '2013-04-26'
+__copyright__ = """Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 
 SCHEMA_DEF = []
@@ -155,3 +157,4 @@ def fix_synclog(engine):
 		conn.execute("insert into synclog select device_id, sync_time, "
 				"prev_sync_time from synclog")
 	engine.execute("drop table synclog_old;")
+

@@ -3,14 +3,16 @@
 """ Task bar icon.
 
 Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 Licence: GPLv2+
 """
 
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2013"
-__version__ = "2013-05-11"
+__copyright__ = """Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 import gettext
 import logging
@@ -90,3 +92,4 @@ class TaskBarIcon(wx.adv.TaskBarIcon):
 
 	def _on_menu_new_task(self, _evt):
 		TaskController.new_task(self._frame, None)
+

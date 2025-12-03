@@ -4,6 +4,7 @@
 
 Copyright (c) Karol Będkowski, 2013-2014
 Copyright (c) Johan Andersson, 2025
+Copyright (c) Johan Andersson, 2025
 License: GPLv2+
 """
 
@@ -109,3 +110,4 @@ class TestEnums:
         assert 0 in enums.GOAL_TIME_TERM  # Lifelong
         assert 1 in enums.GOAL_TIME_TERM  # Long Term
         assert 2 in enums.GOAL_TIME_TERM  # Short Term
+

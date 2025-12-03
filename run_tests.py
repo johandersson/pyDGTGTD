@@ -12,6 +12,7 @@ Usage:
     python run_tests.py --cov        # Generate coverage report
 
 Copyright (c) Karol Będkowski, 2013-2025
+Copyright (c) Johan Andersson, 2025
 License: GPLv2+
 """
 
@@ -64,3 +65,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

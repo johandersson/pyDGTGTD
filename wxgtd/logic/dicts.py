@@ -4,13 +4,15 @@
 
 This file is part of wxGTD.
 Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025
 License: GPLv2+
 
 
 """
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2013"
-__version__ = "2013-04-19"
+__copyright__ = """Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 
 import logging
@@ -102,3 +104,4 @@ def undelete_dict_item(item, session):
 		return True
 	_LOG.warn("undelete_dict_item: undelete not deleted object: %r", item)
 	return False
+

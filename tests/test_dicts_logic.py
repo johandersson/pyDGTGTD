@@ -4,6 +4,7 @@
 
 Copyright (c) Karol Będkowski, 2013-2014
 Copyright (c) Johan Andersson, 2025
+Copyright (c) Johan Andersson, 2025
 License: GPLv2+
 """
 
@@ -194,3 +195,4 @@ class TestUndeleteDictItem:
         
         assert result is False
         mock_publisher.sendMessage.assert_not_called()
+

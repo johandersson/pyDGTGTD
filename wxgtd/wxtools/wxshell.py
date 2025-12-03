@@ -4,6 +4,7 @@
 """ wxShell (pyCrust)
 
 Copyright (c) Karol Będkowski, 2004-2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of kPyLibs
 
@@ -13,8 +14,9 @@ Foundation, version 2.
 """
 
 __author__ = 'Karol Będkowski'
-__copyright__ = 'Copyright (C) Karol Będkowski 2006-2013'
-__version__ = "2013-04-27"
+__copyright__ = """""""Copyright (C) Karol Będkowski, 2006-2013
+Copyright (C) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 __all__ = ['WndShell']
 
 
@@ -34,3 +36,4 @@ class WndShell(wx.Frame):
 		wx.Frame.__init__(self, parent, -1, 'Shell', size=(700, 500))
 		wx.py.crust.Crust(self, locals=locals_vars)
 		self.Centre(wx.BOTH)
+

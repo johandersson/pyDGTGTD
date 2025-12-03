@@ -4,6 +4,7 @@
 lib
 
 Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025
 
 """
 import os
@@ -26,3 +27,4 @@ def ignore_exceptions(*exceptions):
 		yield
 	except exceptions:
 		pass
+

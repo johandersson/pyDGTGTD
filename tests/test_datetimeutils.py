@@ -4,6 +4,7 @@
 
 Copyright (c) Karol Będkowski, 2013-2014
 Copyright (c) Johan Andersson, 2025
+Copyright (c) Johan Andersson, 2025
 License: GPLv2+
 """
 
@@ -76,3 +77,4 @@ class TestDatetimeUtils:
         
         # Should be close (within a second due to precision)
         assert abs((original_dt - recovered_dt).total_seconds()) < 1
+

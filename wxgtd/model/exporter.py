@@ -4,14 +4,16 @@
 """ Function for duping content of database into file.
 
 Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 Licence: GPLv2+
 """
 
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2013"
-__version__ = '2013-04-21'
+__copyright__ = """Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 import os
 import logging
@@ -660,3 +662,4 @@ def dump_tasks_to_text(tasks, verbose, output=sys.stdout, title_width=80):
 		if verbose > 1:
 			output.write(task.uuid)
 		output.write('\n')
+

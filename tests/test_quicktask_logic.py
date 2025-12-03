@@ -4,6 +4,7 @@
 
 Copyright (c) Karol Będkowski, 2013-2014
 Copyright (c) Johan Andersson, 2025
+Copyright (c) Johan Andersson, 2025
 License: GPLv2+
 """
 
@@ -79,3 +80,4 @@ class TestCreateQuicktask:
         task = session.query(OBJ.Task).filter_by(uuid=result).first()
         assert task is not None
         assert task.title == title
+

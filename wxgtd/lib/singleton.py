@@ -2,6 +2,7 @@
 """ Singleton base class.
 
 Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 Licence: GPLv2+
@@ -33,3 +34,4 @@ class Singleton(object):
 		""" Force delete class instance. """
 		del cls.__instance__
 		cls.__instance__ = None
+

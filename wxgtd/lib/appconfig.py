@@ -3,6 +3,7 @@
 """ Application configuration.
 
 Copyright (c) Karol Będkowski, 2007-2014
+Copyright (c) Johan Andersson, 2025
 
 This file is part of kPyLibs
 
@@ -12,8 +13,9 @@ Foundation, version 2.
 """
 
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2013"
-__version__ = "2011-04-24"
+__copyright__ = """Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 import sys
 import os
@@ -351,3 +353,4 @@ if __name__ == '__main__':
 	acfg = AppConfig('test.cfg')
 	acfg.load()
 	print(id(acfg), acfg.last_open_files)
+

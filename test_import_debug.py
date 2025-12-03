@@ -10,3 +10,4 @@ from test_import import *
 
 if __name__ == "__main__":
     import_and_verify('funny_test_data.json')
+

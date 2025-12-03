@@ -2,14 +2,16 @@
 """ Various formatting function.
 
 Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 Licence: GPLv2+
 """
 
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2010-2013"
-__version__ = "2013-05-05"
+__copyright__ = """Copyright (c) Karol Będkowski, 2010-2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 import time
 import logging
@@ -41,3 +43,4 @@ def format_timestamp(timestamp, show_time=True, datetime_in_utc=True):
 	if show_time:
 		return time.strftime("%x %X", time.localtime(timestamp))
 	return time.strftime("%x", time.localtime(timestamp))
+

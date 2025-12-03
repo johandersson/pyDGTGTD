@@ -3,6 +3,7 @@
 """ Various message boxes definition.
 
 Copyright (c) Karol Będkowski, 2004-2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of KPyLibs
 
@@ -12,8 +13,9 @@ Foundation, version 2.
 """
 
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2004-2013"
-__version__ = "2013-04-28"
+__copyright__ = """Copyright (c) Karol Będkowski, 2004-2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 __all__ = ['message_box_error', 'message_box_info',
 		'message_box_question_yesno', 'message_box_warning_yesno',
 		'message_box_warning_yesnocancel', 'message_box_not_save_confirm',
@@ -363,3 +365,4 @@ def message_box_question(parent, primary_text, secondary_text,
 	res = dlg.ShowModal()
 	dlg.Destroy()
 	return res == wx.ID_YES
+

@@ -4,6 +4,7 @@
 
 Copyright (c) Karol Będkowski, 2013-2014
 Copyright (c) Johan Andersson, 2025
+Copyright (c) Johan Andersson, 2025
 License: GPLv2+
 """
 
@@ -79,3 +80,4 @@ def sample_checklist(db_session):
     db_session.add(checklist)
     db_session.commit()
     return checklist
+

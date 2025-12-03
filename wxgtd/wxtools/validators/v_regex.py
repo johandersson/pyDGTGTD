@@ -2,6 +2,7 @@
 """ Validate values using regular expressions.
 
 Copyright (c) Karol Będkowski, 2006-2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD.
 
@@ -11,8 +12,9 @@ Foundation, version 2.
 """
 
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2006-2013"
-__version__ = '2013-04-21'
+__copyright__ = """Copyright (c) Karol Będkowski, 2006-2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 import re
 import gettext
@@ -48,3 +50,4 @@ class ReValidator(SimpleValidator):
 			raise ValidateError(self._error_message)
 
 		return value
+

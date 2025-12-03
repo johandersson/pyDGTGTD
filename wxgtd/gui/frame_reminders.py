@@ -2,14 +2,16 @@
 """ Frame showing reminders.
 
 Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 Licence: GPLv2+
 """
 
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2013"
-__version__ = "2013-06-20"
+__copyright__ = """Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 import logging
 import gettext
@@ -164,3 +166,4 @@ class FrameReminders(BaseFrame):
 		_LOG.debug('FrameReminders._on_tasks_delete(%r)', task_uuid)
 		self._remove_task(task_uuid)
 		self._refresh()
+

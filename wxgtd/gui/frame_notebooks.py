@@ -2,14 +2,16 @@
 """ Notebook frame.
 
 Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 Licence: GPLv2+
 """
 
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2013"
-__version__ = "2013-05-23"
+__copyright__ = """Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 import gettext
 import logging
@@ -231,3 +233,4 @@ class FrameNotebook(BaseFrame):
 		self._lb_pages.SetColumnWidth(0, wx.LIST_AUTOSIZE)
 		self._lb_pages.SetColumnWidth(1, wx.LIST_AUTOSIZE)
 		self._lb_pages.SetColumnWidth(2, wx.LIST_AUTOSIZE)
+

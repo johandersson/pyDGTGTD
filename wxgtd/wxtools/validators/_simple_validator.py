@@ -2,6 +2,7 @@
 """ Base class for validators.
 
 Copyright (c) Karol Będkowski, 2006-2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 
@@ -11,8 +12,9 @@ Foundation, version 2.
 """
 
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2006-2013"
-__version__ = '2013-04-21'
+__copyright__ = """Copyright (c) Karol Będkowski, 2006-2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 from .errors import ValidateError
 
@@ -62,3 +64,4 @@ class SimpleValidator:
 	def _raise_error(self, *args, **kwargs):
 		""" Shortcut for raising validation error """
 		raise ValidateError(self._error_message, *args, **kwargs)
+

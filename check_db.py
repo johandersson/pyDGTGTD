@@ -47,3 +47,4 @@ if contexts:
         print(f"  - {context.title}")
 
 session.close()
+

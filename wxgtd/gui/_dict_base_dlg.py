@@ -3,14 +3,16 @@
 """ Base class for dialogs that manage application dictionaries.
 
 Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 Licence: GPLv2+
 """
 
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2013"
-__version__ = "2013-04-27"
+__copyright__ = """Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 import gettext
 import logging
@@ -185,3 +187,4 @@ class DictBaseDlg(BaseDialog):
 		if hasattr(item, 'tasks') and bool(item.tasks):
 			return True
 		return False
+

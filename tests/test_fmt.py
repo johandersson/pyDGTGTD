@@ -4,6 +4,7 @@
 
 Copyright (c) Karol Będkowski, 2013-2014
 Copyright (c) Johan Andersson, 2025
+Copyright (c) Johan Andersson, 2025
 License: GPLv2+
 """
 
@@ -81,3 +82,4 @@ class TestFormatTimestamp:
         
         # Zero timestamp returns empty string or formats as epoch
         assert isinstance(result, str)
+

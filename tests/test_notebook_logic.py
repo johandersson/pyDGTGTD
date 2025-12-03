@@ -4,6 +4,7 @@
 
 Copyright (c) Karol Będkowski, 2013-2025
 Copyright (c) Johan Andersson, 2025
+Copyright (c) Johan Andersson, 2025
 License: GPLv2+
 """
 
@@ -121,3 +122,4 @@ class TestSaveModifiedPage:
         mock_publisher.sendMessage.assert_called_with(
             'notebook.update', data={'notebook_uuid': page.uuid}
         )
+

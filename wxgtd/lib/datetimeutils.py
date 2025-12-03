@@ -3,6 +3,7 @@
 """ Date & Time utilities.
 
 Copyright (c) Karol Będkowski, 2006-2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 
@@ -13,8 +14,9 @@ Foundation, version 2.
 """
 
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2013"
-__version__ = "2013-05-12"
+__copyright__ = """Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 
 import time
@@ -64,3 +66,4 @@ def timestamp2datetime(timestamp, local2utc=True):
 	if local2utc:
 		date_time = datetime_local2utc(date_time)
 	return date_time
+

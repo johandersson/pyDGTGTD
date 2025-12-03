@@ -3,14 +3,16 @@
 """ Locale support functions.
 
 Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 Licence: GPLv2+
 """
 
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2013"
-__version__ = "2013-06-26"
+__copyright__ = """Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 
 import os
@@ -45,3 +47,4 @@ def setup_locale(app_config):
 	except AttributeError:
 		pass
 	_LOG.info('locale: %s', str(locale.getlocale()))
+

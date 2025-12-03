@@ -220,3 +220,4 @@ if __name__ == '__main__':
 			python_requires='>=3.8',
 			cmdclass=cmdclass,
 			test_suite='pytest')
+

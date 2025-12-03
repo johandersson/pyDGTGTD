@@ -3,6 +3,7 @@
 """ wxValidator wrapper.
 
 Copyright (c) Karol Będkowski, 2006-2014
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 
@@ -12,8 +13,9 @@ Foundation, version 2.
 """
 
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2006-2014"
-__version__ = "2013-04-21"
+__copyright__ = """Copyright (c) Karol Będkowski, 2006-2014
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 import types
 import gettext
@@ -369,3 +371,4 @@ class ValidatorTime(Validator):
 			value = time.strptime(timestr, '%X')
 			return 3600 * value.tm_hour + 60 * value.tm_min + value.tm_sec
 		return None
+

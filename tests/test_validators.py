@@ -4,6 +4,7 @@
 
 Copyright (c) Karol Będkowski, 2013-2014
 Copyright (c) Johan Andersson, 2025
+Copyright (c) Johan Andersson, 2025
 License: GPLv2+
 """
 
@@ -215,3 +216,4 @@ class TestValidatorChaining:
             value = "testing"
             for validator in validators:
                 value = validator.value_from_window(value)
+

@@ -4,6 +4,7 @@
 """ Inter process communication.
 
 Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 
@@ -13,8 +14,9 @@ Foundation, version 2.
 """
 
 __author__ = 'Karol Będkowski'
-__copyright__ = 'Copyright (C) Karol Będkowski 2013'
-__version__ = "2013-07-11"
+__copyright__ = """""""Copyright (C) Karol Będkowski, 2013
+Copyright (C) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 
 import os
@@ -165,3 +167,4 @@ class IPC:
 		finally:
 			sock.close()
 		return None
+

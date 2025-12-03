@@ -3,13 +3,15 @@
 """ Queries.
 
 Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 Licence: GPLv2+
 """
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2013"
-__version__ = "2013-06-02"
+__copyright__ = """Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 import datetime
 
@@ -145,3 +147,4 @@ def _get_hotlist_settings(params):
 	params['starred'] = conf.get('hotlist', 'starred', False)
 	params['next_action'] = conf.get('hotlist', 'next_action', False)
 	params['started'] = conf.get('hotlist', 'started', False)
+

@@ -4,6 +4,7 @@
 """ wx pubsub Publisher wrapper to support various wx versions.
 
 Copyright (c) Karol Będkowski, 2015
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 
@@ -13,8 +14,9 @@ Foundation, version 2.
 """
 
 __author__ = 'Karol Będkowski'
-__copyright__ = 'Copyright (C) Karol Będkowski 2013'
-__version__ = "2013-07-11"
+__copyright__ = """""""Copyright (C) Karol Będkowski, 2013
+Copyright (C) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 import logging
 import sys
@@ -44,3 +46,4 @@ except ImportError:
 			from wx.lib.pubsub import pub
 			publisher = pub
 			_LOG.debug("Using wx.lib.pubsub.pub (DEPRECATED)")
+

@@ -3,14 +3,16 @@
 """ Functions for synchronisation data between database and sync file.
 
 Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 Licence: GPLv2+
 """
 
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2013"
-__version__ = '2013-04-26'
+__copyright__ = """Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 
 import os
@@ -167,3 +169,4 @@ def create_sync_lock(dbclient):
 	session.flush()  # pylint: disable=E1101
 	dbclient.put_file(LOCK_PATH, _JSON_ENCODER(synclog))
 	return True
+

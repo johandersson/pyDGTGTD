@@ -2,14 +2,16 @@
 """ Splash screen window.
 
 Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 Licence: GPLv2+
 """
 
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2010-2013"
-__version__ = "2013-04-28"
+__copyright__ = """Copyright (c) Karol Będkowski, 2010-2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 
 import wx
@@ -32,3 +34,4 @@ class Splash(wx.adv.SplashScreen):
 		# In wxPython Phoenix (4.x), use self instead of GetSplashWindow()
 		ver = wx.StaticText(self, -1, version.VERSION, pos=(330, 170))
 		ver.SetBackgroundColour(wx.WHITE)
+

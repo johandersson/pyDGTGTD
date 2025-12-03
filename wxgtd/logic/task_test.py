@@ -4,8 +4,9 @@
 """
 
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2013"
-__version__ = "2013-04-17"
+__copyright__ = """Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 import copy
 import time
@@ -523,3 +524,4 @@ class TestRealExamples(TestCase):
 
 if __name__ == '__main__':
 	main()
+

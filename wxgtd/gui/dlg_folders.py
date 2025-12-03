@@ -2,14 +2,16 @@
 """ Edit folders dialog.
 
 Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 Licence: GPLv2+
 """
 
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2013"
-__version__ = "2013-04-28"
+__copyright__ = """Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 import gettext
 
@@ -30,3 +32,4 @@ class DlgFolders(DictBaseDlg):
 
 	def __init__(self, parent):
 		DictBaseDlg.__init__(self, parent, 'dlg_folders')
+

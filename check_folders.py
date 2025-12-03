@@ -7,3 +7,4 @@ folders = session.query(Folder).all()
 print(f'Folders in database: {len(folders)}')
 for f in folders:
     print(f'  - UUID: {f.uuid} | Title: {f.title} | Visible: {f.visible}')
+

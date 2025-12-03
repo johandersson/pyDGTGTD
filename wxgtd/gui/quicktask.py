@@ -3,14 +3,16 @@
 """ Quick Task actions.
 
 Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 Licence: GPLv2+
 """
 
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2013"
-__version__ = "2013-05-11"
+__copyright__ = """Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 import gettext
 import logging
@@ -33,3 +35,4 @@ def quick_task(parent_wnd=None):
 		task_uuid = quicktask.create_quicktask(dlg.GetValue().strip())
 		publisher.sendMessage('task.update', task_uuid=task_uuid)
 	dlg.Destroy()
+

@@ -4,13 +4,15 @@
 """ Constans and enums.
 
 Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 Licence: GPLv2+
 """
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2013"
-__version__ = "2013-04-26"
+__copyright__ = """Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 
 import gettext
@@ -132,3 +134,4 @@ REPEAT_PATTERN = dict(REPEAT_PATTERN_LIST)
 GOAL_TIME_TERM = {0: _("Lifelong"),
 		1: _("Long Term"),
 		2: _("Short Term")}
+

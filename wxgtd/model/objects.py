@@ -5,13 +5,15 @@
 """ SqlAlchemy objects definition.
 
 Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 Licence: GPLv2+
 """
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2013"
-__version__ = "2013-03-02"
+__copyright__ = """Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 
 import logging
@@ -692,3 +694,4 @@ class SyncLog(BaseModelMixin, Base):
 Index('idx_task_childs', Task.parent_uuid, Task.due_date, Task.completed)
 Index('idx_task_show', Task.hide_until, Task.parent_uuid, Task.completed,
 		Task.title)
+

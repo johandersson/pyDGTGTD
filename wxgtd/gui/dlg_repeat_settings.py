@@ -2,14 +2,16 @@
 """ Repeat task settings dialog,
 
 Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025
 
 This file is part of wxGTD
 Licence: GPLv2+
 """
 
 __author__ = "Karol Będkowski"
-__copyright__ = "Copyright (c) Karol Będkowski, 2013"
-__version__ = "2013-04-28"
+__copyright__ = """Copyright (c) Karol Będkowski, 2013
+Copyright (c) Johan Andersson, 2025"""
+__version__ = "2025-12-03"
 
 import logging
 import gettext
@@ -208,3 +210,4 @@ def _choice_select_by_data(control, value):
 
 def _get_choice_selected(control):
 	return control.GetClientData(control.GetSelection())
+

@@ -5,3 +5,4 @@ tasks = data['TASK']
 print("Tasks and their CONTEXT IDs:")
 for t in tasks:
     print(f"  Task: {t['TITLE'][:50]:50} | CONTEXT: {t['CONTEXT']}")
+
