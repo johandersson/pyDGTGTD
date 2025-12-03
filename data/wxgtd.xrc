@@ -3740,7 +3740,7 @@
                     <hgap>12</hgap>
                     <rows>5</rows>
                     <growablecols>1</growablecols>
-                    <cols>1</cols>
+                    <cols>2</cols>
                     <vgap>6</vgap>
                     <object class="sizeritem">
                         <flag>wxEXPAND</flag>
@@ -3827,7 +3827,6 @@
                         <size>12, 12</size>
                     </object>
                     <object class="sizeritem">
-                        <flag>wxALIGN_RIGHT</flag>
                         <object class="wxButton" name="btn_auth">
                             <label>Authenticate</label>
                         </object>

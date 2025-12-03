@@ -32,8 +32,13 @@ except ImportError:
 
 try:
 	import dropbox
+	from dropbox import DropboxOAuth2FlowNoRedirect
+	from dropbox.exceptions import ApiError, AuthError
 except ImportError:
 	dropbox = None  # pylint: disable=C0103
+	DropboxOAuth2FlowNoRedirect = None
+	ApiError = None
+	AuthError = None
 
 from wxgtd.wxtools.wxpub import publisher
 
@@ -63,31 +68,34 @@ def _notify_progress(progress, msg):
 
 
 def _create_session():
+	"""Create Dropbox client using API v2 with OAuth2 access token."""
 	appcfg = appconfig.AppConfig()
-	sess = dropbox.session.DropboxSession(appcfg.get('dropbox', 'appkey'),
-			appcfg.get('dropbox', 'appsecret'), 'dropbox')
-	sess.set_token(appcfg.get('dropbox', 'oauth_key'),
-			appcfg.get('dropbox', 'oauth_secret'))
-	return dropbox.client.DropboxClient(sess)
+	access_token = appcfg.get('dropbox', 'access_token')
+	if not access_token:
+		# Fall back to old oauth_key for backward compatibility
+		access_token = appcfg.get('dropbox', 'oauth_key')
+	if not access_token:
+		raise SYNC.OtherSyncError(_("Dropbox access token not configured."))
+	return dropbox.Dropbox(access_token)
 
 
 def download_file(fileobj, source, dbclient):
 	_LOG.info('download_file')
 	try:
-		remote_file, metadata = dbclient.get_file_and_metadata(source)
-		if metadata and metadata['bytes'] > 0:
-			fileobj.write(remote_file.read())
+		metadata, response = dbclient.files_download(source)
+		if metadata and metadata.size > 0:
+			fileobj.write(response.content)
 			return True
-	except dropbox.rest.ErrorResponse:
-		_LOG.warn("download_file: %r not found", source)
+	except ApiError as err:
+		_LOG.warning("download_file: %r not found - %s", source, err)
 	return False
 
 
 def _delete_file(dbclient, path):
 	try:
-		dbclient.file_delete(path)
-	except dropbox.rest.ErrorResponse as error:
-		_LOG.warn('_delete_file(%s) error: %s', path, error)
+		dbclient.files_delete_v2(path)
+	except ApiError as error:
+		_LOG.warning('_delete_file(%s) error: %s', path, error)
 
 
 def sync(load_only=False, notify_cb=_notify_progress):
@@ -104,15 +112,16 @@ def sync(load_only=False, notify_cb=_notify_progress):
 	_LOG.info("sync: %r", SYNC_PATH)
 	if not dropbox:
 		raise SYNC.OtherSyncError(_("Dropbox is not available."))
-	if not appconfig.AppConfig().get('dropbox', 'oauth_secret'):
+	appcfg = appconfig.AppConfig()
+	if not appcfg.get('dropbox', 'access_token') and not appcfg.get('dropbox', 'oauth_key'):
 		raise SYNC.OtherSyncError(_("Dropbox is not configured."))
-	notify_cb(0, _("Sync via Dropbox API...."))
+	notify_cb(0, _("Sync via Dropbox API v2...."))
 	notify_cb(1, _("Creating backup"))
 	SYNC.create_backup()
 	notify_cb(25, _("Checking sync lock"))
 	try:
 		dbclient = _create_session()
-	except dropbox.rest.ErrorResponse as error:
+	except (ApiError, AuthError) as error:
 		raise SYNC.OtherSyncError(_("Dropbox: connection failed: %s") %
 				str(error))
 	temp_file = tempfile.NamedTemporaryFile(suffix='.zip', delete=False)
@@ -128,8 +137,8 @@ def sync(load_only=False, notify_cb=_notify_progress):
 				exporter.save_to_file(temp_filename, notify_cb, 'GTD_SYNC.json')
 				_delete_file(dbclient, SYNC_PATH)
 				notify_cb(20, _("Uploading..."))
-				with open(temp_filename) as temp_file:
-					dbclient.put_file(SYNC_PATH, temp_file)
+				with open(temp_filename, 'rb') as temp_file:
+					dbclient.files_upload(temp_file.read(), SYNC_PATH, mode=dropbox.files.WriteMode('overwrite'))
 		except Exception as err:
 			_LOG.exception("file sync error")
 			raise SYNC.OtherSyncError(err)
@@ -155,10 +164,10 @@ def create_sync_lock(dbclient):
 		False, if directory is locked.
 	"""
 	try:
-		data = dbclient.metadata(LOCK_PATH)
-		if data and data['bytes'] > 0:
+		metadata = dbclient.files_get_metadata(LOCK_PATH)
+		if metadata and metadata.size > 0:
 			return False
-	except dropbox.rest.ErrorResponse:
+	except ApiError:
 		_LOG.exception('create_sync_lock get lock')
 
 	session = objects.Session()
@@ -167,6 +176,7 @@ def create_sync_lock(dbclient):
 	synclog = {'deviceId': device_id.val,
 			"startTime": exporter.fmt_date(datetime.datetime.utcnow())}
 	session.flush()  # pylint: disable=E1101
-	dbclient.put_file(LOCK_PATH, _JSON_ENCODER(synclog))
+	synclog_data = _JSON_ENCODER(synclog).encode('utf-8')
+	dbclient.files_upload(synclog_data, LOCK_PATH, mode=dropbox.files.WriteMode('overwrite'))
 	return True
 
