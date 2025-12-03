@@ -1,3 +1,17 @@
+pyWeeklyReview 1.0.0 2025-12-03
+	* Complete Python 3 migration from Python 2.7
+	* wxPython 4.x compatibility updates
+	* Renamed application from wxGTD to pyWeeklyReview
+	* Fixed Android JSON import/export synchronization
+	* Added comprehensive unit test suite (132 tests)
+	* Modernized GUI: white backgrounds, Segoe UI fonts, improved spacing
+	* Added data privacy and security documentation
+	* Replaced deprecated wx.lib.pubsub with pypubsub library
+	* Fixed various deprecation warnings and compatibility issues
+	* Added Archive Database feature
+	* Improved project subtask display in Projects view
+	* Enhanced copyright and attribution documentation
+
 wxgtk 0.12.9 2015-02-10
 	* fix syncing
 
