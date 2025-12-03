@@ -71,17 +71,9 @@ class DlgDropboxAuth(BaseDialog):
 		# Style the main dialog background
 		self._wnd.SetBackgroundColour(wx.Colour(255, 255, 255))  # White
 		
-		# Style the Save & Connect button
-		btn_auth = self['btn_auth']
-		if btn_auth:
-			btn_auth.SetBackgroundColour(wx.Colour(39, 174, 96))  # #27AE60
-			btn_auth.SetForegroundColour(wx.Colour(255, 255, 255))
-		
-		# Style the App Console button
-		btn_console = self['btn_app_console']
-		if btn_console:
-			btn_console.SetBackgroundColour(wx.Colour(52, 152, 219))  # #3498DB
-			btn_console.SetForegroundColour(wx.Colour(255, 255, 255))
+		# Note: On Windows, native buttons don't support custom background colors well
+		# The OS overrides them with system colors, especially on hover
+		# We keep the default button appearance for better UX
 
 	def _setup(self):
 		self._config = config = AppConfigWrapper()
