@@ -73,7 +73,7 @@ def run():
 
 	# app config
 	from wxgtd.lib import appconfig
-	config = appconfig.AppConfig('pyweeklyreview.cfg', 'pyweeklyreview')
+	config = appconfig.AppConfig('wxgtd.cfg', 'wxgtd')
 	config.load_defaults(config.get_data_file('defaults.cfg'))
 	config.load()
 	config.debug = options.debug
