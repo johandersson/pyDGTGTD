@@ -19,7 +19,6 @@ __version__ = "2025-12-03"
 
 import sys
 import os
-import imp
 import logging
 import configparser
 import base64
@@ -338,7 +337,7 @@ def is_frozen():
 		return True
 	return (hasattr(sys, "frozen")		# new py2exe
 			or hasattr(sys, "importers")		# old py2exe
-			or imp.is_frozen("__main__"))		# tools/freeze
+			or getattr(sys, "_MEIPASS", False))		# PyInstaller
 
 
 if __name__ == '__main__':
