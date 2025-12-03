@@ -102,6 +102,6 @@ def undelete_dict_item(item, session):
 		session.commit()
 		publisher.sendMessage('dictitem.update')
 		return True
-	_LOG.warn("undelete_dict_item: undelete not deleted object: %r", item)
+	_LOG.warning("undelete_dict_item: undelete not deleted object: %r", item)
 	return False
 

@@ -49,7 +49,7 @@ def alarm_pattern_to_time(pattern):
 	elif period in ('minute', 'minutes'):
 		offset = datetime.timedelta(minutes=num)
 	else:
-		_LOG.warn('alarm_pattern: invalid pattern = %r', pattern)
+		_LOG.warning('alarm_pattern: invalid pattern = %r', pattern)
 		return None
 	return offset
 
