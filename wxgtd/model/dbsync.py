@@ -167,8 +167,12 @@ def create_sync_lock(dbclient):
 		metadata = dbclient.files_get_metadata(LOCK_PATH)
 		if metadata and metadata.size > 0:
 			return False
+	except AuthError as error:
+		_LOG.error('Dropbox auth error: %s', error)
+		raise SYNC.OtherSyncError(_("Dropbox authentication failed. "
+			"Please check your access token and app permissions."))
 	except ApiError:
-		_LOG.exception('create_sync_lock get lock')
+		_LOG.debug('Lock file does not exist, will create it')
 
 	session = objects.Session()
 	device_id = session.query(objects.Conf).filter_by(  # pylint: disable=E1101

@@ -97,7 +97,7 @@ class DlgDropboxAuth(BaseDialog):
 			return
 		
 		# For API v2, we don't need the auth flow - just save the token
-		access_token = self._config.get('dropbox', 'access_token')
+		access_token = self._config.get('dropbox/access_token')
 		if access_token:
 			# Validate the token by creating a Dropbox instance
 			if self._validate_token(access_token):
@@ -118,7 +118,7 @@ class DlgDropboxAuth(BaseDialog):
 			dbx = dropbox.Dropbox(access_token)
 			account_info = dbx.users_get_current_account()
 			# Save account display name for reference
-			self._config.set('dropbox', 'info', account_info.name.display_name)
+			self._config['dropbox/info'] = account_info.name.display_name
 			msg.message_box_info(self._wnd,
 				_("Successfully connected to Dropbox account: %s") % 
 				account_info.name.display_name)
