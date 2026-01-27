@@ -147,7 +147,7 @@ class FrameNotebook(BaseFrame):
 	def _on_folders_listbox(self, _evt):
 		self._refresh_pages()
 
-	def _on_notebook_update(self, _evt):
+	def _on_notebook_update(self, notebook_uuid=None):
 		self._refresh_folders()
 		self._refresh_pages()
 
@@ -156,7 +156,7 @@ class FrameNotebook(BaseFrame):
 		NotebookController.open_page(self.wnd, uuid)
 
 	def _on_pages_list_col_click(self, evt):
-		m_col = evt.m_col
+		m_col = evt.GetColumn()
 		if self._current_sort_col == m_col:
 			self._current_sort_ord = -self._current_sort_ord
 		else:
@@ -221,10 +221,10 @@ class FrameNotebook(BaseFrame):
 			query = query.order_by(col.desc())
 		idx = 0
 		for idx, page in enumerate(query):
-			self._lb_pages.InsertStringItem(idx, page.title)
-			self._lb_pages.SetStringItem(idx, 1,
+			self._lb_pages.InsertItem(idx, page.title)
+			self._lb_pages.SetItem(idx, 1,
 					fmt.format_timestamp(page.created))
-			self._lb_pages.SetStringItem(idx, 2,
+			self._lb_pages.SetItem(idx, 2,
 					fmt.format_timestamp(page.modified))
 			self._lb_pages.SetItemData(idx, idx)
 			self._pages_uuid[idx] = page.uuid

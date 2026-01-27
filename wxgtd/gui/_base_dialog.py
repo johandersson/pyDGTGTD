@@ -183,9 +183,9 @@ class BaseDialog:
 		if self._save_pos:
 			# save size & posiotion
 			self._appconfig.set(self._dialog_name, 'size',
-					self._wnd.GetSizeTuple())
+					self._wnd.GetSize())
 			self._appconfig.set(self._dialog_name, 'position',
-					self._wnd.GetPositionTuple())
+					self._wnd.GetPosition())
 		# remove from cache.
 		if self.obj_key and self.obj_key in self._windows:
 			del self._windows[self.obj_key]

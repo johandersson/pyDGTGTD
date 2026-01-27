@@ -44,7 +44,7 @@ class DlgProjectTree(BaseDialog):
 	@property
 	def selected(self):
 		sel = self._tc_tree.GetSelection()
-		return self._tc_tree.GetPyData(sel) if sel else None
+		return self._tc_tree.GetItemData(sel) if sel else None
 
 	def _load_controls(self, wnd):
 		# pylint: disable=W0201
@@ -72,13 +72,13 @@ class DlgProjectTree(BaseDialog):
 	def _fill_projects(self):
 		tc_tree = self._tc_tree
 		tree_root = tc_tree.AddRoot(_("wxGTD (no project)"))
-		tc_tree.SetPyData(tree_root, None)
+		tc_tree.SetItemData(tree_root, None)
 		icon_project_idx = self._icons.get_image_index('project_small')
 		icon_checklist_idx = self._icons.get_image_index('checklist_small')
 
 		def add_item(root, task):
 			child = tc_tree.AppendItem(root, task.title)
-			tc_tree.SetPyData(child, task.uuid)
+			tc_tree.SetItemData(child, task.uuid)
 			icon = (icon_project_idx if task.type == enums.TYPE_PROJECT
 					else icon_checklist_idx)
 			tc_tree.SetItemImage(child, icon, wx.TreeItemIcon_Normal)

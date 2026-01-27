@@ -27,9 +27,25 @@ def main():
     project_root = os.path.dirname(os.path.abspath(__file__))
     sys.path.insert(0, project_root)
     
+    # Determine the Python executable to use
+    python_exe = sys.executable  # Default to current executable
+    
+    # Check if we're in a virtual environment
+    venv_path = os.path.join(project_root, 'venv')
+    if os.path.exists(venv_path):
+        if sys.platform == "win32":
+            venv_python = os.path.join(venv_path, 'Scripts', 'python.exe')
+        else:
+            venv_python = os.path.join(venv_path, 'bin', 'python')
+        
+        if os.path.exists(venv_python):
+            python_exe = venv_python
+            print(f"Using virtual environment Python: {venv_python}")
+    
     # Default pytest arguments
     pytest_args = [
-        'pytest',
+        python_exe,
+        '-m', 'pytest',
         'tests/',
         '-v',
         '--tb=short',

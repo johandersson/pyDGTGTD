@@ -44,7 +44,7 @@ def delete_notebook_page(page_uuid, session=None):
 		return False
 	page.deleted = datetime.datetime.now()
 	session.commit()
-	publisher.sendMessage('notebook.delete', data={'notebook_uuid': page_uuid})
+	publisher.sendMessage('notebook.delete', notebook_uuid=page_uuid)
 	return True
 
 
@@ -62,6 +62,6 @@ def save_modified_page(page, session=None):
 	page.update_modify_time()
 	session.add(page)
 	session.commit()
-	publisher.sendMessage('notebook.update', data={'notebook_uuid': page.uuid})
+	publisher.sendMessage('notebook.update', notebook_uuid=page.uuid)
 	return True
 
