@@ -1,4 +1,4 @@
-# pyWeeklyReview - Python 3 Desktop GTD Application
+# pyDGTGTD - Python 3 Desktop GTD Application
 
 A GTD® (Getting Things Done®) task management application for desktop with data sync support for DGT GTD Android app.
 
