@@ -38,6 +38,7 @@ from wxgtd.gui import dlg_about
 from wxgtd.gui import _infobox as infobox
 from wxgtd.gui import message_boxes as mbox
 from wxgtd.gui import _tasklistctrl as TLC
+from wxgtd.gui import _projectlistpanel
 from wxgtd.gui import quicktask
 from wxgtd.gui._base_frame import BaseFrame
 from wxgtd.gui._filtertreectrl import FilterTreeCtrl
@@ -95,12 +96,21 @@ class FrameMain(BaseFrame):
 				count_callback=self._get_filter_item_count)
 		box.Add(self._filter_tree_ctrl, 1, wx.EXPAND)
 		filter_tree_panel.SetSizer(box)
+		# notebook for main views
+		self._main_notebook = self['main_notebook']
 		# tasklist
 		tasklist_panel = self['tasklist_panel']
 		box = wx.BoxSizer(wx.HORIZONTAL)
 		self._items_list_ctrl = TLC.TaskListControl(tasklist_panel)
 		box.Add(self._items_list_ctrl, 1, wx.EXPAND)
 		tasklist_panel.SetSizer(box)
+		# project list panel
+		projectlist_panel = self['projectlist_panel']
+		box = wx.BoxSizer(wx.HORIZONTAL)
+		self._project_list_panel = _projectlistpanel.ProjectListPanel(
+			projectlist_panel)
+		box.Add(self._project_list_panel, 1, wx.EXPAND)
+		projectlist_panel.SetSizer(box)
 		ppinfo = self['panel_parent_info']
 		self._panel_parent_info = infobox.TaskInfoPanel(ppinfo, -1)
 		box = wx.BoxSizer(wx.HORIZONTAL)
@@ -158,6 +168,8 @@ class FrameMain(BaseFrame):
 				self['btn_parent_edit'])
 		wnd.Bind(wx.EVT_TIMER, self._on_timer)
 		wnd.Bind(wx.EVT_ICONIZE, self._on_window_iconze)
+		wnd.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self._on_notebook_page_changed,
+				self._main_notebook)
 
 		publisher.subscribe(self._on_tasks_update, ('task', 'update'))
 		publisher.subscribe(self._on_tasks_update, ('task', 'delete'))
@@ -724,6 +736,14 @@ class FrameMain(BaseFrame):
 
 	def _on_tasks_update(self, task_uuid=None):
 		self._refresh_list()
+		# Refresh project list if on that tab
+		if self._main_notebook.GetSelection() == 1:  # Project List tab
+			self._project_list_panel.refresh(self._session)
+
+	def _on_notebook_page_changed(self, _evt):
+		""" Handle notebook tab change. """
+		if self._main_notebook.GetSelection() == 1:  # Project List tab
+			self._project_list_panel.refresh(self._session)
 
 	def _on_frame_messsage(self, args):
 		if args.topic == ('gui', 'frame_main', 'raise'):

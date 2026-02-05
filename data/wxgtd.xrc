@@ -215,8 +215,20 @@
                             <object class="sizeritem">
                                 <option>1</option>
                                 <flag>wxEXPAND</flag>
-                                <object class="wxPanel" name="tasklist_panel">
-                                    <style>wxTAB_TRAVERSAL</style>
+                                <object class="wxNotebook" name="main_notebook">
+                                    <usenotebooksizer>1</usenotebooksizer>
+                                    <object class="notebookpage">
+                                        <label>Tasks</label>
+                                        <object class="wxPanel" name="tasklist_panel">
+                                            <style>wxTAB_TRAVERSAL</style>
+                                        </object>
+                                    </object>
+                                    <object class="notebookpage">
+                                        <label>Project List</label>
+                                        <object class="wxPanel" name="projectlist_panel">
+                                            <style>wxTAB_TRAVERSAL</style>
+                                        </object>
+                                    </object>
                                 </object>
                             </object>
                         </object>
