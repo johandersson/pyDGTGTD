@@ -17,7 +17,9 @@ import logging
 import wx
 
 from wxgtd.model import objects as OBJ
+from wxgtd.model import enums
 from wxgtd.gui import _tasklistctrl as TLC
+from wxgtd.wxtools.wxpub import publisher
 
 _ = gettext.gettext
 _LOG = logging.getLogger(__name__)
@@ -79,6 +81,15 @@ class ProjectListPanel(wx.Panel):
 			self._list_with_actions)
 		self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self._on_item_activated_no_tasks,
 			self._list_no_tasks)
+		
+		# Bind right-click events for context menu
+		self._list_no_tasks.Bind(wx.EVT_COMMAND_RIGHT_CLICK,
+			self._on_list_no_tasks_right_click)
+		self._list_no_tasks.Bind(wx.EVT_RIGHT_UP,
+			self._on_list_no_tasks_right_click)
+		
+		# Subscribe to task updates to refresh the list
+		publisher.subscribe(self._on_task_update, ('task', 'update'))
 
 	def refresh(self, session=None):
 		""" Refresh the project list from the database. """
@@ -121,7 +132,47 @@ class ProjectListPanel(wx.Panel):
 		""" Handle double-click on a project item in projects without tasks list. """
 		self._on_item_activated(evt, self._list_no_tasks)
 
-	def _on_item_activated(self, evt, list_ctrl):
+	def _on_item_activated(self, evt, list_ctrl)
+
+	def _on_list_no_tasks_right_click(self, evt):
+		""" Handle right-click on projects with no tasks list. """
+		# Get the item that was clicked
+		item_idx = self._list_no_tasks.GetFirstSelected()
+		
+		if item_idx < 0:
+			return
+		
+		# Get the project UUID
+		project_uuid = self._list_no_tasks.get_item_uuid(item_idx)
+		if not project_uuid:
+			return
+		
+		# Create popup menu
+		menu = wx.Menu()
+		add_task_id = wx.NewId()
+		menu.Append(add_task_id, _("Add task to project"))
+		
+		# Bind menu event
+		self.Bind(wx.EVT_MENU, lambda e: self._on_add_task_to_project(e, project_uuid),
+			id=add_task_id)
+		
+		# Show popup menu
+		self._list_no_tasks.PopupMenu(menu)
+		menu.Destroy()
+
+	def _on_add_task_to_project(self, evt, project_uuid):
+		""" Handle 'Add task to project' menu selection. """
+		# Import here to avoid circular dependency
+		from wxgtd.gui.task_controller import TaskController
+		
+		# Create new task with this project as parent
+		TaskController.new_task(self, enums.TYPE_TASK, project_uuid)
+
+	def _on_task_update(self, task_uuid=None):
+		""" Handle task update notifications to refresh the project list. """
+		# Refresh the entire project list when tasks are added/modified
+		if self._session:
+			self.refresh(self._session):
 		""" Handle double-click on a project item. """
 		item_idx = evt.GetIndex()
 		
