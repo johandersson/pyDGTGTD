@@ -180,7 +180,7 @@ def _move_date_repeat(date, repeat_pattern):
 		Updated date
 	"""
 	# pylint: disable=R0911, R0912
-	# TODO: czy przy uwzględnianiu należy uwzględniać aktualną datę?
+	# TODO: should current date be considered when accounting?
 	if not repeat_pattern:
 		return date
 	if not date:
@@ -273,7 +273,7 @@ def repeat_task(task, reset_task=True):
 		New task with updated values or None if no task is created
 	"""
 	# repeat_from : 1= from completed, 0= from start
-	# TODO: repeat_end (??) sprawdzić czy to jest używane
+	# TODO: repeat_end (??) check if this is used
 	if not task.repeat_pattern or task.repeat_pattern == 'Norepeat':
 		return None
 	_LOG.info('repeat_task %r', task)
@@ -618,28 +618,28 @@ def adjust_task_type(task, session):
 		True if ok.
 	"""
 	if task.parent:
-		# zadanie ma rodzica - ustalenie typu na podstawie parenta
+		# Task has parent - determine type based on parent
 		if task.parent.type == enums.TYPE_CHECKLIST:
-			# na checkliście tylko elementy listy
+			# On checklist, only checklist items allowed
 			task.type = enums.TYPE_CHECKLIST_ITEM
 		elif task.type == enums.TYPE_CHECKLIST_ITEM:
-			# rodzic nie jest checklistą, więc gdy element należał do listy
-			# zmiana na zwykłe zadanie
+			# Parent is not checklist, so if element belonged to list
+			# change to regular task
 			task.type = enums.TYPE_TASK
 	elif task.type == enums.TYPE_CHECKLIST_ITEM:
-		# brak rodzica; elementy checlisty tylko w checklistach
+		# No parent; checklist items only exist in checklists
 		task.type = enums.TYPE_TASK
 	if task.children:
-		# aktualizacja potomków
+		# Update children
 		if task.type in (enums.TYPE_CHECKLIST, enums.TYPE_PROJECT):
 			for subtask in task.children:
 				adjust_task_type(subtask, session)
 		else:
-			# jeżeli to nie projakt ani checliksta to nie powinna mieć podzadań
+			# If it's not project nor checklist it shouldn't have subtasks
 			for subtask in task.children:
-				# przesuniecie na poziom parenta
+				# Move to parent level
 				subtask.parent = task.parent
-				# poprawa typu
+				# Fix type
 				adjust_task_type(subtask, session)
 	return True
 

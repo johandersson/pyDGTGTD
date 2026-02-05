@@ -246,7 +246,7 @@ class FilterTreeCtrl(treemixin.VirtualTree, treemixin.ExpansionState,
 			# checkbox - select or unselect all sub-items
 			self._model.get_item(indices).checked = item.GetValue()
 			if len(indices) == 1:
-				# zaznaczanie / odznaczanie podzadań
+				# Checking / unchecking subtasks
 				value = item.GetValue()
 				self._model.get_item(indices).set_child_check(value)
 				for child in item.GetChildren():

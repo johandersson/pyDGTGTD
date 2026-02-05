@@ -470,17 +470,17 @@ def _append_filter_list(query, param, values):
 		Updated query object.
 	"""
 	if not values:
-		# brak filtra
+		# No filter
 		return query
 	if values == [None]:
-		# wyświetlenie tylko bez ustawionej wartości parametru
+		# Display only items without a set parameter value
 		return query.filter(param.is_(None))
 	elif None in values:
-		# lista parametrów zawiera wartość NULL
+		# Parameter list contains NULL value
 		values = values[:]
 		values.remove(None)
 		return query.filter(or_(param.is_(None), param.in_(values)))
-	# lista parametrów bez NULL
+	# Parameter list without NULL
 	return query.filter(param.in_(values))
 
 

@@ -40,13 +40,13 @@ class DictBaseDlg(BaseDialog):
 		dlg_name: name of dialog in resource file
 	"""
 
-	_items_list_control = "lb_items"  # nazwa widgeta zawierającego listę
-			# elementów
-	_item_name = ""  # nazwa elementu
-	_item_class = None  # klasa obiektów
+	_items_list_control = "lb_items"  # Name of widget containing the list
+			# of elements
+	_item_name = ""  # Name of element
+	_item_class = None  # Class of objects
 
 	def __init__(self, parent, dlg_name):
-		self._displayed_item = None  # aktualnie wuświetlany obiekt
+		self._displayed_item = None  # Currently displayed object
 
 		class _Proxy(object):
 			""" Proxy class that allow use validators on dynamically changed

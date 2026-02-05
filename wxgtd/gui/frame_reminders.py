@@ -145,7 +145,7 @@ class FrameReminders(BaseFrame):
 	def _on_items_list_activated(self, evt):
 		task_uuid, task_type = self._task_list_ctrl.items[evt.GetData()]
 		if task_type in (enums.TYPE_PROJECT, enums.TYPE_CHECKLIST):
-			# nie powinno być
+			# Should not happen
 			return
 		if task_uuid:
 			TaskController.open_task(self.wnd, task_uuid)

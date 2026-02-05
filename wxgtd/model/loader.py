@@ -518,8 +518,8 @@ def _load_folders(data, session, notify_cb):
 	notify_cb(6, _("Loading folders"))
 	folders = data.get("folder")
 	folders_cache = _build_id_uuid_map(folders)
-	for folder in sort_objects_by_parent(folders):  # musi być sortowane,
-		# bo nie znajdzie parenta
+	for folder in sort_objects_by_parent(folders):  # Must be sorted,
+		# because it won't find parent otherwise
 		folder_id = folder.get("_id")
 		_replace_ids(folder, folders_cache, "parent_id")
 		_convert_timestamps(folder)

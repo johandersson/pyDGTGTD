@@ -230,7 +230,7 @@ def _fix_panels(wnd):
 			child.SetFont(font)
 			_fix_panels(child)
 		elif isinstance(child, wx.Notebook):
-			# bez tego walidatory nie działają
+			# Without this validators don't work
 			child.SetExtraStyle(wx.WS_EX_VALIDATE_RECURSIVELY)
 			child.SetFont(font)
 			_fix_panels(child)

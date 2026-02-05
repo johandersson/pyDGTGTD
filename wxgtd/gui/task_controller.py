@@ -286,7 +286,7 @@ class TaskController:
 		"""
 		parent_type = self._task.parent.type if self._task.parent else None
 		if parent_type == enums.TYPE_CHECKLIST:
-			# nie można zmienić typu z TYPE_CHECKLIST_ITEM
+			# Cannot change type from TYPE_CHECKLIST_ITEM
 			self._task.type = enums.TYPE_CHECKLIST_ITEM
 			return True
 		values = [enums.TYPE_TASK, enums.TYPE_CALL, enums.TYPE_EMAIL,
