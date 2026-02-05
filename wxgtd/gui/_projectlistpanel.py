@@ -132,7 +132,16 @@ class ProjectListPanel(wx.Panel):
 		""" Handle double-click on a project item in projects without tasks list. """
 		self._on_item_activated(evt, self._list_no_tasks)
 
-	def _on_item_activated(self, evt, list_ctrl)
+	def _on_item_activated(self, evt, list_ctrl):
+		""" Handle double-click on a project item. """
+		item_idx = evt.GetIndex()
+		
+		if item_idx >= 0:
+			task_uuid = list_ctrl.get_item_uuid(item_idx)
+			if task_uuid:
+				# Import here to avoid circular dependency
+				from wxgtd.gui.task_controller import TaskController
+				TaskController.open_task(self, task_uuid)
 
 	def _on_list_no_tasks_right_click(self, evt):
 		""" Handle right-click on projects with no tasks list. """
@@ -172,14 +181,5 @@ class ProjectListPanel(wx.Panel):
 		""" Handle task update notifications to refresh the project list. """
 		# Refresh the entire project list when tasks are added/modified
 		if self._session:
-			self.refresh(self._session):
-		""" Handle double-click on a project item. """
-		item_idx = evt.GetIndex()
-		
-		if item_idx >= 0:
-			task_uuid = list_ctrl.get_item_uuid(item_idx)
-			if task_uuid:
-				# Import here to avoid circular dependency
-				from wxgtd.gui.task_controller import TaskController
-				TaskController.open_task(self, task_uuid)
+			self.refresh(self._session)
 
