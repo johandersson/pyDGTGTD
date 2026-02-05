@@ -75,15 +75,38 @@ pyWeeklyReview can import/export JSON data from the DGT GTD Android app:
 
 All tasks, contexts, folders, goals, and notebooks will be imported.
 
-## Python 3 Migration Changes
+## Fork Improvements & Changes
 
+This fork includes:
+
+**Python 3 & wxPython 4.x Migration:**
+- Upgraded from Python 2.7 to Python 3.8+
+- Updated to wxPython 4.x (Phoenix) from legacy wxPython 2.8
 - Fixed wx.PyValidator → wx.Validator deprecation
 - Fixed wx.SystemSettings API changes
 - Removed obsolete wxversion import
+
+**Bug Fixes & Compatibility:**
 - Fixed empty UUID handling in JSON imports
 - Fixed task-context-folder-goal relationship mapping
 - Fixed None type comparisons
 - Added session.flush() for UUID auto-generation
+- Improved Android DGT GTD JSON sync reliability
+
+**Performance Improvements:**
+- Added task count caching for filter tree
+- Optimized database queries with reduced redundant calls
+- Improved GUI responsiveness with cached filter counts
+
+**New Features:**
+- Dynamic task counts in filter checkboxes (e.g., "@home (5)")
+- Context-aware count updates based on active filters
+- Enhanced filter tree with real-time count refresh
+
+**Code Quality:**
+- Improved code organization following PEP 8 standards
+- Added comprehensive test suite with 197 unit tests
+- 31% code coverage with pytest and coverage.py
 
 ## License
 

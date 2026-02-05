@@ -162,23 +162,23 @@ def str2datetime_utc(string):
 	return None
 
 
-def _convert_timestamps(dictobj, *fields):
+def _convert_timestamps(dict_obj, *fields):
 	""" Converts timestamps in string into datetime objects in read data.
 
 	Converted are for default "created", "modified", "deleted".
 
 	Args:
-		dictobj: loaded object as dict
+		dict_obj: loaded object as dict
 		fields: list of additional fields to convert
 	"""
 	def convert(fld):
-		value = dictobj.get(fld)
+		value = dict_obj.get(fld)
 		if value is None:
-			_LOG.debug("Missing field %r in %r", fld, dictobj)
+			_LOG.debug("Missing field %r in %r", fld, dict_obj)
 			return
 		elif value:
 			value = str2datetime_utc(value)
-		dictobj[fld] = value or None
+		dict_obj[fld] = value or None
 
 	for field in ("created", "modified", "deleted"):
 		convert(field)
@@ -197,7 +197,7 @@ def _cleanup_tasks(loaded_tasks, last_sync, session):
 	"""
 	_LOG.info("_cleanup_tasks()")
 	idx = 0
-	for task in objects.Task.selecy_by_modified_is_less(last_sync,
+	for task in objects.Task.select_by_modified_is_less(last_sync,
 			session=session):
 		if task.uuid not in loaded_tasks and not task.deleted:
 			_LOG.info("_cleanup_tasks: delete task %r", task.uuid)
@@ -218,7 +218,7 @@ def _cleanup_notebooks(loaded_notebooks, last_sync, session):
 	"""
 	_LOG.info("_cleanup_notebooks()")
 	idx = 0
-	for page in objects.NotebookPage.selecy_by_modified_is_less(last_sync,
+	for page in objects.NotebookPage.select_by_modified_is_less(last_sync,
 			session=session):
 		if page.uuid not in loaded_notebooks and not page.deleted:
 			_LOG.info("_cleanup_notebooks: delete page %r", page.uuid)
@@ -241,7 +241,7 @@ def _cleanup_unused(objcls, loaded_cache, last_sync, session):
 	_LOG.info("_cleanup_unused(%r)", objcls)
 	loaded = set(loaded_cache.values())
 	idx = 0
-	for obj in objcls.select_old_usunsed(last_sync,
+	for obj in objcls.select_old_unused(last_sync,
 			session=session):
 		if obj.uuid not in loaded:
 			_LOG.info("_cleanup_unused: %r delete  %r", objcls, obj.uuid)

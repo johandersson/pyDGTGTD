@@ -22,8 +22,8 @@ NAME = _("pyWeeklyReview")
 VERSION = '1.0.0'
 VERSION_INFO = (1, 0, 0, 'stable', 1)
 RELEASE = '2025-12-03'
-DESCRIPTION = _('''pyWeeklyReview - Python 3 Edition''')
-DEVELOPERS = u'''Karol Będkowski\nJohan Andersson (Python 3 migration)'''
+DESCRIPTION = _('''pyWeeklyReview - Python 3 Edition with Performance Improvements & New Features''')
+DEVELOPERS = u'''Karol Będkowski\nJohan Andersson (Python 3 migration, performance improvements, new features)'''
 TRANSLATORS = u'''Karol Będkowski'''
 COPYRIGHT = u"""Copyright (c) Karol Będkowski, 2013-2015
 Copyright (c) Johan Andersson, 2025"""

@@ -117,11 +117,11 @@ class TestDownloadFile:
 		mock_response = MockDropboxResponse(content=b"test content")
 		mock_client.files_download.return_value = (mock_metadata, mock_response)
 		
-		fileobj = BytesIO()
-		result = dbsync.download_file(fileobj, '/test/path.zip', mock_client)
+		file_obj = BytesIO()
+		result = dbsync.download_file(file_obj, '/test/path.zip', mock_client)
 		
 		assert result is True
-		assert fileobj.getvalue() == b"test content"
+		assert file_obj.getvalue() == b"test content"
 		mock_client.files_download.assert_called_once_with('/test/path.zip')
 	
 	def test_download_file_empty_file(self):
@@ -131,8 +131,8 @@ class TestDownloadFile:
 		mock_response = MockDropboxResponse(content=b"")
 		mock_client.files_download.return_value = (mock_metadata, mock_response)
 		
-		fileobj = BytesIO()
-		result = dbsync.download_file(fileobj, '/test/path.zip', mock_client)
+		file_obj = BytesIO()
+		result = dbsync.download_file(file_obj, '/test/path.zip', mock_client)
 		
 		assert result is False
 	
@@ -149,8 +149,8 @@ class TestDownloadFile:
 			user_message_locale='en'
 		)
 		
-		fileobj = BytesIO()
-		result = dbsync.download_file(fileobj, '/test/path.zip', mock_client)
+		file_obj = BytesIO()
+		result = dbsync.download_file(file_obj, '/test/path.zip', mock_client)
 		
 		assert result is False
 
@@ -446,12 +446,12 @@ class TestEdgeCases:
 		mock_response = MockDropboxResponse(content=b"short")
 		mock_client.files_download.return_value = (mock_metadata, mock_response)
 		
-		fileobj = BytesIO()
-		result = dbsync.download_file(fileobj, '/test/path.zip', mock_client)
+		file_obj = BytesIO()
+		result = dbsync.download_file(file_obj, '/test/path.zip', mock_client)
 		
 		# Should still return True as long as some data was written
 		assert result is True
-		assert len(fileobj.getvalue()) == 5
+		assert len(file_obj.getvalue()) == 5
 	
 	def test_download_file_large_file(self):
 		"""Test download of large file."""
@@ -461,11 +461,11 @@ class TestEdgeCases:
 		mock_response = MockDropboxResponse(content=large_content)
 		mock_client.files_download.return_value = (mock_metadata, mock_response)
 		
-		fileobj = BytesIO()
-		result = dbsync.download_file(fileobj, '/test/large.zip', mock_client)
+		file_obj = BytesIO()
+		result = dbsync.download_file(file_obj, '/test/large.zip', mock_client)
 		
 		assert result is True
-		assert len(fileobj.getvalue()) == len(large_content)
+		assert len(file_obj.getvalue()) == len(large_content)
 	
 	def test_download_file_rate_limit_error(self):
 		"""Test download with rate limit exceeded error."""
@@ -479,8 +479,8 @@ class TestEdgeCases:
 			retry_after=60
 		)
 		
-		fileobj = BytesIO()
-		result = dbsync.download_file(fileobj, '/test/path.zip', mock_client)
+		file_obj = BytesIO()
+		result = dbsync.download_file(file_obj, '/test/path.zip', mock_client)
 		
 		assert result is False
 	
@@ -496,8 +496,8 @@ class TestEdgeCases:
 			user_message_text='Access denied'
 		)
 		
-		fileobj = BytesIO()
-		result = dbsync.download_file(fileobj, '/test/path.zip', mock_client)
+		file_obj = BytesIO()
+		result = dbsync.download_file(file_obj, '/test/path.zip', mock_client)
 		
 		assert result is False
 	

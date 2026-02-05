@@ -79,12 +79,12 @@ def _create_session():
 	return dropbox.Dropbox(access_token)
 
 
-def download_file(fileobj, source, dbclient):
+def download_file(file_obj, source, dbclient):
 	_LOG.info('download_file')
 	try:
 		metadata, response = dbclient.files_download(source)
 		if metadata and metadata.size > 0:
-			fileobj.write(response.content)
+			file_obj.write(response.content)
 			return True
 	except ApiError as err:
 		_LOG.warning("download_file: %r not found - %s", source, err)

@@ -64,18 +64,18 @@ class BaseModelMixin(object):
 		Args:
 			cleanup: clean specific to instance values.
 		"""
-		newobj = type(self)()
+		new_obj = type(self)()
 		for prop in orm.object_mapper(self).iterate_properties:
 			if isinstance(prop, orm.ColumnProperty) or \
 					(isinstance(prop, orm.RelationshipProperty)
 							and prop.secondary):
-				setattr(newobj, prop.key, getattr(self, prop.key))
-		if hasattr(newobj, 'uuid') and cleanup:
-			newobj.uuid = None
+				setattr(new_obj, prop.key, getattr(self, prop.key))
+		if hasattr(new_obj, 'uuid') and cleanup:
+			new_obj.uuid = None
 		if hasattr(self, 'children'):
 			for child in self.children:
-				newobj.children.append(child.clone())
-		return newobj
+				new_obj.children.append(child.clone())
+		return new_obj
 
 	def compare(self, obj):
 		""" Compare objects. """
@@ -100,14 +100,14 @@ class BaseModelMixin(object):
 				delattr(self, attr)
 
 	@classmethod
-	def selecy_by_modified_is_less(cls, timestamp, session=None):
+	def select_by_modified_is_less(cls, timestamp, session=None):
 		""" Find object with modified date less than given. """
 		session = session or Session()
 		return session.query(cls).filter(cls.modified < timestamp)
 
 	@classmethod
-	def select_old_usunsed(cls, timestamp, session=None):
-		""" Find object with modified date less than given and nod used in
+	def select_old_unused(cls, timestamp, session=None):
+		""" Find object with modified date less than given and not used in
 		any task. """
 		session = session or Session()
 		return session.query(cls).filter(cls.modified < timestamp).filter(
@@ -447,15 +447,15 @@ class Task(BaseModelMixin, Base):
 
 	def clone(self, cleanup=True):
 		""" Clone current object. """
-		newobj = BaseModelMixin.clone(self, cleanup)
+		new_obj = BaseModelMixin.clone(self, cleanup)
 		# clone tags
-		newobj.tags = self.tags[:]
+		new_obj.tags = self.tags[:]
 		# clone notes
 		for note in self.notes:
-			newobj.notes.append(note.clone())
+			new_obj.notes.append(note.clone())
 		if cleanup:
-			newobj.completed = None
-		return newobj
+			new_obj.completed = None
+		return new_obj
 
 
 def _append_filter_list(query, param, values):
@@ -615,7 +615,7 @@ class Tasknote(BaseModelMixin, Base):
 	visible = Column(Integer, default=1)
 
 	@classmethod
-	def select_old_usunsed(cls, timestamp, session=None):
+	def select_old_unused(cls, timestamp, session=None):
 		""" Find object with modified date less than given and nod used in
 		any task. """
 		session = session or Session()
