@@ -669,17 +669,27 @@ class FrameMain(BaseFrame):
 		_LOG.debug('FrameMain._on_item_drag: %r -> %r', s_index, e_index)
 		if s_index == e_index:
 			return
-		items = []
+		# Optimized: Collect all UUIDs first, then bulk load
+		uuids = []
 		if s_index < e_index:
 			for idx in range(s_index, e_index):
-				items.append(OBJ.Task.get(self._session,
-						uuid=self._items_list_ctrl.get_item_uuid(idx)))
-			items.append(items.pop(0))
+				uuids.append(self._items_list_ctrl.get_item_uuid(idx))
 		else:
 			for idx in range(e_index, s_index + 1):
-				items.append(OBJ.Task.get(self._session,
-						uuid=self._items_list_ctrl.get_item_uuid(idx)))
+				uuids.append(self._items_list_ctrl.get_item_uuid(idx))
+		
+		# Single query to get all tasks
+		tasks_map = {task.uuid: task for task in self._session.query(OBJ.Task).filter(
+			OBJ.Task.uuid.in_(uuids))}
+		
+		# Reconstruct items list in correct order
+		items = [tasks_map[uuid] for uuid in uuids if uuid in tasks_map]
+		
+		if s_index < e_index:
+			items.append(items.pop(0))
+		else:
 			items.insert(0, items.pop(-1))
+		
 		first_importance = min(item.importance for item in items)
 		for idx, item in enumerate(items):
 			item.importance = first_importance + idx

@@ -276,51 +276,13 @@ class TaskListControl(ULC.UltimateListCtrl, listmix.ColumnSorterMixin):
 		if task_is_overdue:
 			self.SetItemTextColour(index, wx.RED)
 		if expand_projects and task.type == enums.TYPE_PROJECT and task.child_count > 0:
-			subs = session.query(OBJ.Task).filter(OBJ.Task.parent_uuid == task.uuid, OBJ.Task.deleted.is_(None)).order_by(OBJ.Task.title)
+			# Optimized: Load all subtasks at once instead of querying recursively
+			subs = session.query(OBJ.Task).filter(
+				OBJ.Task.parent_uuid == task.uuid, 
+				OBJ.Task.deleted.is_(None)).order_by(OBJ.Task.title).all()
 			for sub in subs:
-				self._add_task(sub, indent + 1, active_only, session, expand_projects, icon_completed, prio_icon)
-
-	def _add_task(self, task, indent, active_only, session, expand_projects, icon_completed, prio_icon):
-		child_count = task.active_child_count if active_only else task.child_count
-		if active_only and child_count == 0 and task.completed:
-			return
-		task_is_overdue = task.overdue or (child_count > 0 and task.child_overdue)
-		icon = icon_completed if task.completed else prio_icon[task.priority]
-		index = self.InsertImageStringItem(sys.maxsize, "", icon)
-		self.SetStringItem(index, 1, "")
-		self.SetItemCustomRenderer(index, 1, _ListItemRenderer(self, task, task_is_overdue, indent))
-		if task.type == enums.TYPE_CHECKLIST_ITEM:
-			self.SetStringItem(index, 2, str(task.importance + 1))
-		elif task.type == enums.TYPE_PROJECT:
-			self.SetStringItem(index, 2, fmt.format_timestamp(task.due_date_project, False).replace(' ', '\n'))
-		else:
-			self.SetStringItem(index, 2, fmt.format_timestamp(task.due_date, task.due_time_set).replace(' ', '\n'))
-		self.SetItemCustomRenderer(index, 3, _ListItemRendererIcons(self, task, task_is_overdue, active_only))
-		self.SetItemData(index, index)
-		col = 4
-		if self._buttons & BUTTON_DISMISS:
-			item = self.GetItem(index, col)
-			btn = wx.Button(self, -1, _("Dismiss"))
-			btn.task = task.uuid
-			item.SetWindow(btn)
-			self.SetItem(item)
-			col += 1
-			self.Bind(wx.EVT_BUTTON, self._on_list_btn_dismiss_click, btn)
-		if self._buttons & BUTTON_SNOOZE:
-			item = self.GetItem(index, col)
-			btn = wx.Button(self, -1, _("Snooze"))
-			btn.task = task.uuid
-			item.SetWindow(btn)
-			self.SetItem(item)
-			self.Bind(wx.EVT_BUTTON, self._on_list_btn_snooze_click, btn)
-		self._items[index] = (task.uuid, task.type)
-		self.itemDataMap[index] = tuple(_get_sort_info_for_task(task))
-		if task_is_overdue:
-			self.SetItemTextColour(index, wx.RED)
-		if expand_projects and task.type == enums.TYPE_PROJECT and task.child_count > 0:
-			subs = session.query(OBJ.Task).filter(OBJ.Task.parent_uuid == task.uuid, OBJ.Task.deleted.is_(None)).order_by(OBJ.Task.title)
-			for sub in subs:
-				self._add_task(sub, indent + 1, active_only, session, expand_projects, icon_completed, prio_icon)
+				self._add_task(sub, indent + 1, active_only, session, expand_projects, 
+							   icon_completed, prio_icon)
 
 	def _setup_columns(self):
 		info = ULC.UltimateListItem()

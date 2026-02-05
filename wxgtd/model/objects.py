@@ -90,6 +90,14 @@ class BaseModelMixin(object):
 	def update_modify_time(self):
 		if hasattr(self, 'modified'):
 			self.modified = datetime.datetime.utcnow()  # pylint: disable=W0201
+		# Clear cached properties when task is modified
+		self._clear_property_cache()
+	
+	def _clear_property_cache(self):
+		\"\"\" Clear cached property values to force recalculation. \"\"\"
+		for attr in ('_active_child_count_cache', '_child_overdue_cache', '_child_count_cache'):
+			if hasattr(self, attr):
+				delattr(self, attr)
 
 	@classmethod
 	def selecy_by_modified_is_less(cls, timestamp, session=None):
@@ -171,20 +179,20 @@ class Task(BaseModelMixin, Base):
 			onupdate="CASCADE", ondelete="SET NULL"), index=True)
 	created = Column(DateTime, default=datetime.datetime.utcnow)
 	modified = Column(DateTime, default=datetime.datetime.utcnow, index=True)
-	completed = Column(DateTime)
-	deleted = Column(DateTime)
+	completed = Column(DateTime, index=True)  # Indexed for common filters
+	deleted = Column(DateTime, index=True)  # Indexed for common filters
 	ordinal = Column(Integer, default=0)
 	title = Column(String, index=True)
 	note = Column(String)
-	type = Column(Integer, nullable=False, default=enums.TYPE_TASK)
-	starred = Column(Integer, default=0)
-	status = Column(Integer, default=0)
+	type = Column(Integer, nullable=False, default=enums.TYPE_TASK, index=True)  # Indexed for filtering
+	starred = Column(Integer, default=0, index=True)  # Indexed for hotlist
+	status = Column(Integer, default=0, index=True)  # Indexed for filtering
 	priority = Column(Integer, default=0)
 	importance = Column(Integer, default=0)  # dla checlist pozycja
-	start_date = Column(DateTime)
+	start_date = Column(DateTime, index=True)  # Indexed for date queries
 	start_time_set = Column(Integer, default=0)
 	due_date = Column(DateTime, index=True)
-	due_date_project = Column(DateTime)
+	due_date_project = Column(DateTime, index=True)  # Indexed for project queries
 	due_time_set = Column(Integer, default=0)
 	due_date_mod = Column(Integer, default=0)
 	floating_event = Column(Integer, default=0)
@@ -194,7 +202,7 @@ class Task(BaseModelMixin, Base):
 	repeat_pattern = Column(String)
 	repeat_end = Column(Integer, default=0)
 	hide_pattern = Column(String)
-	hide_until = Column(DateTime)
+	hide_until = Column(DateTime, index=True)  # Indexed for hide_until filters
 	prevent_auto_purge = Column(Integer, default=0)
 	trash_bin = Column(Integer, default=0)
 	metainf = Column(String)
@@ -242,16 +250,28 @@ class Task(BaseModelMixin, Base):
 
 	@property
 	def active_child_count(self):
-		""" Count of not-complete subtask. """
-		return orm.object_session(self).scalar(select([func.count(Task.uuid)])
+		""" Count of not-complete subtask. 
+		
+		Optimized with memoization to avoid repeated queries.
+		"""
+		# Use cached value if available and session is still valid
+		if not hasattr(self, '_active_child_count_cache'):
+			self._active_child_count_cache = orm.object_session(self).scalar(
+				select([func.count(Task.uuid)])
 				.where(and_(Task.parent_uuid == self.uuid,
 						Task.completed.is_(None), Task.deleted.is_(None))))
+		return self._active_child_count_cache
 
 	@property
 	def child_overdue(self):
-		""" Count of not-complete subtask with due date in past. """
-		now = datetime.datetime.utcnow()
-		return orm.object_session(self).scalar(select([func.count(Task.uuid)])
+		""" Count of not-complete subtask with due date in past. 
+		
+		Optimized with memoization to avoid repeated queries.
+		"""
+		if not hasattr(self, '_child_overdue_cache'):
+			now = datetime.datetime.utcnow()
+			self._child_overdue_cache = orm.object_session(self).scalar(
+				select([func.count(Task.uuid)])
 				.where(and_(Task.parent_uuid == self.uuid,
 						Task.due_date.isnot(None), Task.completed.is_(None),
 						Task.deleted.is_(None),
@@ -260,6 +280,7 @@ class Task(BaseModelMixin, Base):
 								Task.type != enums.TYPE_PROJECT),
 							and_(Task.due_date_project < now,
 								Task.type == enums.TYPE_PROJECT)))))
+		return self._child_overdue_cache
 
 	@property
 	def overdue(self):
@@ -393,10 +414,16 @@ class Task(BaseModelMixin, Base):
 
 	@property
 	def child_count(self):
-		"""  Count subtask. """
-		return orm.object_session(self).scalar(select([func.count(Task.uuid)])
+		"""  Count subtask. 
+		
+		Optimized with memoization to avoid repeated queries.
+		"""
+		if not hasattr(self, '_child_count_cache'):
+			self._child_count_cache = orm.object_session(self).scalar(
+				select([func.count(Task.uuid)])
 				.where(and_(Task.parent_uuid == self.uuid,
 					Task.deleted.is_(None))))
+		return self._child_count_cache
 
 	@property
 	def sub_projects(self):

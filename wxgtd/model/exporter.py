@@ -198,10 +198,10 @@ def _build_uuid_map(session, objclass):
 	Returns:
 		Dictionary uuid -> object id
 	"""
-	cache = {}
-	for idx, obj in enumerate(session.query(objclass), 1):
-		cache[obj.uuid] = idx
-	return cache
+	# Optimized: Use dictionary comprehension instead of loop with enumerate
+	# This is more memory efficient and faster for large datasets
+	query = session.query(objclass.uuid)
+	return {uuid: idx for idx, (uuid,) in enumerate(query, 1)}
 
 
 _DEFAULT_BG_COLOR = "FFFFFF00"

@@ -302,21 +302,39 @@ def sort_objects_by_parent(objs):
 	""" Sort objects by parent.
 	Put first object with no parent. Then object with known parent (already
 	existing in result objects). Etc.
+	
+	Optimized to O(N) using a single pass with deque instead of O(N²).
 	"""
 	if not objs:
 		return []
-	all_objs_count = len(objs)
-	# no parent
-	result = [x for x in objs if x["parent_id"] == 0]
-	result_uuids = set(obj["_id"] for obj in result)
-	objs = [x for x in objs if x["parent_id"] != 0]
-	# rest
-	while objs:
-		objs_to_add = [x for x in objs if x["parent_id"] in result_uuids]
-		objs = [x for x in objs if x["parent_id"] not in result_uuids]
-		result.extend(objs_to_add)
-		result_uuids.update(obj["_id"] for obj in objs_to_add)
-	assert len(result) == all_objs_count
+	
+	from collections import deque, defaultdict
+	
+	# Build parent-to-children mapping - O(N)
+	children_map = defaultdict(list)
+	roots = []
+	
+	for obj in objs:
+		parent_id = obj["parent_id"]
+		if parent_id == 0:
+			roots.append(obj)
+		else:
+			children_map[parent_id].append(obj)
+	
+	# Breadth-first traversal - O(N)
+	result = []
+	queue = deque(roots)
+	
+	while queue:
+		obj = queue.popleft()
+		result.append(obj)
+		obj_id = obj["_id"]
+		# Add all children of this object to the queue
+		if obj_id in children_map:
+			queue.extend(children_map[obj_id])
+	
+	# Verify all objects were processed
+	assert len(result) == len(objs), f"Expected {len(objs)} objects, got {len(result)}"
 	return result
 
 
@@ -627,19 +645,29 @@ def _load_alarms(data, session, tasks_cache, notify_cb):
 	_LOG.info("_load_alarms")
 	notify_cb(35, _("Loading alarms"))
 	alarms = data.get("alarm") or []
+	# Optimized: Bulk load all tasks at once instead of N queries
+	task_uuids = []
 	for alarm in alarms:
 		task_uuid = _replace_ids(alarm, tasks_cache, "task_id")
-		if not task_uuid:
-			# Skip alarms for tasks not in cache (already processed in _load_tasks)
-			continue
-		_convert_timestamps(alarm, "alarm")
-		task = session.query(  # pylint: disable=E1101
-				objects.Task).filter_by(uuid=task_uuid).first()
-		if task.modified <= alarm["modified"]:
-			task.alarm = alarm["alarm"]
-			task_logic.update_task_alarm(task)
-		else:
-			_LOG.debug("skip %r", alarm)
+		if task_uuid:
+			task_uuids.append(task_uuid)
+			_convert_timestamps(alarm, "alarm")
+	
+	# Single query to get all tasks
+	if task_uuids:
+		tasks_map = {task.uuid: task for task in session.query(objects.Task).filter(
+			objects.Task.uuid.in_(task_uuids))}
+		
+		for alarm in alarms:
+			task_uuid = tasks_cache.get(alarm.get("task_id"))
+			if not task_uuid or task_uuid not in tasks_map:
+				continue
+			task = tasks_map[task_uuid]
+			if task.modified <= alarm["modified"]:
+				task.alarm = alarm["alarm"]
+				task_logic.update_task_alarm(task)
+			else:
+				_LOG.debug("skip %r", alarm)
 	if alarms:
 		del data["alarm"]
 	notify_cb(39, _("Loaded %d alarms") % len(alarms))
@@ -649,19 +677,30 @@ def _load_task_folders(data, session, tasks_cache, folders_cache, notify_cb):
 	_LOG.info("_load_task_folders")
 	notify_cb(40, _("Loading task folders"))
 	task_folders = data.get("task_folder") or []
+	# Optimized: Bulk load all tasks at once
+	task_uuids = set()
 	for task_folder in task_folders:
 		task_uuid = _replace_ids(task_folder, tasks_cache, "task_id")
-		folder_uuid = _replace_ids(task_folder, folders_cache, "folder_id")
-		if not task_uuid or not folder_uuid:
-			# Skip - relationship already processed in _load_tasks
-			continue
-		_convert_timestamps(task_folder)
-		task = session.query(  # pylint: disable=E1101
-				objects.Task).filter_by(uuid=task_uuid).first()
-		if task.modified <= task_folder["modified"]:
-			task.folder_uuid = folder_uuid
-		else:
-			_LOG.debug("skip %r", task_folder)
+		_replace_ids(task_folder, folders_cache, "folder_id")
+		if task_uuid:
+			task_uuids.add(task_uuid)
+			_convert_timestamps(task_folder)
+	
+	# Single query to get all tasks
+	if task_uuids:
+		tasks_map = {task.uuid: task for task in session.query(objects.Task).filter(
+			objects.Task.uuid.in_(task_uuids))}
+		
+		for task_folder in task_folders:
+			task_uuid = tasks_cache.get(task_folder.get("task_id"))
+			folder_uuid = task_folder.get("folder_uuid")
+			if not task_uuid or not folder_uuid or task_uuid not in tasks_map:
+				continue
+			task = tasks_map[task_uuid]
+			if task.modified <= task_folder["modified"]:
+				task.folder_uuid = folder_uuid
+			else:
+				_LOG.debug("skip %r", task_folder)
 	if task_folders:
 		del data["task_folder"]
 	notify_cb(44, _("Loaded %d task folders") % len(task_folders))
@@ -672,19 +711,30 @@ def _load_task_contexts(data, session, tasks_cache, contexts_cache,
 	_LOG.info("_load_task_contexts")
 	notify_cb(45, _("Loading task contexts"))
 	task_contexts = data.get("task_context") or []
+	# Optimized: Bulk load all tasks at once
+	task_uuids = set()
 	for task_context in task_contexts:
 		task_uuid = _replace_ids(task_context, tasks_cache, "task_id")
-		context_uuid = _replace_ids(task_context, contexts_cache, "context_id")
-		if not task_uuid or not context_uuid:
-			# Skip - relationship already processed in _load_tasks
-			continue
-		_convert_timestamps(task_context)
-		task = session.query(  # pylint: disable=E1101
-				objects.Task).filter_by(uuid=task_uuid).first()
-		if task.modified <= task_context["modified"]:
-			task.context_uuid = context_uuid
-		else:
-			_LOG.debug("skip %r", task_context)
+		_replace_ids(task_context, contexts_cache, "context_id")
+		if task_uuid:
+			task_uuids.add(task_uuid)
+			_convert_timestamps(task_context)
+	
+	# Single query to get all tasks
+	if task_uuids:
+		tasks_map = {task.uuid: task for task in session.query(objects.Task).filter(
+			objects.Task.uuid.in_(task_uuids))}
+		
+		for task_context in task_contexts:
+			task_uuid = tasks_cache.get(task_context.get("task_id"))
+			context_uuid = task_context.get("context_uuid")
+			if not task_uuid or not context_uuid or task_uuid not in tasks_map:
+				continue
+			task = tasks_map[task_uuid]
+			if task.modified <= task_context["modified"]:
+				task.context_uuid = context_uuid
+			else:
+				_LOG.debug("skip %r", task_context)
 	if task_contexts:
 		del data["task_context"]
 	notify_cb(49, _("Loaded %d tasks contexts") % len(task_contexts))
@@ -694,19 +744,30 @@ def _load_task_goals(data, session, tasks_cache, goals_cache, notify_cb):
 	_LOG.info("_load_task_goals")
 	notify_cb(50, _("Loading task goals"))
 	task_goals = data.get("task_goal") or []
+	# Optimized: Bulk load all tasks at once
+	task_uuids = set()
 	for task_goal in task_goals:
 		task_uuid = _replace_ids(task_goal, tasks_cache, "task_id")
-		goal_uuid = _replace_ids(task_goal, goals_cache, "goal_id")
-		if not task_uuid or not goal_uuid:
-			# Skip - relationship already processed in _load_tasks
-			continue
-		_convert_timestamps(task_goal)
-		task = session.query(  # pylint: disable=E1101
-				objects.Task).filter_by(uuid=task_uuid).first()
-		if task.modified <= task_goal["modified"]:
-			task.goal_uuid = goal_uuid
-		else:
-			_LOG.debug("skip %r", task_goal)
+		_replace_ids(task_goal, goals_cache, "goal_id")
+		if task_uuid:
+			task_uuids.add(task_uuid)
+			_convert_timestamps(task_goal)
+	
+	# Single query to get all tasks
+	if task_uuids:
+		tasks_map = {task.uuid: task for task in session.query(objects.Task).filter(
+			objects.Task.uuid.in_(task_uuids))}
+		
+		for task_goal in task_goals:
+			task_uuid = tasks_cache.get(task_goal.get("task_id"))
+			goal_uuid = task_goal.get("goal_uuid")
+			if not task_uuid or not goal_uuid or task_uuid not in tasks_map:
+				continue
+			task = tasks_map[task_uuid]
+			if task.modified <= task_goal["modified"]:
+				task.goal_uuid = goal_uuid
+			else:
+				_LOG.debug("skip %r", task_goal)
 	if task_goals:
 		del data["task_goal"]
 	notify_cb(54, _("Loaded %d task goals") % len(task_goals))
@@ -735,21 +796,36 @@ def _load_task_tags(data, session, tasks_cache, tags_cache, notify_cb):
 	_LOG.info("_load_task_tags")
 	notify_cb(60, _("Loading task tags"))
 	task_tags = data.get("task_tag") or []
+	# Optimized: Bulk load existing task tags
+	task_tag_pairs = []
 	for task_tag in task_tags:
 		task_uuid = _replace_ids(task_tag, tasks_cache, "task_id")
 		tag_uuid = _replace_ids(task_tag, tags_cache, "tag_id")
 		_convert_timestamps(task_tag)
-		obj = session.query(  # pylint: disable=E1101
-				objects.TaskTag).filter_by(task_uuid=task_uuid,
-				tag_uuid=tag_uuid).first()
-		if obj:
-			modified = task_tag.get("modified")
-			if not modified or not obj.modified or modified > obj.modified:
+		if task_uuid and tag_uuid:
+			task_tag_pairs.append((task_uuid, tag_uuid, task_tag))
+	
+	if task_tag_pairs:
+		# Single query to get all existing task tags
+		all_task_uuids = [pair[0] for pair in task_tag_pairs]
+		all_tag_uuids = [pair[1] for pair in task_tag_pairs]
+		existing_tags = session.query(objects.TaskTag).filter(
+			objects.TaskTag.task_uuid.in_(all_task_uuids),
+			objects.TaskTag.tag_uuid.in_(all_tag_uuids)).all()
+		
+		# Build lookup map
+		existing_map = {(tt.task_uuid, tt.tag_uuid): tt for tt in existing_tags}
+		
+		for task_uuid, tag_uuid, task_tag in task_tag_pairs:
+			obj = existing_map.get((task_uuid, tag_uuid))
+			if obj:
+				modified = task_tag.get("modified")
+				if not modified or not obj.modified or modified > obj.modified:
+					obj.load_from_dict(task_tag)
+			else:
+				obj = objects.TaskTag(task_uuid=task_uuid, tag_uuid=tag_uuid)
 				obj.load_from_dict(task_tag)
-		else:
-			obj = objects.TaskTag(task_uuid=task_uuid, tag_uuid=tag_uuid)
-			obj.load_from_dict(task_tag)
-			session.add(obj)  # pylint: disable=E1101
+				session.add(obj)  # pylint: disable=E1101
 	if task_tags:
 		del data["task_tag"]
 	notify_cb(64, _("Loaded %d task tags") % len(task_tags))
@@ -779,21 +855,34 @@ def _load_notebook_folders(data, session, notebooks_cache, folders_cache,
 	_LOG.info("_load_notebook_folders")
 	notify_cb(70, _("Loading notebook pages folders"))
 	notebook_folders = data.get("notebook_folder") or []
+	# Optimized: Bulk load all notebooks at once
+	notebook_uuids = set()
 	for notebook_folder in notebook_folders:
 		notebook_uuid = _replace_ids(notebook_folder, notebooks_cache,
 				"notebook_id")
-		folder_uuid = _replace_ids(notebook_folder, folders_cache, "folder_id")
-		if not notebook_uuid or not folder_uuid:
-			_LOG.error("load notebook folder error %r; %r; %r", notebook_folder,
-					notebook_uuid, folder_uuid)
-			continue
-		_convert_timestamps(notebook_folder)
-		notebook = session.query(  # pylint: disable=E1101
-				objects.NotebookPage).filter_by(uuid=notebook_uuid).first()
-		if notebook.modified <= notebook_folder["modified"]:
-			notebook.folder_uuid = folder_uuid
-		else:
-			_LOG.debug("skip %r", notebook_folder)
+		_replace_ids(notebook_folder, folders_cache, "folder_id")
+		if notebook_uuid:
+			notebook_uuids.add(notebook_uuid)
+			_convert_timestamps(notebook_folder)
+	
+	# Single query to get all notebooks
+	if notebook_uuids:
+		notebooks_map = {nb.uuid: nb for nb in session.query(objects.NotebookPage).filter(
+			objects.NotebookPage.uuid.in_(notebook_uuids))}
+		
+		for notebook_folder in notebook_folders:
+			notebook_uuid = notebooks_cache.get(notebook_folder.get("notebook_id"))
+			folder_uuid = notebook_folder.get("folder_uuid")
+			if not notebook_uuid or not folder_uuid or notebook_uuid not in notebooks_map:
+				if notebook_uuid and folder_uuid:
+					_LOG.error("load notebook folder error %r; %r; %r", notebook_folder,
+							notebook_uuid, folder_uuid)
+				continue
+			notebook = notebooks_map[notebook_uuid]
+			if notebook.modified <= notebook_folder["modified"]:
+				notebook.folder_uuid = folder_uuid
+			else:
+				_LOG.debug("skip %r", notebook_folder)
 	if notebook_folders:
 		del data["notebook_folder"]
 	notify_cb(75, _("Loaded %d notebook folders") % len(notebook_folders))
