@@ -82,6 +82,18 @@ class BaseTaskFrame(BaseFrame):
 		_LOG.debug("BaseTaskFrame.setup(%r)", task.uuid)
 		self._original_task = task.clone(cleanup=False)
 		self._data = {'prev_completed': task.completed}
+		
+		# Set window title based on task type
+		from wxgtd.model import enums
+		if task.type == enums.TYPE_PROJECT:
+			self.wnd.SetTitle(_("Project"))
+		elif task.type == enums.TYPE_CHECKLIST:
+			self.wnd.SetTitle(_("Checklist"))
+		elif task.type == enums.TYPE_CHECKLIST_ITEM:
+			self.wnd.SetTitle(_("Checklist Item"))
+		else:
+			self.wnd.SetTitle(_("Task"))
+		
 		self['tc_title'].SetValidator(Validator(task, 'title',
 				validators=LVALID.NotEmptyValidator(), field='title'))
 		self['tc_note'].SetValidator(Validator(task, 'note',))

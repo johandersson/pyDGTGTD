@@ -15,11 +15,9 @@ import gettext
 import logging
 
 import wx
-import wx.lib.agw.ultimatelistctrl as ULC
 
 from wxgtd.model import objects as OBJ
-from wxgtd.model import enums
-from wxgtd.wxtools import iconprovider
+from wxgtd.gui import _tasklistctrl as TLC
 
 _ = gettext.gettext
 _LOG = logging.getLogger(__name__)
@@ -27,7 +25,7 @@ _LOG = logging.getLogger(__name__)
 
 class ProjectListPanel(wx.Panel):
 	""" Panel that displays projects in two categories:
-	- Projects with actions (have tasks)
+	- Projects with actions (have tasks) - with tasks shown indented below
 	- Projects with no tasks (empty projects)
 	"""
 
@@ -56,7 +54,8 @@ class ProjectListPanel(wx.Panel):
 		label_with_actions.SetFont(font)
 		main_sizer.Add(label_with_actions, 0, wx.LEFT | wx.RIGHT | wx.TOP, 10)
 
-		self._list_with_actions = self._create_list_ctrl()
+		# Use TaskListControl for projects with actions
+		self._list_with_actions = TLC.TaskListControl(self)
 		main_sizer.Add(self._list_with_actions, 1, 
 			wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
 
@@ -68,38 +67,18 @@ class ProjectListPanel(wx.Panel):
 		label_no_tasks.SetFont(font)
 		main_sizer.Add(label_no_tasks, 0, wx.LEFT | wx.RIGHT | wx.TOP, 10)
 
-		self._list_no_tasks = self._create_list_ctrl()
+		# Use TaskListControl for projects without tasks
+		self._list_no_tasks = TLC.TaskListControl(self)
 		main_sizer.Add(self._list_no_tasks, 1, 
 			wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
 
 		self.SetSizer(main_sizer)
 
 		# Bind double-click events
-		self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self._on_item_activated)
-
-	def _create_list_ctrl(self):
-		""" Create a list control for displaying projects. """
-		list_ctrl = ULC.UltimateListCtrl(self, -1,
-			agwStyle=wx.LC_REPORT | wx.BORDER_SUNKEN | wx.LC_HRULES |
-			ULC.ULC_HAS_VARIABLE_ROW_HEIGHT)
-
-		# Set font
-		font = wx.Font(9, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
-			wx.FONTWEIGHT_NORMAL, False, 'Segoe UI')
-		list_ctrl.SetFont(font)
-
-		# Setup columns
-		list_ctrl.InsertColumn(0, _("Project"), width=400)
-		list_ctrl.InsertColumn(1, _("Tasks"), width=80)
-		list_ctrl.InsertColumn(2, _("Starred"), width=80)
-		list_ctrl.InsertColumn(3, _("Priority"), width=80)
-
-		# Setup icon list
-		self._icons = iconprovider.IconProvider(16)
-		self._icons.load_icons(['task_starred', 'project_small'])
-		list_ctrl.SetImageList(self._icons.image_list, wx.IMAGE_LIST_SMALL)
-
-		return list_ctrl
+		self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self._on_item_activated_with_tasks,
+			self._list_with_actions)
+		self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self._on_item_activated_no_tasks,
+			self._list_no_tasks)
 
 	def refresh(self, session=None):
 		""" Refresh the project list from the database. """
@@ -109,69 +88,47 @@ class ProjectListPanel(wx.Panel):
 		self._list_with_actions.DeleteAllItems()
 		self._list_no_tasks.DeleteAllItems()
 
-		# Get all projects
-		projects = OBJ.Task.all_projects().all()
-
+		# Get all projects (not completed, not deleted)
+		all_projects = OBJ.Task.all_projects().all()
+		
 		projects_with_actions = []
 		projects_no_tasks = []
 
 		# Categorize projects
-		for project in projects:
-			if project.completed:
-				continue  # Skip completed projects
+		for project in all_projects:
+			if project.completed or project.deleted:
+				continue  # Skip completed and deleted projects
 			
 			# Count children (tasks) - using cached property
 			child_count = project.child_count
 			
 			if child_count > 0:
-				projects_with_actions.append((project, child_count))
+				projects_with_actions.append(project)
 			else:
-				projects_no_tasks.append((project, child_count))
+				projects_no_tasks.append(project)
 
-		# Fill the lists
-		self._fill_list(self._list_with_actions, projects_with_actions)
-		self._fill_list(self._list_no_tasks, projects_no_tasks)
+		# Fill the lists - ProjectListControl will handle showing tasks under projects
+		self._list_with_actions.fill(projects_with_actions, active_only=False, 
+			session=self._session, expand_projects=True)
+		self._list_no_tasks.fill(projects_no_tasks, active_only=False, 
+			session=self._session, expand_projects=False)
 
-	def _fill_list(self, list_ctrl, projects_data):
-		""" Fill a list control with project data. 
-		
-		Args:
-			list_ctrl: The UltimateListCtrl to fill
-			projects_data: List of tuples (project, child_count)
-		"""
-		icon_starred = self._icons.get_image_index('task_starred')
-		icon_project = self._icons.get_image_index('project_small')
+	def _on_item_activated_with_tasks(self, evt):
+		""" Handle double-click on a project item in projects with actions list. """
+		self._on_item_activated(evt, self._list_with_actions)
 
-		for idx, (project, child_count) in enumerate(projects_data):
-			# Add project title with icon
-			list_idx = list_ctrl.InsertImageStringItem(idx, project.title, icon_project)
-			
-			# Store project UUID as item data
-			list_ctrl.SetItemData(list_idx, id(project))
-			list_ctrl.SetItemPyData(list_idx, project.uuid)
+	def _on_item_activated_no_tasks(self, evt):
+		""" Handle double-click on a project item in projects without tasks list. """
+		self._on_item_activated(evt, self._list_no_tasks)
 
-			# Task count
-			list_ctrl.SetStringItem(list_idx, 1, str(child_count))
-
-			# Starred
-			if project.starred:
-				list_ctrl.SetStringItem(list_idx, 2, "★")
-
-			# Priority
-			if project.priority is not None and project.priority != 0:
-				priority_text = str(project.priority)
-				if project.priority > 0:
-					priority_text = "+" + priority_text
-				list_ctrl.SetStringItem(list_idx, 3, priority_text)
-
-	def _on_item_activated(self, evt):
+	def _on_item_activated(self, evt, list_ctrl):
 		""" Handle double-click on a project item. """
-		list_ctrl = evt.GetEventObject()
 		item_idx = evt.GetIndex()
 		
 		if item_idx >= 0:
-			project_uuid = list_ctrl.GetItemPyData(item_idx)
-			if project_uuid:
+			task_uuid = list_ctrl.get_item_uuid(item_idx)
+			if task_uuid:
 				# Import here to avoid circular dependency
 				from wxgtd.gui.task_controller import TaskController
-				TaskController.open_task(self, project_uuid)
+				TaskController.open_task(self, task_uuid)
+
