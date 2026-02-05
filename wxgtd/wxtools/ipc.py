@@ -140,6 +140,10 @@ class IPC:
 	def _remove_lock(self):
 		try:
 			os.unlink(self.lock_path)
+		except FileNotFoundError:
+			# Lock file doesn't exist - that's fine, goal achieved
+			_LOG.debug("_remove_lock: lock file already removed (%r)", self.lock_path)
+			return True
 		except OSError:
 			_LOG.exception("_remove_lock error (%r)", self.lock_path)
 			return False
