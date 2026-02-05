@@ -124,11 +124,14 @@ class TaskController:
 		Returns:
 			True after successful delete task.
 		"""
+		# Get the correct item type name for the confirmation dialog
+		item_type = enums.TYPES.get(self._task.type, _("task")).lower()
+		
 		if permanently:
-			if not mbox.message_box_delete_confirm(self.wnd, _("task")):
+			if not mbox.message_box_delete_confirm(self.wnd, item_type):
 				return False
-		elif not mbox.message_box_delete_confirm(self.wnd, _("task"),
-				_("Task will be moved to trash.")):
+		elif not mbox.message_box_delete_confirm(self.wnd, item_type,
+				_("%s will be moved to trash.") % enums.TYPES.get(self._task.type, _("Task"))):
 			return False
 		return task_logic.delete_task(self._task, self._session, permanently)
 
