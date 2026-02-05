@@ -143,9 +143,8 @@ class ProjectListPanel(wx.Panel):
 		icon_project = self._icons.get_image_index('project_small')
 
 		for idx, (project, child_count) in enumerate(projects_data):
-			# Add project title
-			list_idx = list_ctrl.InsertStringItem(idx, project.title, 
-				imageIndex=icon_project)
+			# Add project title with icon
+			list_idx = list_ctrl.InsertImageStringItem(idx, project.title, icon_project)
 			
 			# Store project UUID as item data
 			list_ctrl.SetItemData(list_idx, id(project))
@@ -156,8 +155,7 @@ class ProjectListPanel(wx.Panel):
 
 			# Starred
 			if project.starred:
-				list_ctrl.SetStringItem(list_idx, 2, "★", 
-					imageIndex=icon_starred)
+				list_ctrl.SetStringItem(list_idx, 2, "★")
 
 			# Priority
 			if project.priority is not None and project.priority != 0:

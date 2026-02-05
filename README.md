@@ -1,14 +1,14 @@
-# pyDGTGTD - Python 3 Desktop GTD Application
+# pyWeeklyReview - Python 3 Desktop GTD Application
 
-A GTD® (Getting Things Done®) task management application for desktop with data sync support for DGT GTD Android app.
+A GTD® (Getting Things Done®) task management application for desktop with full data compatibility with the **DGT GTD Android app**.
 
-**This is a fork of [wxGTD by Karol Będkowski](https://github.com/KarolBedkowski/wxgtd), updated for Python 3 and wxPython 4.x compatibility. The original program was called wxGTD, but this fork has been renamed to pyWeeklyReview for .**
+**This is a fork of [wxGTD by Karol Będkowski](https://github.com/KarolBedkowski/wxgtd), updated for Python 3 and wxPython 4.x compatibility. The original program was called wxGTD, but this fork has been renamed to pyWeeklyReview.**
 
 ## About
 
 pyWeeklyReview is a desktop application for managing tasks following the GTD® methodology. This Python 3 version includes:
 - Full wxPython 4.x compatibility
-- JSON import/export for syncing with DGT GTD Android app
+- **Full compatibility with DGT GTD Android app** - import/export JSON data seamlessly
 - **Dropbox sync with upgraded API v2** (fixed from deprecated v1)
 - SQLite database with SQLAlchemy ORM
 - Context-based task organization
@@ -23,7 +23,7 @@ pyWeeklyReview is a desktop application for managing tasks following the GTD® m
 - (C) Karol Będkowski <karol.bedkowski@gmail.com> - Original wxGTD desktop application, GPL2 License
 
 **DGT GTD Android App:**
-- (C) [dgtale - Creator of DGT GTD Android app](https://www.dgtale.ch/), Unkown license, this project does not use any code from that app, just the JSON file format that it uses to backup and export the tasks and projects.
+- (C) [dgtale - Creator of DGT GTD Android app](https://www.dgtale.ch/), Unknown license, this project does not use any code from that app, just the JSON file format that it uses to backup and export the tasks and projects.
 
 **Python 3 Migration and added features and improved GUI:**
 - (C) Johan Andersson - Python 3 migration, wxPython 4.x compatibility, Android sync fixes (2025), GPL2 License
@@ -76,15 +76,27 @@ pyWeeklyReview now includes updated Dropbox synchronization using API v2:
 
 **Note:** This fork upgraded from the deprecated Dropbox API v1 to v2, restoring full Dropbox sync functionality.
 
-### Android App Sync
+### Android App Sync (DGT GTD Compatibility)
 
-pyWeeklyReview can import/export JSON data from the DGT GTD Android app:
+**pyWeeklyReview is fully compatible with the DGT GTD Android app's file format.**
 
-1. Export from Android app to JSON file
-2. In pyWeeklyReview: File → Import/Export → Import from JSON
-3. Select your exported JSON file
+You can seamlessly import/export your tasks between the desktop and Android app:
 
-All tasks, contexts, folders, goals, and notebooks will be imported.
+1. **Export from DGT GTD Android app:**
+   - In the Android app, go to Settings → Backup/Export
+   - Export your tasks to a JSON file
+   - Transfer the file to your desktop (via email, cloud storage, etc.)
+
+2. **Import to pyWeeklyReview:**
+   - In pyWeeklyReview: File → Import/Export → Import from JSON
+   - Select your exported JSON file from the Android app
+
+3. **Export from pyWeeklyReview to Android:**
+   - In pyWeeklyReview: File → Import/Export → Export to JSON
+   - Transfer the exported JSON file to your Android device
+   - In DGT GTD Android app: Import the JSON file
+
+**All data is preserved:** Tasks, contexts, folders, goals, projects, notebooks, and task relationships are fully compatible between pyWeeklyReview and DGT GTD Android app.
 
 ## Fork Improvements & Changes
 
@@ -147,7 +159,7 @@ GPL v2+ - See COPYING file for full license text.
 
 **Copyright:**
 - Copyright (C) 2013-2015 Karol Będkowski (original wxGTD)
-- Copyright (C) 2025 Johan Andersson (Python 3 migration, Dropbox API upgrade, Android sync, renamed to pyWeeklyReview)
+- Copyright (C) 2025 Johan Andersson (Python 3 migration, wxPython 4.x, Dropbox API upgrade, Android sync compatibility, renamed to pyWeeklyReview)
 - DGT GTD Android app data format by dgtale
 
 ## Trademarks
@@ -158,6 +170,6 @@ This software is not affiliated with, endorsed by, or supported by David Allen o
 
 ## Project Links
 
-- **This Repository:** https://github.com/johandersson/gtgGTDdesktop
+- **This Repository (pyWeeklyReview):** https://github.com/johandersson/pyWeeklyReview
 - **Original wxGTD (forked from):** https://github.com/KarolBedkowski/wxgtd by Karol Będkowski
-- **DGT GTD Android:** By dgtale
+- **Compatible Android App - DGT GTD:** By dgtale - https://www.dgtale.ch/
