@@ -91,7 +91,8 @@ class FrameMain(BaseFrame):
 		# filter tree ctrl
 		filter_tree_panel = self['filter_tree_panel']
 		box = wx.BoxSizer(wx.HORIZONTAL)
-		self._filter_tree_ctrl = FilterTreeCtrl(filter_tree_panel, -1)
+		self._filter_tree_ctrl = FilterTreeCtrl(filter_tree_panel, -1,
+				count_callback=self._get_filter_item_count)
 		box.Add(self._filter_tree_ctrl, 1, wx.EXPAND)
 		filter_tree_panel.SetSizer(box)
 		# tasklist
@@ -643,6 +644,8 @@ class FrameMain(BaseFrame):
 		evt.Skip()
 
 	def _on_filter_tree_item_selected(self, evt):
+		# Refresh filter tree to update counts when filters change
+		self._filter_tree_ctrl.refresh()
 		self._refresh_list()
 		evt.Skip()
 
@@ -650,6 +653,8 @@ class FrameMain(BaseFrame):
 		group_id = self['rb_show_selection'].GetSelection()
 		if group_id != queries.QUERY_TRASH:
 			self._items_path = []
+		# Refresh filter tree to update counts based on new selection
+		self._filter_tree_ctrl.refresh()
 		self._refresh_list()
 		evt.Skip()
 
@@ -790,6 +795,41 @@ class FrameMain(BaseFrame):
 		self._refresh_groups()
 		self.wnd.Thaw()
 		wx.SetCursor(wx.STANDARD_CURSOR)
+
+	def _get_filter_item_count(self, category, item_id):
+		""" Get count of tasks for a specific filter item.
+		
+		Args:
+			category: One of STATUSES, CONTEXTS, FOLDERS, GOALS, TAGS
+			item_id: The ID/UUID of the specific item
+		
+		Returns:
+			Count of tasks matching current filters + this item
+		"""
+		if not self._all_loaded:
+			return 0
+		
+		try:
+			# Build base params based on current radio button selection
+			params = self._get_params_for_list(skip_search=True, skip_parent=True)
+			
+			# Override the specific category filter with just this item
+			if category == "STATUSES":
+				params['statuses'] = [item_id]
+			elif category == "CONTEXTS":
+				params['contexts'] = [item_id]
+			elif category == "FOLDERS":
+				params['folders'] = [item_id]
+			elif category == "GOALS":
+				params['goals'] = [item_id]
+			elif category == "TAGS":
+				params['tags'] = [item_id]
+			
+			# Query count
+			count = OBJ.Task.select_by_filters(params, session=self._session).count()
+			return count
+		except Exception:
+			return 0
 
 	def _autosync(self, on_load=True):
 		if not self._appconfig.get('sync', 'use_dropbox'):

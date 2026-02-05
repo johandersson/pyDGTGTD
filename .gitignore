@@ -52,6 +52,11 @@ backups/
 *-stamp
 *.cover
 
+# Documentation - only README.md should be tracked
+PERFORMANCE_OPTIMIZATIONS.md
+DATA_PRIVACY.md
+TESTING.md
+
 # Project specific
 *.gpx*
 *.zip

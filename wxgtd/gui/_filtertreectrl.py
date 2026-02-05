@@ -79,8 +79,10 @@ class TreeItemCB(TreeItem):
 class FilterTreeModel(object):
 	""" Model used in FilterTreeModel. """
 
-	def __init__(self):
+	def __init__(self, count_callback=None):
 		self._items = []
+		self._count_callback = count_callback
+		self._counts_cache = {}
 		self.load()
 
 	def load(self):
@@ -115,7 +117,23 @@ class FilterTreeModel(object):
 	def get_text(self, indices):
 		if not indices:
 			return 'root'  # hidden root
-		return self.get_item(indices).title
+		item = self.get_item(indices)
+		text = item.title
+		# Add counts for child items in status, context, and folder categories
+		if len(indices) == 2 and self._count_callback:
+			parent_item = self._items[indices[0]]
+			parent_obj = parent_item.obj
+			if parent_obj in ("STATUSES", "CONTEXTS", "FOLDERS", "GOALS", "TAGS"):
+				# Get count from cache or callback
+				cache_key = (parent_obj, item.obj)
+				if cache_key not in self._counts_cache:
+					count = self._count_callback(parent_obj, item.obj)
+					self._counts_cache[cache_key] = count
+				else:
+					count = self._counts_cache[cache_key]
+				if count > 0:
+					text = "%s (%d)" % (text, count)
+		return text
 
 	def get_children_count(self, indices):
 		if not indices:
@@ -185,7 +203,8 @@ class FilterTreeCtrl(treemixin.VirtualTree, treemixin.ExpansionState,
 	_menu_show_except_id = wx.NewId()
 
 	def __init__(self, *args, **kwargs):
-		self._model = FilterTreeModel()
+		count_callback = kwargs.pop('count_callback', None)
+		self._model = FilterTreeModel(count_callback=count_callback)
 		kwargs['style'] = wx.TR_HIDE_ROOT | \
 			wx.TR_HAS_BUTTONS | wx.TR_FULL_ROW_HIGHLIGHT
 		kwargs['agwStyle'] = CT.TR_DEFAULT_STYLE | wx.TR_HIDE_ROOT
@@ -238,6 +257,8 @@ class FilterTreeCtrl(treemixin.VirtualTree, treemixin.ExpansionState,
 
 	def refresh(self):
 		""" Refresh tree. """
+		# Clear counts cache to force recalculation
+		self._model._counts_cache = {}
 		self.ExpandAll()
 		self.RefreshItems()
 
