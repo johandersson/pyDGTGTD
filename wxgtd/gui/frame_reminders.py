@@ -162,8 +162,9 @@ class FrameReminders(BaseFrame):
 			self._remove_task(task_uuid)
 		self._refresh()
 
-	def _on_tasks_delete(self, task_uuid):
+	def _on_tasks_delete(self, task_uuid=None):
 		_LOG.debug('FrameReminders._on_tasks_delete(%r)', task_uuid)
-		self._remove_task(task_uuid)
+		if task_uuid:
+			self._remove_task(task_uuid)
 		self._refresh()
 

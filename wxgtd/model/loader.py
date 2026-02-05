@@ -324,17 +324,36 @@ def sort_objects_by_parent(objs):
 	# Breadth-first traversal - O(N)
 	result = []
 	queue = deque(roots)
+	processed_ids = set()
 	
 	while queue:
 		obj = queue.popleft()
 		result.append(obj)
 		obj_id = obj["_id"]
+		processed_ids.add(obj_id)
 		# Add all children of this object to the queue
 		if obj_id in children_map:
 			queue.extend(children_map[obj_id])
 	
-	# Verify all objects were processed
-	assert len(result) == len(objs), f"Expected {len(objs)} objects, got {len(result)}"
+	# Handle orphaned objects (objects with missing parents)
+	if len(result) != len(objs):
+		orphaned = [obj for obj in objs if obj["_id"] not in processed_ids]
+		_LOG.warning("Found %d orphaned objects with missing parents:", len(orphaned))
+		for obj in orphaned:
+			original_parent = obj.get("parent_id")
+			_LOG.warning("  ID %s (parent %s): %s", 
+				obj.get("_id"), original_parent, obj.get("title", ""))
+			# Add note about orphaned status to preserve information
+			existing_note = obj.get("note", "") or ""
+			if existing_note:
+				existing_note += "\n\n"
+			orphan_note = f"[ORPHANED TASK] Original parent ID {original_parent} not found during import. This task has been moved to root level."
+			obj["note"] = existing_note + orphan_note
+			# Add orphaned objects with no parent (root level)
+			obj["parent_id"] = 0
+			result.append(obj)
+		_LOG.info("Orphaned objects have been added with parent_id=0 and marked in notes")
+	
 	return result
 
 

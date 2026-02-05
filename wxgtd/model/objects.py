@@ -256,7 +256,8 @@ class Task(BaseModelMixin, Base):
 		"""
 		# Use cached value if available and session is still valid
 		if not hasattr(self, '_active_child_count_cache'):
-			self._active_child_count_cache = orm.object_session(self).scalar(
+			session = orm.object_session(self) or Session()
+			self._active_child_count_cache = session.scalar(
 				select([func.count(Task.uuid)])
 				.where(and_(Task.parent_uuid == self.uuid,
 						Task.completed.is_(None), Task.deleted.is_(None))))
@@ -270,7 +271,8 @@ class Task(BaseModelMixin, Base):
 		"""
 		if not hasattr(self, '_child_overdue_cache'):
 			now = datetime.datetime.utcnow()
-			self._child_overdue_cache = orm.object_session(self).scalar(
+			session = orm.object_session(self) or Session()
+			self._child_overdue_cache = session.scalar(
 				select([func.count(Task.uuid)])
 				.where(and_(Task.parent_uuid == self.uuid,
 						Task.due_date.isnot(None), Task.completed.is_(None),
@@ -419,7 +421,8 @@ class Task(BaseModelMixin, Base):
 		Optimized with memoization to avoid repeated queries.
 		"""
 		if not hasattr(self, '_child_count_cache'):
-			self._child_count_cache = orm.object_session(self).scalar(
+			session = orm.object_session(self) or Session()
+			self._child_count_cache = session.scalar(
 				select([func.count(Task.uuid)])
 				.where(and_(Task.parent_uuid == self.uuid,
 					Task.deleted.is_(None))))
@@ -427,19 +430,22 @@ class Task(BaseModelMixin, Base):
 
 	@property
 	def sub_projects(self):
-		return Session.object_session(self).query(Task).with_parent(self)\
+		session = orm.object_session(self) or Session()
+		return session.query(Task).with_parent(self)\
 				.filter(Task.type == enums.TYPE_PROJECT,
 					Task.deleted.is_(None))
 
 	@property
 	def sub_checklists(self):
-		return Session.object_session(self).query(Task).with_parent(self)\
+		session = orm.object_session(self) or Session()
+		return session.query(Task).with_parent(self)\
 				.filter(Task.type == enums.TYPE_CHECKLIST,
 					Task.deleted.is_(None))
 
 	@property
 	def sub_project_or_checklists(self):
-		return (Session.object_session(self).query(Task).with_parent(self)
+		session = orm.object_session(self) or Session()
+		return (session.query(Task).with_parent(self)
 				.filter(or_(Task.type == enums.TYPE_CHECKLIST,
 						Task.type == enums.TYPE_PROJECT),
 					Task.deleted.is_(None))
