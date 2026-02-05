@@ -94,7 +94,7 @@ class BaseModelMixin(object):
 		self._clear_property_cache()
 	
 	def _clear_property_cache(self):
-		\"\"\" Clear cached property values to force recalculation. \"\"\"
+		""" Clear cached property values to force recalculation. """
 		for attr in ('_active_child_count_cache', '_child_overdue_cache', '_child_count_cache'):
 			if hasattr(self, attr):
 				delattr(self, attr)
