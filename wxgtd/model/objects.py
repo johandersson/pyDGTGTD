@@ -57,7 +57,7 @@ class BaseModelMixin(object):
 		mapper = orm.object_mapper(self)
 		relationships = set(mapper.relationships.keys())
 		for key, val in dict_.items():
-			if hasattr(self, key) and key not in relationships:
+			if hasattr(self, key) and key not in relationships and key != 'tags':
 				setattr(self, key, val)
 
 	def clone(self, cleanup=True):
