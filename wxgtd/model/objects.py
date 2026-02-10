@@ -54,8 +54,10 @@ class BaseModelMixin(object):
 
 	def load_from_dict(self, dict_):
 		""" Update object attributes from dictionary. """
+		mapper = orm.object_mapper(self)
+		relationships = set(mapper.relationships.keys())
 		for key, val in dict_.items():
-			if hasattr(self, key):
+			if hasattr(self, key) and key not in relationships:
 				setattr(self, key, val)
 
 	def clone(self, cleanup=True):

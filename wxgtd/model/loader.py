@@ -431,9 +431,10 @@ def _normalize_field_names(obj):
 			# Keep empty strings for title, note, and meta_inf; convert others to None
 			# Special handling for UUID: empty UUID should be None so it gets auto-generated
 			value = None if new_key not in ('title', 'note', 'meta_inf') else ""
-		# Convert empty lists for tags
-		if new_key == 'tags' and value == []:
-			continue  # Skip empty tag arrays
+		# Skip invalid tag values
+		if new_key == 'tags':
+			if value == [] or not isinstance(value, list):
+				continue  # Skip empty or invalid tag arrays
 			
 		normalized[new_key] = value
 	return normalized
