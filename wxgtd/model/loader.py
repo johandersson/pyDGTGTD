@@ -315,8 +315,11 @@ def sort_objects_by_parent(objs):
 	roots = []
 	
 	for obj in objs:
-		parent_id = obj["parent_id"]
-		if parent_id == 0:
+		# Some imported objects may lack a parent_id (malformed input).
+		# Treat missing or None parent_id as root (equivalent to 0).
+		parent_id = obj.get("parent_id")
+		if not parent_id:
+			# parent_id == 0 or None/False -> root
 			roots.append(obj)
 		else:
 			children_map[parent_id].append(obj)
